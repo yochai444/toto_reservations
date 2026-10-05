@@ -1,7 +1,9 @@
 "use client";
 
+import Button from "@mui/material/Button";
 import { useState } from "react";
-import { inputClass } from "@/components/admin/styles";
+import { FormCard } from "@/components/admin/ui";
+import { InputField, Notice } from "@/components/ui/form";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
 
 export function PasswordForm() {
@@ -9,8 +11,8 @@ export function PasswordForm() {
   const [pending, setPending] = useState(false);
 
   return (
-    <form
-      className="grid max-w-[420px] gap-4 rounded-[22px] bg-white p-5 shadow-card sm:p-6"
+    <FormCard
+      sx={{ maxWidth: 420, gap: 2 }}
       onSubmit={async (e) => {
         e.preventDefault();
         const form = e.currentTarget;
@@ -26,18 +28,12 @@ export function PasswordForm() {
         setMsg({ ok: true, text: "הסיסמה עודכנה. מהכניסה הבאה משתמשים בסיסמה החדשה." });
       }}
     >
-      <label className="grid gap-1.5">
-        <span className="font-extrabold text-berry">סיסמה חדשה</span>
-        <input name="password" type="password" autoComplete="new-password" dir="ltr" className={inputClass} />
-      </label>
-      <label className="grid gap-1.5">
-        <span className="font-extrabold text-berry">שוב, לאימות</span>
-        <input name="confirm" type="password" autoComplete="new-password" dir="ltr" className={inputClass} />
-      </label>
-      {msg && <p className={`font-bold ${msg.ok ? "text-[#17643A]" : "text-[#B03224]"}`}>{msg.text}</p>}
-      <button type="submit" className="btn btn-pink" disabled={pending}>
+      <InputField label="סיסמה חדשה" name="password" type="password" autoComplete="new-password" inputProps={{ dir: "ltr" }} />
+      <InputField label="שוב, לאימות" name="confirm" type="password" autoComplete="new-password" inputProps={{ dir: "ltr" }} />
+      {msg && <Notice tone={msg.ok ? "ok" : "error"}>{msg.text}</Notice>}
+      <Button type="submit" disabled={pending}>
         {pending ? "מעדכנים…" : "עדכון סיסמה"}
-      </button>
-    </form>
+      </Button>
+    </FormCard>
   );
 }

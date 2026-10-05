@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { PageTitle } from "@/components/admin/admin-styles";
 import { OptionGroupForm } from "@/components/admin/option-group-form";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getAdminMenu } from "@/lib/admin-menu";
@@ -14,7 +15,7 @@ export default async function EditOptionGroupPage({ params }: PageProps<"/admin/
 
   return (
     <>
-      <h1 className="mb-5 text-3xl">{group.legend ?? "רשימת בחירה חדשה"}</h1>
+      <PageTitle>{group.legend ?? "רשימת בחירה חדשה"}</PageTitle>
       <OptionGroupForm group={group} usedBy={items.filter((i) => i.option_group_id === id).map((i) => i.name)} />
     </>
   );

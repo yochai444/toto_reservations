@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { CategoryChips } from "@/components/category-chips";
+import { CategoryNote, MenuHead, MenuSection, MenuSectionHead } from "@/components/home/site-styles";
 import { MenuCard } from "@/components/menu-card";
+import { Crown, DishGrid, Muted, PinkBand, Wrap } from "@/components/ui/primitives";
 import { getMenu } from "@/lib/menu";
 
 export const metadata: Metadata = { title: "התפריט" };
@@ -10,36 +11,36 @@ export default async function MenuPage() {
   const menu = await getMenu();
   return (
     <>
-      <section className="pattern-white bg-pink text-white">
-        <div className="wrap grid gap-2 pt-8.5 pb-7.5">
-          <h1 className="text-[clamp(2.1rem,6vw,3.2rem)] font-bold text-white">התפריט של טוטו</h1>
-          <p className="text-[1.08rem] font-semibold">כל המחירים למגש · חלבי, כשר למהדרין · תפריט 2026</p>
-        </div>
-      </section>
+      <PinkBand>
+        <MenuHead>
+          <h1>התפריט של טוטו</h1>
+          <p>כל המחירים למגש · חלבי, כשר למהדרין · תפריט 2026</p>
+        </MenuHead>
+      </PinkBand>
 
       <CategoryChips categories={menu.categories} />
 
-      <div className="wrap">
+      <Wrap>
         {menu.categories.map((c) => (
-          <section key={c.id} id={`cat-${c.id}`} data-sec={c.id} className="menu-section pt-9.5 pb-2">
-            <div className="mb-5 flex flex-wrap items-center gap-x-3.5 gap-y-2.5">
-              <h2 className="flex items-center gap-2.5 text-[clamp(1.7rem,4vw,2.3rem)]">
-                <Image src="/img/crown.png" alt="" width={168} height={193} className="h-7 w-auto" />
+          <MenuSection key={c.id} id={`cat-${c.id}`} data-sec={c.id}>
+            <MenuSectionHead>
+              <h2>
+                <Crown style={{ height: 28, width: "auto" }} />
                 {c.name}
               </h2>
-              <span className="rounded-full bg-butter px-3.5 py-1 text-[14.5px] font-extrabold text-berry">{c.note}</span>
-            </div>
-            <div className="grid grid-cols-2 gap-3.5 min-[760px]:grid-cols-3 min-[760px]:gap-5.5 min-[1120px]:grid-cols-4">
+              <CategoryNote>{c.note}</CategoryNote>
+            </MenuSectionHead>
+            <DishGrid>
               {menu.items
                 .filter((i) => i.categoryId === c.id)
                 .map((it) => (
                   <MenuCard key={it.id} item={it} />
                 ))}
-            </div>
-          </section>
+            </DishGrid>
+          </MenuSection>
         ))}
-        <p className="pt-10 pb-30 text-center text-muted">זה כל התפריט. משהו חסר? כתבו לנו בווצאפ ונשמח להתאים.</p>
-      </div>
+        <Muted sx={{ pt: 5, pb: 15, textAlign: "center" }}>זה כל התפריט. משהו חסר? כתבו לנו בווצאפ ונשמח להתאים.</Muted>
+      </Wrap>
     </>
   );
 }

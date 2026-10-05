@@ -1,11 +1,77 @@
 "use client";
 
-import Image from "next/image";
+import { styled } from "@mui/material/styles";
 import { usePathname } from "next/navigation";
 import { WhatsappIcon } from "@/components/icons";
 import { useStore } from "@/components/store";
+import { Crown, Num } from "@/components/ui/primitives";
 import { formatILS } from "@/lib/pricing";
 import { SITE } from "@/lib/site";
+import { brand } from "@/theme/theme";
+
+const CartBar = styled("div")(({ theme }) => ({
+  position: "fixed",
+  insetInline: 0,
+  bottom: 0,
+  zIndex: 45,
+  background: `linear-gradient(to top, ${brand.cream} 70%, transparent)`,
+  padding: "10px var(--gutter) calc(10px + env(safe-area-inset-bottom, 0px))",
+  [theme.breakpoints.up("md")]: { insetInline: "auto 24px", bottom: 24, width: 360, background: "none", padding: 0 },
+}));
+
+const CartButton = styled("button")(({ theme }) => ({
+  display: "flex",
+  width: "100%",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: 12,
+  borderRadius: 999,
+  background: brand.pinkBtn,
+  padding: "14px 22px",
+  fontSize: 17,
+  fontWeight: 800,
+  color: "#fff",
+  boxShadow: theme.toto.shadows.pop,
+}));
+
+const TrayCount = styled(Num)({ borderRadius: 999, background: "#fff", padding: "1px 10px", fontSize: 14, color: brand.pinkInk });
+
+const WhatsApp = styled("a", { shouldForwardProp: (p) => p !== "raised" })<{ raised: boolean }>(({ theme, raised }) => ({
+  position: "fixed",
+  insetInlineEnd: 16,
+  zIndex: 44,
+  display: "grid",
+  width: 54,
+  height: 54,
+  placeItems: "center",
+  borderRadius: "50%",
+  background: brand.wa,
+  color: "#fff",
+  boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+  bottom: raised ? "calc(86px + env(safe-area-inset-bottom, 0px))" : "calc(16px + env(safe-area-inset-bottom, 0px))",
+  [theme.breakpoints.up("md")]: raised ? { bottom: 96 } : {},
+}));
+
+// Centered with inset + auto margins (not left:50%/translate), so the RTL style flip can't shift it.
+const Toast = styled("div")({
+  position: "fixed",
+  top: "calc(var(--hdr) + env(safe-area-inset-top, 0px) + 12px)",
+  insetInline: 0,
+  zIndex: 1500,
+  marginInline: "auto",
+  display: "flex",
+  width: "fit-content",
+  maxWidth: "calc(100% - 32px)",
+  alignItems: "center",
+  gap: 8,
+  borderRadius: 999,
+  background: brand.berry,
+  padding: "10px 18px",
+  fontWeight: 700,
+  color: "#fff",
+  boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+  animation: "up 0.25s ease",
+});
 
 /** Bottom cart bar (phones: full width; desktop: corner pill), WhatsApp button and toast. */
 export function FloatingUI() {
@@ -16,41 +82,25 @@ export function FloatingUI() {
   return (
     <>
       {showBar && (
-        <div className="fixed inset-x-0 bottom-0 z-45 bg-linear-to-t from-cream from-70% to-transparent px-(--gutter) pt-2.5 pb-[calc(10px+env(safe-area-inset-bottom,0px))] min-[900px]:inset-x-auto min-[900px]:end-6 min-[900px]:bottom-6 min-[900px]:w-[360px] min-[900px]:bg-none min-[900px]:p-0">
-          <button
-            type="button"
-            onClick={() => setDrawerOpen(true)}
-            className="flex w-full items-center justify-between gap-3 rounded-full bg-pink-btn px-[22px] py-3.5 text-[17px] font-extrabold text-white shadow-pop"
-          >
+        <CartBar>
+          <CartButton type="button" onClick={() => setDrawerOpen(true)}>
             <span>
-              לסיום ההזמנה{" "}
-              <span className="rounded-full bg-white px-2.5 py-px text-sm text-pink-ink tabular-nums">{totalQty === 1 ? "מגש אחד" : `${totalQty} מגשים`}</span>
+              לסיום ההזמנה <TrayCount>{totalQty === 1 ? "מגש אחד" : `${totalQty} מגשים`}</TrayCount>
             </span>
-            <span className="tabular-nums">{formatILS(total)}</span>
-          </button>
-        </div>
+            <Num>{formatILS(total)}</Num>
+          </CartButton>
+        </CartBar>
       )}
 
-      <a
-        href={SITE.whatsappLink}
-        target="_blank"
-        rel="noopener"
-        aria-label="שליחת הודעה לטוטו בווצאפ"
-        className={`fixed end-4 z-44 grid size-[54px] place-items-center rounded-full bg-wa text-white shadow-lg ${
-          showBar ? "bottom-[calc(86px+env(safe-area-inset-bottom,0px))] min-[900px]:bottom-24" : "bottom-[calc(16px+env(safe-area-inset-bottom,0px))]"
-        }`}
-      >
-        <WhatsappIcon className="size-7" />
-      </a>
+      <WhatsApp href={SITE.whatsappLink} target="_blank" rel="noopener" aria-label="שליחת הודעה לטוטו בווצאפ" raised={showBar}>
+        <WhatsappIcon style={{ width: 28, height: 28 }} />
+      </WhatsApp>
 
       {toast && (
-        <div
-          role="status"
-          className="fixed top-[calc(var(--hdr)+env(safe-area-inset-top,0px)+12px)] left-1/2 z-80 flex max-w-[calc(100%-32px)] -translate-x-1/2 animate-up items-center gap-2 rounded-full bg-berry px-[18px] py-2.5 font-bold text-white shadow-xl"
-        >
-          <Image src="/img/crown.png" alt="" width={168} height={193} className="h-[18px] w-auto brightness-0 invert" />
+        <Toast role="status">
+          <Crown width={16} white style={{ height: 18, width: "auto" }} />
           {toast}
-        </div>
+        </Toast>
       )}
     </>
   );

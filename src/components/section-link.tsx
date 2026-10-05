@@ -1,5 +1,6 @@
 "use client";
 
+import Button, { type ButtonProps } from "@mui/material/Button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ComponentProps } from "react";
@@ -22,4 +23,9 @@ export function SectionLink({ id, onClick, ...props }: { id: string } & Omit<Com
       {...props}
     />
   );
+}
+
+/** MUI Button that scrolls to a home-page section (see SectionLink). */
+export function SectionButton({ section, ...props }: { section: string } & Omit<ButtonProps<typeof SectionLink>, "id" | "component">) {
+  return <Button component={SectionLink} nativeButton={false} id={section} {...props} />;
 }
