@@ -46,5 +46,6 @@ The browser only sends dish ids, picks and quantities. Prices are always recompu
 
 1. ✅ Customer site: home, menu, dish options, cart, checkout (orders logged in dry run)
 2. ✅ Supabase: menu in a database + image storage, admin area for the owner to edit the menu (needs project credentials)
-3. WhatsApp bot: Meta Business account, bot phone number, approved templates, live sending
-4. Deploy (Netlify / Vercel), domain, real dish photos
+3. WhatsApp bot (deferred): coexistence on 058-7160723 via a provider (e.g. YCloud), approved templates, owner alert
+4. ✅ Deployed on Netlify (auto-deploys from `main`): https://dazzling-dasik-62f85d.netlify.app, hidden from search engines until launch
+5. Before launch: WhatsApp delivery (bot or wa.me fallback), real dish photos, domain, `SITE_INDEXING=on`
