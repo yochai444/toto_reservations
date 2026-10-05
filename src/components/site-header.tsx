@@ -1,5 +1,6 @@
 "use client";
 
+import { styled } from "@mui/material/styles";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,6 +9,7 @@ import { BagIcon, SearchIcon } from "@/components/icons";
 import { SectionLink } from "@/components/section-link";
 import { SocialLinks } from "@/components/social-links";
 import { useStore } from "@/components/store";
+import { brand } from "@/theme/theme";
 
 const NAV = [
   { href: "/", label: "בית", id: "home" },
@@ -94,6 +96,115 @@ function useHomeOpensAtTop(pathname: string) {
   }, []);
 }
 
+const Bar = styled("header")({
+  position: "sticky",
+  top: "env(safe-area-inset-top, 0px)",
+  zIndex: 40,
+  borderBottom: `1px solid ${brand.line}`,
+  background: "rgb(255 255 255 / 0.95)",
+  backdropFilter: "blur(8px)",
+});
+
+const Grid = styled("div")(({ theme }) => ({
+  display: "grid",
+  height: "var(--hdr)",
+  gridTemplateColumns: "auto 1fr",
+  alignItems: "center",
+  gap: 8,
+  paddingInline: "var(--gutter)",
+  [theme.breakpoints.up("md")]: { gridTemplateColumns: "1fr auto 1fr", gap: 16 },
+}));
+
+const Side = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: 6,
+  [theme.breakpoints.up("sm")]: { gap: 12 },
+}));
+
+const Home = styled(Link)({ display: "flex", flexShrink: 0, alignItems: "center", gap: 10 });
+
+const Logo = styled(Image)(({ theme }) => ({ height: 40, width: "auto", [theme.breakpoints.up("md")]: { height: 48 } }));
+
+const Tagline = styled("small")(({ theme }) => ({
+  display: "none",
+  borderInlineStart: `2px solid ${brand.line}`,
+  paddingInlineStart: 10,
+  fontFamily: theme.toto.fonts.display,
+  fontSize: 13,
+  lineHeight: 1.25,
+  fontWeight: 500,
+  color: brand.pinkInk,
+  [theme.breakpoints.up("sm")]: { display: "block" },
+}));
+
+const SearchButton = styled("button")(({ theme }) => ({
+  display: "grid",
+  width: 36,
+  height: 36,
+  flexShrink: 0,
+  placeItems: "center",
+  borderRadius: "50%",
+  background: brand.blush,
+  color: brand.pinkInk,
+  "&:hover": { background: brand.line },
+  "& svg": { width: 20, height: 20 },
+  [theme.breakpoints.up("sm")]: { width: 42, height: 42 },
+}));
+
+const Nav = styled("nav")(({ theme }) => ({
+  display: "none",
+  gap: 4,
+  justifySelf: "center",
+  [theme.breakpoints.up("md")]: { display: "flex" },
+}));
+
+const navItem = {
+  borderRadius: 999,
+  padding: "8px 14px",
+  fontWeight: 600,
+  "&:hover, &[aria-current]": { background: brand.blush, color: brand.pinkInk },
+};
+const NavLink = styled(Link)(navItem);
+const NavSection = styled(SectionLink)(navItem);
+
+const CartButton = styled("button")(({ theme }) => ({
+  display: "inline-flex",
+  height: 34,
+  alignItems: "center",
+  gap: 6,
+  borderRadius: 999,
+  background: brand.pinkBtn,
+  paddingInline: "10px 12px",
+  fontSize: 15,
+  fontWeight: 700,
+  whiteSpace: "nowrap",
+  color: "#fff",
+  "& svg": { width: 18, height: 18 },
+  "& .label": { display: "none" },
+  [theme.breakpoints.up("sm")]: { height: 38, "& .label": { display: "inline" } },
+}));
+
+const CartCount = styled("span")({
+  display: "inline-grid",
+  height: 20,
+  minWidth: 20,
+  placeItems: "center",
+  borderRadius: 999,
+  background: "#fff",
+  paddingInline: 6,
+  fontSize: 12,
+  fontWeight: 800,
+  color: brand.pinkInk,
+  fontVariantNumeric: "tabular-nums",
+});
+
+const Socials = styled(SocialLinks)(({ theme }) => ({
+  borderInlineStart: `2px solid ${brand.line}`,
+  paddingInlineStart: 6,
+  [theme.breakpoints.up("sm")]: { paddingInlineStart: 10 },
+}));
+
 export function SiteHeader() {
   const { totalQty, setDrawerOpen, setSearchOpen } = useStore();
   const pathname = usePathname();
@@ -101,63 +212,48 @@ export function SiteHeader() {
   useHomeOpensAtTop(pathname);
 
   return (
-    <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 border-b border-line bg-white/95 backdrop-blur">
-      <div className="grid h-(--hdr) grid-cols-[auto_1fr] items-center gap-2 px-(--gutter) min-[900px]:grid-cols-[1fr_auto_1fr] min-[900px]:gap-4">
-        <div className="flex items-center gap-1.5 justify-self-start sm:gap-3">
-          <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="טוטו קייטרינג, לדף הבית">
-            <Image src="/img/logo.png" alt="TOTO" width={900} height={540} priority className="h-10 w-auto min-[900px]:h-12" />
-            <small className="hidden border-s-2 border-line ps-2.5 font-display text-[13px] leading-tight font-medium text-pink-ink sm:block">
+    <Bar>
+      <Grid>
+        <Side sx={{ justifySelf: "start" }}>
+          <Home href="/" aria-label="טוטו קייטרינג, לדף הבית">
+            <Logo src="/img/logo.png" alt="TOTO" width={900} height={540} priority />
+            <Tagline>
               קייטרינג
               <br />
               חלבי
-            </small>
-          </Link>
-          <button
-            type="button"
-            onClick={() => setSearchOpen(true)}
-            aria-label="חיפוש מנה"
-            className="grid size-9 shrink-0 place-items-center rounded-full bg-blush text-pink-ink hover:bg-line sm:size-[42px]"
-          >
-            <SearchIcon className="size-5" />
-          </button>
-        </div>
+            </Tagline>
+          </Home>
+          <SearchButton type="button" onClick={() => setSearchOpen(true)} aria-label="חיפוש מנה">
+            <SearchIcon />
+          </SearchButton>
+        </Side>
 
-        <nav className="hidden gap-1 justify-self-center min-[900px]:flex" aria-label="ניווט ראשי">
+        <Nav aria-label="ניווט ראשי">
           {NAV.map((n) => {
             const active = n.id === activeNav;
             const isSection = HOME_SECTIONS.includes(n.id);
-            const props = {
-              "aria-current": active ? (isSection ? ("location" as const) : ("page" as const)) : undefined,
-              className: `rounded-full px-3.5 py-2 font-semibold hover:bg-blush hover:text-pink-ink ${active ? "bg-blush text-pink-ink" : ""}`,
-            };
+            const current = active ? (isSection ? ("location" as const) : ("page" as const)) : undefined;
             return isSection ? (
-              <SectionLink key={n.id} id={n.id} {...props}>
+              <NavSection key={n.id} id={n.id} aria-current={current}>
                 {n.label}
-              </SectionLink>
+              </NavSection>
             ) : (
-              <Link key={n.id} href={n.href} {...props}>
+              <NavLink key={n.id} href={n.href} aria-current={current}>
                 {n.label}
-              </Link>
+              </NavLink>
             );
           })}
-        </nav>
+        </Nav>
 
-        <div className="flex items-center gap-1.5 justify-self-end sm:gap-2">
-          <button
-            type="button"
-            onClick={() => setDrawerOpen(true)}
-            aria-label={`פתיחת הסל, ${totalQty} מגשים`}
-            className="inline-flex h-[34px] items-center gap-1.5 rounded-full bg-pink-btn ps-2.5 pe-3 text-[15px] font-bold whitespace-nowrap text-white sm:h-[38px]"
-          >
-            <BagIcon className="size-[18px]" />
-            <span className="hidden sm:inline">הסל שלי</span>
-            <span className="inline-grid h-5 min-w-5 place-items-center rounded-full bg-white px-1.5 text-xs font-extrabold text-pink-ink tabular-nums">
-              {totalQty}
-            </span>
-          </button>
-          <SocialLinks className="border-s-2 border-line ps-1.5 sm:ps-2.5" />
-        </div>
-      </div>
-    </header>
+        <Side sx={{ justifySelf: "end", gap: { sm: 1 } }}>
+          <CartButton type="button" onClick={() => setDrawerOpen(true)} aria-label={`פתיחת הסל, ${totalQty} מגשים`}>
+            <BagIcon />
+            <span className="label">הסל שלי</span>
+            <CartCount>{totalQty}</CartCount>
+          </CartButton>
+          <Socials />
+        </Side>
+      </Grid>
+    </Bar>
   );
 }

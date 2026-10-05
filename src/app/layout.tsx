@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Assistant, Fredoka } from "next/font/google";
-import "./globals.css";
+import { ThemeRegistry } from "@/theme/registry";
 
 const fredoka = Fredoka({ variable: "--font-fredoka", subsets: ["hebrew", "latin"], weight: ["500", "600", "700"] });
 const assistant = Assistant({ variable: "--font-assistant", subsets: ["hebrew", "latin"], weight: ["400", "600", "700", "800"] });
@@ -16,8 +16,10 @@ export const viewport: Viewport = { themeColor: "#e4519a", viewportFit: "cover" 
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="he" dir="rtl" data-scroll-behavior="smooth" className={`${fredoka.variable} ${assistant.variable} antialiased`}>
-      <body>{children}</body>
+    <html lang="he" dir="rtl" data-scroll-behavior="smooth" className={`${fredoka.variable} ${assistant.variable}`}>
+      <body>
+        <ThemeRegistry>{children}</ThemeRegistry>
+      </body>
     </html>
   );
 }

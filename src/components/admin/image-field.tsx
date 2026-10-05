@@ -1,8 +1,23 @@
 "use client";
 
+import Button from "@mui/material/Button";
+import FormHelperText from "@mui/material/FormHelperText";
+import FormLabel from "@mui/material/FormLabel";
+import { styled } from "@mui/material/styles";
 import { useRef, useState } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
 import { MENU_IMAGES_BUCKET } from "@/lib/supabase/config";
+import { brand } from "@/theme/theme";
+
+const Preview = styled("div")({
+  aspectRatio: "4 / 3",
+  width: 224,
+  overflow: "hidden",
+  borderRadius: 18,
+  background: brand.blush,
+  "& img": { width: "100%", height: "100%", objectFit: "cover" },
+  "& .none": { display: "grid", height: "100%", placeItems: "center", color: brand.muted },
+});
 
 /** Downscale to max 1600px and re-encode as WebP so phone photos upload fast and load fast. */
 async function compress(file: File): Promise<Blob> {
@@ -37,25 +52,25 @@ export function ImageField({ name, defaultValue, folder, error }: { name: string
   }
 
   return (
-    <div className="grid gap-2">
-      <span className="font-extrabold text-berry">תמונה</span>
-      <div className="flex flex-wrap items-center gap-4">
-        <div className="aspect-[4/3] w-56 overflow-hidden rounded-[18px] bg-blush">
+    <div style={{ display: "grid", gap: 8 }}>
+      <FormLabel component="span">תמונה</FormLabel>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 16 }}>
+        <Preview>
           {/* eslint-disable-next-line @next/next/no-img-element -- preview of an arbitrary just-uploaded URL */}
-          {url ? <img src={url} alt="" className="size-full object-cover" /> : <div className="grid size-full place-items-center text-muted">אין תמונה</div>}
-        </div>
-        <div className="grid gap-2">
-          <button type="button" onClick={() => input.current?.click()} className="rounded-full bg-pink-btn px-4 py-2 font-extrabold text-white">
+          {url ? <img src={url} alt="" /> : <div className="none">אין תמונה</div>}
+        </Preview>
+        <div style={{ display: "grid", gap: 8, justifyItems: "start" }}>
+          <Button size="small" onClick={() => input.current?.click()}>
             {url ? "החלפת תמונה" : "העלאת תמונה"}
-          </button>
-          <span className="text-sm text-muted">אפשר לצלם ישר מהטלפון. מומלץ צילום לרוחב.</span>
+          </Button>
+          <FormHelperText>אפשר לצלם ישר מהטלפון. מומלץ צילום לרוחב.</FormHelperText>
         </div>
       </div>
       <input
         ref={input}
         type="file"
         accept="image/*"
-        className="hidden"
+        hidden
         onChange={(e) => {
           const f = e.target.files?.[0];
           if (f) void onFile(f);
@@ -63,8 +78,8 @@ export function ImageField({ name, defaultValue, folder, error }: { name: string
         }}
       />
       <input type="hidden" name={name} value={url} />
-      {status && <span className="text-sm font-bold text-berry">{status}</span>}
-      {error && <span className="text-sm font-bold text-[#B03224]">{error}</span>}
+      {status && <FormHelperText sx={{ fontWeight: 700, color: brand.berry }}>{status}</FormHelperText>}
+      {error && <FormHelperText error>{error}</FormHelperText>}
     </div>
   );
 }

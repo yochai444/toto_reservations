@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState } from "react";
 import { deleteCategory, saveCategory } from "@/app/admin/actions";
 import { ImageField } from "@/components/admin/image-field";
-import { inputClass } from "@/components/admin/styles";
-import { DeleteButton, Field, FormError, SubmitButton } from "@/components/admin/ui";
+import { Cancel, CheckField, DangerRow, DeleteButton, FormActions, FormCard, FormError, Stack, SubmitButton } from "@/components/admin/ui";
+import { InputField } from "@/components/ui/form";
+import { Muted } from "@/components/ui/primitives";
 import type { CategoryRow } from "@/lib/menu-rows";
 
 export function CategoryForm({ category, itemCount }: { category: Partial<CategoryRow>; itemCount: number }) {
@@ -13,36 +13,27 @@ export function CategoryForm({ category, itemCount }: { category: Partial<Catego
   const fe = state?.fieldErrors ?? {};
 
   return (
-    <div className="grid gap-4">
-      <form action={action} className="grid gap-5 rounded-[22px] bg-white p-5 shadow-card sm:p-6">
+    <Stack>
+      <FormCard action={action}>
         {category.id && <input type="hidden" name="id" value={category.id} />}
-        <Field label="שם הקטגוריה" error={fe.name}>
-          <input name="name" defaultValue={category.name} className={inputClass} aria-invalid={!!fe.name || undefined} />
-        </Field>
-        <Field label="הערה ליד הכותרת" hint="לדוגמה: לפי 10 סועדים" error={fe.note}>
-          <input name="note" defaultValue={category.note ?? ""} className={inputClass} />
-        </Field>
+        <InputField label="שם הקטגוריה" error={fe.name} name="name" defaultValue={category.name} />
+        <InputField label="הערה ליד הכותרת" hint="לדוגמה: לפי 10 סועדים" error={fe.note} name="note" defaultValue={category.note ?? ""} />
         <ImageField name="image" defaultValue={category.image ?? ""} folder="categories" error={fe.image} />
-        <label className="flex items-center gap-2.5 font-bold">
-          <input type="checkbox" name="visible" defaultChecked={category.visible ?? true} className="size-5 accent-pink-btn" />
-          מוצגת באתר
-        </label>
+        <CheckField name="visible" defaultChecked={category.visible ?? true} label="מוצגת באתר" />
         <FormError error={state?.error} />
-        <div className="flex flex-wrap items-center gap-3">
+        <FormActions>
           <SubmitButton>{category.id ? "שמירה" : "הוספת הקטגוריה"}</SubmitButton>
-          <Link href="/admin" className="font-bold text-muted underline">
-            ביטול
-          </Link>
-        </div>
-      </form>
+          <Cancel href="/admin" />
+        </FormActions>
+      </FormCard>
       {category.id &&
         (itemCount === 0 ? (
-          <div className="flex justify-end">
+          <DangerRow>
             <DeleteButton action={deleteCategory} id={category.id} label="מחיקת הקטגוריה" />
-          </div>
+          </DangerRow>
         ) : (
-          <p className="text-end text-sm text-muted">כדי למחוק קטגוריה צריך קודם להעביר או למחוק את {itemCount} המנות שבה.</p>
+          <Muted sx={{ textAlign: "end", fontSize: 14 }}>כדי למחוק קטגוריה צריך קודם להעביר או למחוק את {itemCount} המנות שבה.</Muted>
         ))}
-    </div>
+    </Stack>
   );
 }

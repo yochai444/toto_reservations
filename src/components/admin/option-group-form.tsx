@@ -1,12 +1,29 @@
 "use client";
 
-import Link from "next/link";
+import FormHelperText from "@mui/material/FormHelperText";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import { styled } from "@mui/material/styles";
 import { useActionState, useState } from "react";
 import { deleteOptionGroup, saveOptionGroup } from "@/app/admin/actions";
-import { inputClass } from "@/components/admin/styles";
-import { DeleteButton, Field, FormError, SubmitButton } from "@/components/admin/ui";
+import { Cancel, DangerRow, DeleteButton, FormActions, FormCard, FormError, Pair, Stack, SubmitButton } from "@/components/admin/ui";
+import { InputField } from "@/components/ui/form";
+import { CloseButton } from "@/components/ui/primitives";
 import type { Choice } from "@/lib/menu-types";
 import type { OptionGroupRow } from "@/lib/menu-rows";
+import { brand } from "@/theme/theme";
+
+const Choices = styled("fieldset")({ display: "grid", gap: 10, "& legend": { marginBottom: 4, fontWeight: 800, color: brand.berry } });
+
+const ChoiceRow = styled("div")({ display: "grid", gridTemplateColumns: "1fr 110px auto", alignItems: "center", gap: 8 });
+
+const AddChoice = styled("button")({
+  justifySelf: "start",
+  borderRadius: 999,
+  border: `2px solid ${brand.line}`,
+  padding: "6px 16px",
+  fontWeight: 700,
+  color: brand.pinkInk,
+});
 
 export function OptionGroupForm({ group, usedBy }: { group: Partial<OptionGroupRow>; usedBy: string[] }) {
   const [state, action] = useActionState(saveOptionGroup, undefined);
@@ -19,69 +36,57 @@ export function OptionGroupForm({ group, usedBy }: { group: Partial<OptionGroupR
     .map((c) => (c.extra ? { name: c.name.trim(), extra: c.extra } : { name: c.name.trim() }));
 
   return (
-    <div className="grid gap-4">
-      <form action={action} className="grid gap-5 rounded-[22px] bg-white p-5 shadow-card sm:p-6">
+    <Stack>
+      <FormCard action={action}>
         {group.id && <input type="hidden" name="id" value={group.id} />}
         <input type="hidden" name="choices" value={JSON.stringify(cleaned)} />
 
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Field label="כותרת בחלון הבחירה" hint="לדוגמה: בחרו מילויים" error={fe.legend}>
-            <input name="legend" defaultValue={group.legend} className={inputClass} />
-          </Field>
-          <Field label="טקסט הכפתור בכרטיס המנה" hint="לדוגמה: בחירת מילויים" error={fe.cta}>
-            <input name="cta" defaultValue={group.cta} className={inputClass} />
-          </Field>
-        </div>
-        <div className="grid grid-cols-2 gap-5">
-          <Field label="מינימום בחירות" error={fe.min}>
-            <input name="min" type="number" min={0} defaultValue={group.min ?? 1} className={inputClass} />
-          </Field>
-          <Field label="מקסימום בחירות" hint="למשל 2 מילויים למגש" error={fe.max}>
-            <input name="max" type="number" min={1} defaultValue={group.max ?? 2} className={inputClass} />
-          </Field>
-        </div>
+        <Pair>
+          <InputField label="כותרת בחלון הבחירה" hint="לדוגמה: בחרו מילויים" error={fe.legend} name="legend" defaultValue={group.legend} />
+          <InputField label="טקסט הכפתור בכרטיס המנה" hint="לדוגמה: בחירת מילויים" error={fe.cta} name="cta" defaultValue={group.cta} />
+        </Pair>
+        <Pair always>
+          <InputField label="מינימום בחירות" error={fe.min} name="min" type="number" inputProps={{ min: 0 }} defaultValue={group.min ?? 1} />
+          <InputField label="מקסימום בחירות" hint="למשל 2 מילויים למגש" error={fe.max} name="max" type="number" inputProps={{ min: 1 }} defaultValue={group.max ?? 2} />
+        </Pair>
 
-        <fieldset className="grid gap-2.5">
-          <legend className="mb-1 font-extrabold text-berry">אפשרויות</legend>
+        <Choices>
+          <legend>אפשרויות</legend>
           {choices.map((c, i) => (
-            <div key={i} className="grid grid-cols-[1fr_110px_auto] items-center gap-2">
-              <input value={c.name} onChange={(e) => update(i, { name: e.target.value })} placeholder="שם האפשרות" aria-label={`אפשרות ${i + 1}`} className={inputClass} />
-              <input
+            <ChoiceRow key={i}>
+              <OutlinedInput value={c.name} onChange={(e) => update(i, { name: e.target.value })} placeholder="שם האפשרות" inputProps={{ "aria-label": `אפשרות ${i + 1}` }} />
+              <OutlinedInput
                 type="number"
-                min={0}
                 value={c.extra ?? ""}
                 onChange={(e) => update(i, { extra: e.target.value ? Number(e.target.value) : undefined })}
                 placeholder="תוספת ₪"
-                aria-label={`תוספת מחיר לאפשרות ${i + 1}`}
-                className={inputClass}
+                inputProps={{ min: 0, "aria-label": `תוספת מחיר לאפשרות ${i + 1}` }}
               />
-              <button type="button" onClick={() => setChoices((cs) => cs.filter((_, j) => j !== i))} aria-label={`הסרת אפשרות ${i + 1}`} className="grid size-9 place-items-center rounded-full bg-blush text-berry">
+              <CloseButton tone="blush" type="button" onClick={() => setChoices((cs) => cs.filter((_, j) => j !== i))} aria-label={`הסרת אפשרות ${i + 1}`}>
                 ✕
-              </button>
-            </div>
+              </CloseButton>
+            </ChoiceRow>
           ))}
-          <button type="button" onClick={() => setChoices((cs) => [...cs, { name: "" }])} className="justify-self-start rounded-full border-2 border-line px-4 py-1.5 font-bold text-pink-ink">
+          <AddChoice type="button" onClick={() => setChoices((cs) => [...cs, { name: "" }])}>
             + אפשרות
-          </button>
-          <span className="text-sm text-muted">תוספת מחיר נספרת פעם אחת למגש, גם אם בחרו אותה יחד עם מילוי נוסף.</span>
-          {fe.choices && <span className="text-sm font-bold text-[#B03224]">{fe.choices}</span>}
-        </fieldset>
+          </AddChoice>
+          <FormHelperText>תוספת מחיר נספרת פעם אחת למגש, גם אם בחרו אותה יחד עם מילוי נוסף.</FormHelperText>
+          {fe.choices && <FormHelperText error>{fe.choices}</FormHelperText>}
+        </Choices>
 
         <FormError error={state?.error} />
-        <div className="flex flex-wrap items-center gap-3">
+        <FormActions>
           <SubmitButton>{group.id ? "שמירה" : "הוספה"}</SubmitButton>
-          <Link href="/admin/options" className="font-bold text-muted underline">
-            ביטול
-          </Link>
-        </div>
-      </form>
+          <Cancel href="/admin/options" />
+        </FormActions>
+      </FormCard>
 
       {group.id && (
-        <div className="flex flex-wrap items-center justify-end gap-3 text-sm text-muted">
+        <DangerRow>
           {usedBy.length > 0 && <span>בשימוש ב: {usedBy.join(", ")}. מחיקה תבטל את הבחירה במנות האלה.</span>}
           <DeleteButton action={deleteOptionGroup} id={group.id} label="מחיקה" />
-        </div>
+        </DangerRow>
       )}
-    </div>
+    </Stack>
   );
 }

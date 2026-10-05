@@ -1,9 +1,11 @@
 "use client";
 
+import Button from "@mui/material/Button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
-import { inputClass } from "@/components/admin/styles";
+import { StackForm } from "@/components/admin/ui";
+import { InputField, Notice } from "@/components/ui/form";
 
 export function LoginForm() {
   const router = useRouter();
@@ -11,8 +13,7 @@ export function LoginForm() {
   const [pending, setPending] = useState(false);
 
   return (
-    <form
-      className="grid gap-4"
+    <StackForm
       onSubmit={async (e) => {
         e.preventDefault();
         setPending(true);
@@ -31,22 +32,12 @@ export function LoginForm() {
         router.refresh();
       }}
     >
-      <label className="grid gap-1.5">
-        <span className="font-extrabold text-berry">אימייל</span>
-        <input name="email" type="email" required autoComplete="username" dir="ltr" className={inputClass} />
-      </label>
-      <label className="grid gap-1.5">
-        <span className="font-extrabold text-berry">סיסמה</span>
-        <input name="password" type="password" required autoComplete="current-password" dir="ltr" className={inputClass} />
-      </label>
-      {error && (
-        <p role="alert" className="font-bold text-[#B03224]">
-          {error}
-        </p>
-      )}
-      <button type="submit" className="btn btn-pink" disabled={pending}>
+      <InputField label="אימייל" name="email" type="email" required autoComplete="username" inputProps={{ dir: "ltr" }} />
+      <InputField label="סיסמה" name="password" type="password" required autoComplete="current-password" inputProps={{ dir: "ltr" }} />
+      {error && <Notice role="alert">{error}</Notice>}
+      <Button type="submit" disabled={pending}>
         {pending ? "נכנסים…" : "כניסה"}
-      </button>
-    </form>
+      </Button>
+    </StackForm>
   );
 }

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { PageTitle } from "@/components/admin/admin-styles";
 import { ItemForm } from "@/components/admin/item-form";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getAdminMenu } from "@/lib/admin-menu";
@@ -13,7 +14,7 @@ export default async function EditItemPage({ params, searchParams }: PageProps<"
 
   return (
     <>
-      <h1 className="mb-5 text-3xl">{"name" in item ? item.name : "מנה חדשה"}</h1>
+      <PageTitle>{"name" in item ? item.name : "מנה חדשה"}</PageTitle>
       <ItemForm item={item} categories={categories} optionGroups={optionGroups} />
     </>
   );

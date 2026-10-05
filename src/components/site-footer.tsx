@@ -1,41 +1,67 @@
+"use client";
+
+import { styled } from "@mui/material/styles";
 import Link from "next/link";
 import { SocialLinks } from "@/components/social-links";
+import { patternWhite, Wrap } from "@/components/ui/primitives";
 import type { Category } from "@/lib/menu-types";
 import { SITE } from "@/lib/site";
+import { brand } from "@/theme/theme";
+
+const Root = styled("footer")({ ...patternWhite, background: brand.berry, color: "#f8d7e7", "& .socials": { marginTop: 14 } });
+
+const Cols = styled(Wrap)(({ theme }) => ({
+  display: "grid",
+  gap: 24,
+  paddingBlock: 44,
+  [theme.breakpoints.up(860)]: { gridTemplateColumns: "1.2fr 1fr 1fr", alignItems: "start" },
+}));
+
+const Logo = styled("div")({ width: 150, aspectRatio: "900 / 540", background: "#fff", mask: "url(/img/logo.png) no-repeat center / contain" });
+
+const Title = styled("h4")(({ theme }) => ({ marginBottom: 8, fontFamily: theme.toto.fonts.display, fontSize: 18, fontWeight: 600, color: "#fff" }));
+
+const List = styled("ul")({ display: "grid", gap: 6, "& a:hover": { textDecoration: "underline" } });
+
+const Copy = styled("p")(({ theme }) => ({
+  borderTop: "1px solid rgb(255 255 255 / 0.15)",
+  paddingTop: 16,
+  fontSize: 13.5,
+  opacity: 0.85,
+  [theme.breakpoints.up(860)]: { gridColumn: "span 3" },
+}));
 
 export function SiteFooter({ categories }: { categories: Category[] }) {
   return (
-    <footer className="pattern-white bg-berry text-[#F8D7E7]">
-      <div className="wrap grid gap-6 py-11 min-[860px]:grid-cols-[1.2fr_1fr_1fr] min-[860px]:items-start">
+    <Root>
+      <Cols>
         <div>
-          <div className="logo-white aspect-[900/540] w-[150px] [--logo:url(/img/logo.png)]" role="img" aria-label="TOTO" />
-          <p className="mt-2.5">קייטרינג חלבי לאירועים · כשר למהדרין</p>
-          <SocialLinks tone="dark" className="mt-3.5" />
+          <Logo role="img" aria-label="TOTO" />
+          <p style={{ marginTop: 10 }}>קייטרינג חלבי לאירועים · כשר למהדרין</p>
+          <SocialLinks tone="dark" className="socials" />
         </div>
         <div>
-          <h4 className="mb-2 font-display text-lg font-semibold text-white">התפריט</h4>
-          <ul className="grid gap-1.5">
+          <Title>התפריט</Title>
+          <List>
             {categories.map((c) => (
               <li key={c.id}>
-                <Link href={`/menu#cat-${c.id}`} className="hover:underline">
-                  {c.name}
-                </Link>
+                <Link href={`/menu#cat-${c.id}`}>{c.name}</Link>
               </li>
             ))}
-          </ul>
+          </List>
         </div>
         <div>
-          <h4 className="mb-2 font-display text-lg font-semibold text-white">יצירת קשר</h4>
-          <ul className="grid gap-1.5">
+          <Title>יצירת קשר</Title>
+          <List>
             <li>{SITE.address}</li>
-            <li dir="ltr" className="text-end tabular-nums">
+            <li dir="ltr" style={{ textAlign: "end", fontVariantNumeric: "tabular-nums" }}>
               {SITE.phoneDisplay}
             </li>
             <li>{SITE.serviceArea}</li>
-          </ul>
+          </List>
         </div>
-        <p className="border-t border-white/15 pt-4 text-[13.5px] opacity-85 min-[860px]:col-span-3">© טוטו קייטרינג {new Date().getFullYear()}</p>
-      </div>
-    </footer>
+        <Copy>© טוטו קייטרינג {new Date().getFullYear()}</Copy>
+      </Cols>
+    </Root>
   );
 }
