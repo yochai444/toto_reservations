@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MenuCard } from "@/components/menu-card";
+import { SectionLink } from "@/components/section-link";
 import { getMenu } from "@/lib/menu";
 import { SITE } from "@/lib/site";
 
@@ -39,9 +40,9 @@ export default async function HomePage() {
               <Link href="/menu" className="btn btn-white">
                 לתפריט ולהזמנה
               </Link>
-              <Link href="/#how" className="btn btn-ghost">
+              <SectionLink id="how" className="btn btn-ghost">
                 איך זה עובד?
-              </Link>
+              </SectionLink>
             </div>
           </div>
           <div className="collage" aria-hidden="true">

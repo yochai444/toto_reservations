@@ -3,8 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BagIcon, SearchIcon } from "@/components/icons";
+import { SectionLink } from "@/components/section-link";
 import { SocialLinks } from "@/components/social-links";
 import { useStore } from "@/components/store";
 
@@ -54,10 +55,29 @@ function useActiveNav(pathname: string) {
   return pathname === "/" ? section : null;
 }
 
+/**
+ * Opening or refreshing the home page always starts at the top, even if the address still has
+ * a section (#kosher) or the browser wants to restore the previous scroll position.
+ * Runs once per full page load: the header stays mounted across in-app navigation.
+ */
+function useHomeOpensAtTop(pathname: string) {
+  const firstPath = useRef(pathname);
+  useEffect(() => {
+    if (firstPath.current !== "/") return;
+    history.scrollRestoration = "manual";
+    if (location.hash) history.replaceState(history.state, "", "/");
+    window.scrollTo({ top: 0, behavior: "instant" });
+    // Back to the browser default afterwards, so Back/Forward still return to where you were.
+    const t = window.setTimeout(() => (history.scrollRestoration = "auto"), 1000);
+    return () => window.clearTimeout(t);
+  }, []);
+}
+
 export function SiteHeader() {
   const { totalQty, setDrawerOpen, setSearchOpen } = useStore();
   const pathname = usePathname();
   const activeNav = useActiveNav(pathname);
+  useHomeOpensAtTop(pathname);
 
   return (
     <header className="sticky top-[env(safe-area-inset-top,0px)] z-40 border-b border-line bg-white/95 backdrop-blur">
@@ -84,13 +104,17 @@ export function SiteHeader() {
         <nav className="hidden gap-1 justify-self-center min-[900px]:flex" aria-label="ניווט ראשי">
           {NAV.map((n) => {
             const active = n.id === activeNav;
-            return (
-              <Link
-                key={n.href}
-                href={n.href}
-                aria-current={active ? (HOME_SECTIONS.includes(n.id) ? "location" : "page") : undefined}
-                className={`rounded-full px-3.5 py-2 font-semibold hover:bg-blush hover:text-pink-ink ${active ? "bg-blush text-pink-ink" : ""}`}
-              >
+            const isSection = HOME_SECTIONS.includes(n.id);
+            const props = {
+              "aria-current": active ? (isSection ? ("location" as const) : ("page" as const)) : undefined,
+              className: `rounded-full px-3.5 py-2 font-semibold hover:bg-blush hover:text-pink-ink ${active ? "bg-blush text-pink-ink" : ""}`,
+            };
+            return isSection ? (
+              <SectionLink key={n.id} id={n.id} {...props}>
+                {n.label}
+              </SectionLink>
+            ) : (
+              <Link key={n.id} href={n.href} {...props}>
                 {n.label}
               </Link>
             );
