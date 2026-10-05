@@ -28,8 +28,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <a href="/" target="_blank" className="hidden rounded-full bg-blush px-3 py-1.5 font-bold text-pink-ink sm:inline">
               לאתר ↗
             </a>
+            <Link href="/admin/account" className="rounded-full px-2 py-1.5 font-bold text-muted underline" title={user.email}>
+              סיסמה
+            </Link>
             <form action={signOut}>
-              <button type="submit" className="rounded-full px-3 py-1.5 font-bold text-muted underline" title={user.email}>
+              <button type="submit" className="rounded-full px-2 py-1.5 font-bold text-muted underline">
                 יציאה
               </button>
             </form>
