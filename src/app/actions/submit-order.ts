@@ -3,14 +3,14 @@
 import { headers } from "next/headers";
 import { getMenu } from "@/lib/menu";
 import { priceOrder, type CustomerField } from "@/lib/order";
-import { notifyOrder } from "@/lib/whatsapp";
+import { notifyOrder } from "@/lib/notify";
 
 export type SubmitResult =
   | { ok: true; trays: number; total: number; date: string; time: string; firstName: string }
   | { ok: false; fieldErrors: Partial<Record<CustomerField, string>>; error?: string };
 
 /**
- * Best-effort throttle per IP: each order costs WhatsApp messages, so block bursts.
+ * Best-effort throttle per IP: each order sends an email and a WhatsApp message, so block bursts.
  * In-memory, so it resets per server instance; good enough against casual abuse.
  */
 const recent = new Map<string, number[]>();

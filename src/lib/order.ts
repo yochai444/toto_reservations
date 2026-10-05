@@ -89,7 +89,7 @@ export function priceOrder(raw: unknown, menu: Menu, now = new Date()): PriceRes
 
 const lineText = (l: PricedLine) => `${l.qty} × ${l.name}${l.picks.length ? ` (${l.picks.join(", ")})` : ""} · ${formatILS(l.total)}`;
 
-/** Plain-text summary for the owner. Also used as the body of the WhatsApp template parameters. */
+/** Plain-text order summary for the owner: the text part of the order email, and the dry-run log. */
 export function ownerMessage(o: PricedOrder): string {
   const c = o.customer;
   return [
@@ -118,5 +118,3 @@ export function customerMessage(o: PricedOrder, businessPhone: string): string {
   ].join("\n");
 }
 
-/** WhatsApp template parameters can't contain line breaks, so lines are joined inline. */
-export const inlineItems = (o: PricedOrder) => o.lines.map(lineText).join(" | ");

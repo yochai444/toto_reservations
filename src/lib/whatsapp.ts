@@ -1,13 +1,15 @@
 import "server-only";
 import { formatHebrewDate } from "@/lib/dates";
-import { customerMessage, inlineItems, ownerMessage, type PricedOrder } from "@/lib/order";
-import { formatILS } from "@/lib/pricing";
+import { customerMessage, type PricedOrder } from "@/lib/order";
 
 /**
- * WhatsApp Cloud API (Meta). Business-initiated messages must use pre-approved templates,
- * and template parameters cannot contain line breaks.
+ * WhatsApp confirmation to the customer, sent from the business number (058-7160723).
+ * Business-initiated messages must use pre-approved templates, and template parameters
+ * cannot contain line breaks.
  *
- * Without WHATSAPP_TOKEN / WHATSAPP_PHONE_NUMBER_ID the order is only logged (local development).
+ * Talks to the Meta Cloud API. The business number joins through coexistence via a provider
+ * (planned: YCloud), so the request may need adapting to that provider once it is set up.
+ * Without WHATSAPP_TOKEN / WHATSAPP_PHONE_NUMBER_ID the message is only logged (local development).
  */
 const GRAPH = "https://graph.facebook.com/v23.0";
 
@@ -40,36 +42,23 @@ const clean = (s: string) => s.replace(/[\n\t]+/g, " ").replace(/ {4,}/g, "   ")
 /** 05X1234567 → 9725X1234567 */
 const toIntl = (local: string) => `972${local.replace(/^0/, "")}`;
 
-export async function notifyOrder(order: PricedOrder) {
-  const ownerPhone = process.env.OWNER_WHATSAPP ?? "0587160723";
+/** Order confirmation to the customer. Throws on failure; the caller decides whether that matters. */
+export async function sendCustomerConfirmation(order: PricedOrder) {
   const businessPhone = process.env.BUSINESS_PHONE_DISPLAY ?? "058-7160723";
+  const c = order.customer;
 
   if (!process.env.WHATSAPP_TOKEN || !process.env.WHATSAPP_PHONE_NUMBER_ID) {
-    console.info(`[whatsapp:dry-run] to owner ${ownerPhone}\n${ownerMessage(order)}\n`);
-    console.info(`[whatsapp:dry-run] to customer ${order.customer.phone}\n${customerMessage(order, businessPhone)}\n`);
+    console.info(`[whatsapp:dry-run] to customer ${c.phone}
+${customerMessage(order, businessPhone)}
+`);
     return { dryRun: true as const };
   }
 
-  const c = order.customer;
-  await sendTemplate(toIntl(ownerPhone), process.env.WHATSAPP_TEMPLATE_OWNER ?? "new_order", [
-    c.name,
-    c.phone,
+  await sendTemplate(toIntl(c.phone), process.env.WHATSAPP_TEMPLATE_CUSTOMER ?? "order_received", [
+    c.name.split(" ")[0],
+    String(order.trays),
     `${formatHebrewDate(c.date)}, ${c.time}`,
-    c.place,
-    inlineItems(order),
-    formatILS(order.total),
+    businessPhone,
   ]);
-
-  // The customer confirmation is a courtesy: a failure here must not fail the order.
-  try {
-    await sendTemplate(toIntl(c.phone), process.env.WHATSAPP_TEMPLATE_CUSTOMER ?? "order_received", [
-      c.name.split(" ")[0],
-      String(order.trays),
-      `${formatHebrewDate(c.date)}, ${c.time}`,
-      businessPhone,
-    ]);
-  } catch (err) {
-    console.error(err);
-  }
   return { dryRun: false as const };
 }
