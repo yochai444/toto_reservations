@@ -66,10 +66,31 @@ function useHomeOpensAtTop(pathname: string) {
     if (firstPath.current !== "/") return;
     history.scrollRestoration = "manual";
     if (location.hash) history.replaceState(history.state, "", "/");
-    window.scrollTo({ top: 0, behavior: "instant" });
+
+    // The browser's own jump to #section / restore can land after this effect on slow loads,
+    // so reset again when loading finishes, unless the visitor has already started scrolling.
+    let userMoved = false;
+    const markMoved = () => (userMoved = true);
+    const toTop = () => !userMoved && window.scrollTo({ top: 0, behavior: "instant" });
+    const inputs = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+    inputs.forEach((ev) => window.addEventListener(ev, markMoved, { once: true, passive: true }));
+    toTop();
+    const onLoad = () => {
+      toTop();
+      requestAnimationFrame(toTop);
+    };
+    if (document.readyState === "complete") onLoad();
+    else window.addEventListener("load", onLoad, { once: true });
+    const late = window.setTimeout(toTop, 400);
+
     // Back to the browser default afterwards, so Back/Forward still return to where you were.
-    const t = window.setTimeout(() => (history.scrollRestoration = "auto"), 1000);
-    return () => window.clearTimeout(t);
+    const restore = window.setTimeout(() => (history.scrollRestoration = "auto"), 1500);
+    return () => {
+      window.clearTimeout(late);
+      window.clearTimeout(restore);
+      window.removeEventListener("load", onLoad);
+      inputs.forEach((ev) => window.removeEventListener(ev, markMoved));
+    };
   }, []);
 }
 
