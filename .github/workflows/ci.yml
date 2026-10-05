@@ -1,16 +1,23 @@
-# Lint + production build (which also type-checks) on every push and pull request.
-# Netlify still deploys: `main` → production, `dev` → branch deploy.
-name: CI
+# One chain: check (lint + build) → deploy, only when the check passed.
+#   push to main → production   https://dazzling-dasik-62f85d.netlify.app
+#   push to dev  → test version https://dev--dazzling-dasik-62f85d.netlify.app
+#   pull request → check only
+# Netlify's own Git builds are stopped; this workflow is the only way the site gets deployed.
+# Needs repository secrets NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID.
+name: CI/CD
 
 on:
   push:
     branches: [dev, main]
   pull_request:
     branches: [dev, main]
+  # "Run workflow" button: redeploy a branch, e.g. after changing environment variables in Netlify.
+  workflow_dispatch:
 
+# A new push to an open PR replaces its older run; runs on dev/main always finish.
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.event_name }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   check:
@@ -28,3 +35,64 @@ jobs:
       - run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: "1"
+
+  deploy:
+    needs: check
+    if: github.event_name != 'pull_request' && (github.ref_name == 'main' || github.ref_name == 'dev')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Never two deploys of the same branch at once, and never cancel one halfway.
+    concurrency:
+      group: deploy-${{ github.ref_name }}
+      cancel-in-progress: false
+    environment:
+      name: ${{ github.ref_name == 'main' && 'production' || 'dev' }}
+      url: ${{ github.ref_name == 'main' && 'https://dazzling-dasik-62f85d.netlify.app' || 'https://dev--dazzling-dasik-62f85d.netlify.app' }}
+    env:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Did anything besides CI and docs change?
+        id: changes
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && git diff --quiet "${{ github.event.before }}" "${{ github.sha }}" -- . \
+              ':(exclude).github' ':(exclude)README.md' ':(exclude)AGENTS.md' ':(exclude)CLAUDE.md' ':(exclude)design' ':(exclude).env.example'; then
+            echo "site=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Only CI or docs changed, so the site is not redeployed."
+          else
+            echo "site=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check the Netlify secrets
+        if: steps.changes.outputs.site == 'true'
+        run: |
+          if [ -z "$NETLIFY_AUTH_TOKEN" ] || [ -z "$NETLIFY_SITE_ID" ]; then
+            echo "::error::Add NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID under Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v5
+        if: steps.changes.outputs.site == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - if: steps.changes.outputs.site == 'true'
+        run: npm ci
+
+      # Builds with the Netlify adapter and the environment variables set in Netlify, then uploads.
+      - name: Deploy to Netlify
+        if: steps.changes.outputs.site == 'true'
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          MESSAGE: "${{ github.ref_name }}@${{ github.sha }}: ${{ github.event.head_commit.message || 'manual run' }}"
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            npx --yes netlify-cli@27 deploy --prod --context production --message "${MESSAGE:0:200}"
+          else
+            npx --yes netlify-cli@27 deploy --alias dev --context branch-deploy --message "${MESSAGE:0:200}"
+          fi
