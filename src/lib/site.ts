@@ -5,10 +5,10 @@ export const SITE = {
   whatsappLink: "https://wa.me/972587160723",
   address: "דרך הארבעה 27, עכו",
   serviceArea: "מגיעים לכל אזור הצפון",
-  /** Placeholders until TOTO sends the real profile URLs. Empty string = not linked yet. */
+  /** Profile URLs. Empty string = not linked yet (the icon shows a "coming soon" toast). */
   social: {
-    instagram: "",
-    facebook: "",
-    tiktok: "",
+    instagram: "https://www.instagram.com/toto.sweets1/",
+    facebook: "https://www.facebook.com/profile.php?id=100073630373111",
+    tiktok: "https://www.tiktok.com/@totobotiq",
   },
 };
