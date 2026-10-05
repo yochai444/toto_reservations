@@ -1,0 +1,969 @@
+<title>TOTO Catering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Fredoka:wght@500;600;700&display=swap">
+<style>
+/* Layout: pink-forward storefront. Pink hero + bands carry the brand; cream page with TOTO's own bakery-doodle pattern;
+   white food cards keep photos readable. Single deliberate light look (brand colors), set explicitly. */
+:root{
+  --pink:#E4519A;        /* logo pink, hero + bands */
+  --pink-btn:#C8377C;    /* buttons with white text */
+  --pink-ink:#B42E6E;    /* pink text on light grounds */
+  --blush:#FFE2EF;       /* soft pink surfaces */
+  --cream:#FFF6FA;       /* page ground */
+  --berry:#4A1733;       /* footer, strong text */
+  --ink:#3A1A2B;         /* body text */
+  --muted:#7A5869;       /* secondary text */
+  --line:#F2C6DA;        /* hairlines */
+  --butter:#FFD36A;      /* badge accent */
+  --card:#FFFFFF;
+  --wa:#1F9D55;          /* WhatsApp green, only in the WhatsApp preview */
+  --wa-bubble:#DCF8C6;
+  --wa-ground:#EFE7DD;
+  --f-display:'Fredoka','Assistant',system-ui,sans-serif;
+  --f-body:'Assistant',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --hdr:64px;
+  --proto:30px;
+  --gutter:clamp(16px,4vw,40px);
+  --r-lg:26px; --r-md:18px; --r-sm:12px;
+  --shadow:0 10px 30px -12px rgba(180,46,110,.35);
+  color-scheme:light;
+}
+@media (min-width:900px){ :root{ --hdr:76px } }
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} *{transition:none!important;animation:none!important} }
+body{background:var(--cream);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55}
+#app{min-height:100%;position:relative}
+#app::before{content:"";position:fixed;inset:0;background:var(--pink-ink);opacity:.045;-webkit-mask:url(img/pattern.png) repeat;mask:url(img/pattern.png) repeat;-webkit-mask-size:373px;mask-size:373px;pointer-events:none;z-index:0}
+:where(#app)>:where(main,footer,.proto){position:relative;z-index:1}
+.pattern-white>*{position:relative}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;line-height:1.15;text-wrap:balance;margin:0;color:var(--berry)}
+p{margin:0}
+a{color:inherit}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--butter);outline-offset:2px;border-radius:8px}
+.wrap{max-width:1240px;margin-inline:auto;padding-inline:var(--gutter)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.num{font-variant-numeric:tabular-nums}
+
+/* prototype ribbon */
+.proto{background:var(--berry);color:#FFE2EF;font-size:13px;line-height:1.3;text-align:center;padding:5px var(--gutter);height:var(--proto);display:grid;place-items:center;white-space:nowrap;overflow:hidden}
+.proto b{color:#fff}
+.proto .short{display:none}
+@media (max-width:759px){ .proto .long{display:none} .proto .short{display:inline} }
+
+/* header */
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hdr-in{height:var(--hdr);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding-inline:var(--gutter)}
+.hdr-start{justify-self:start;display:flex;align-items:center;gap:12px}
+.hdr-in .nav{justify-self:center;margin:0}
+.hdr-in .hdr-actions{justify-self:end;margin:0}
+@media (max-width:899px){ .hdr-in{grid-template-columns:auto 1fr} .hdr-in .nav{display:none} }
+.icon-btn{width:42px;height:42px;border-radius:50%;border:0;background:var(--blush);color:var(--pink-ink);display:grid;place-items:center;flex-shrink:0}
+.icon-btn svg{width:21px;height:21px}
+.icon-btn:hover{background:var(--line)}
+.social{display:flex;gap:6px;align-items:center}
+.social a{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--pink-ink);background:var(--blush)}
+.social a:hover{background:var(--pink-btn);color:#fff}
+.social svg{width:19px;height:19px}
+.social-hdr{padding-inline-start:10px;margin-inline-start:2px;border-inline-start:2px solid var(--line)}
+@media (max-width:520px){ .social-hdr{gap:4px;padding-inline-start:6px} .social-hdr a{width:30px;height:30px} .social-hdr svg{width:16px;height:16px} .hdr-start{gap:6px} .hdr-start .icon-btn{width:36px;height:36px} .brand small{display:none} }
+.ftr .social a{background:rgba(255,255,255,.12);color:#fff}
+.ftr .social a:hover{background:var(--pink)}
+@media (max-width:420px){ .hdr-actions{gap:6px} .hdr-in{gap:8px} }
+/* search */
+.search-scrim{align-items:flex-start;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 12px}
+@media (min-width:760px){ .search-scrim{align-items:flex-start;padding-top:calc(var(--hdr) + 16px)} }
+.search-panel{background:#fff;width:100%;max-width:640px;border-radius:24px;overflow:hidden;box-shadow:0 24px 60px -20px rgba(74,23,51,.6);animation:up .2s ease;display:flex;flex-direction:column;max-height:80vh}
+.search-field{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:2px solid var(--line)}
+.search-field svg{width:22px;height:22px;color:var(--pink-ink);flex-shrink:0}
+.search-field input{flex:1;min-width:0;border:0;font:inherit;font-size:19px;padding:8px 2px;background:transparent;color:var(--ink)}
+.search-field input:focus{outline:none}
+.search-field .x{position:static;box-shadow:none;background:var(--blush);width:36px;height:36px;font-size:18px}
+.results{overflow:auto;padding:8px;display:grid;gap:4px}
+.result{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;border:0;background:none;text-align:start;padding:8px;border-radius:14px;width:100%}
+.result:hover,.result:focus-visible{background:var(--blush)}
+.result img{width:56px;height:56px;border-radius:12px;object-fit:cover}
+.result b{display:block;color:var(--berry);line-height:1.25}
+.result small{color:var(--muted)}
+.result .price{font-size:1.05rem}
+.results .hint{padding:18px 12px;text-align:center}
+.quick{display:flex;flex-wrap:wrap;gap:8px;padding:6px 6px 10px}
+.quick button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-weight:700;color:var(--pink-ink)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.brand img{height:40px;width:auto}
+@media (min-width:900px){ .brand img{height:48px} }
+.brand small{font-family:var(--f-display);font-weight:500;color:var(--pink-ink);font-size:13px;line-height:1.1;border-inline-start:2px solid var(--line);padding-inline-start:10px}
+.nav{display:none;gap:4px;margin-inline-start:auto}
+.nav a{text-decoration:none;font-weight:600;padding:8px 14px;border-radius:999px;color:var(--ink)}
+.nav a:hover,.nav a[aria-current="page"]{background:var(--blush);color:var(--pink-ink)}
+@media (min-width:900px){ .nav{display:flex} }
+.hdr-actions{display:flex;align-items:center;gap:8px;margin-inline-start:auto}
+@media (min-width:900px){ .hdr-actions{margin-inline-start:12px} }
+.cart-btn{position:relative;display:inline-flex;align-items:center;gap:6px;border:0;background:var(--pink-btn);color:#fff;border-radius:999px;height:38px;padding:0 12px 0 10px;font-weight:700;font-size:15px;white-space:nowrap}
+.cart-btn svg{width:18px;height:18px}
+.cart-btn .lbl{display:none}
+@media (min-width:600px){ .cart-btn .lbl{display:inline} }
+.cart-count{min-width:20px;height:20px;border-radius:999px;background:#fff;color:var(--pink-ink);font-size:12px;font-weight:800;display:inline-grid;place-items:center;padding-inline:6px}
+@media (max-width:420px){ .cart-btn{height:34px;padding:0 9px} }
+
+/* hero */
+.hero{background:var(--pink);color:#fff;position:relative;overflow:hidden}
+.pattern-white::before{content:"";position:absolute;inset:0;background:#fff;opacity:.14;-webkit-mask:url(img/pattern.png) repeat;mask:url(img/pattern.png) repeat;-webkit-mask-size:373px;mask-size:373px;pointer-events:none}
+/* first screen: hero fills exactly the viewport below ribbon + header, never more */
+.hero .wrap{position:relative;display:grid;gap:clamp(12px,2.4vh,24px);padding-block:clamp(14px,2.6vh,28px);align-content:center;align-items:center;min-height:calc(100svh - var(--hdr) - var(--proto) - env(safe-area-inset-top,0px))}
+@media (min-width:960px){ .hero .wrap{grid-template-columns:1.05fr 1fr;gap:40px;padding-block:clamp(16px,3vh,40px)} }
+.hero-logo{height:clamp(56px,17vh,200px);aspect-ratio:900/710;max-width:72%;background:#fff;-webkit-mask:url(img/logo-catering.png) no-repeat center/contain;mask:url(img/logo-catering.png) no-repeat center/contain;margin-bottom:clamp(6px,1.6vh,18px)}
+@media (max-width:959px){ .hero-logo{height:clamp(48px,9vh,80px)} }
+.eyebrow{display:inline-flex;flex-wrap:wrap;gap:6px 10px;font-weight:700;font-size:14px;letter-spacing:.02em;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:5px 14px;margin-bottom:clamp(8px,1.8vh,18px)}
+@media (max-width:420px){ .eyebrow{font-size:12.5px;padding:4px 12px} }
+.hero h1{color:#fff;font-size:clamp(1.9rem,min(6.4vw,6.6vh),3.9rem);font-weight:700;margin-bottom:clamp(6px,1.4vh,16px)}
+.hero h1 em{font-style:normal;color:var(--berry);background:var(--butter);border-radius:14px;padding:0 .18em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.hero-sub{font-size:clamp(1rem,2.1vh,1.2rem);font-weight:600;max-width:36ch;margin-bottom:clamp(12px,2.4vh,28px)}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;font-weight:800;text-decoration:none;padding:14px 26px;font-size:17px;transition:transform .15s ease, box-shadow .15s ease}
+.btn:hover{transform:translateY(-2px)}
+.btn-white{background:#fff;color:var(--pink-ink);box-shadow:0 8px 0 -2px var(--berry)}
+.btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.75)}
+.btn-pink{background:var(--pink-btn);color:#fff;box-shadow:0 6px 0 -1px var(--berry)}
+.btn-pink:disabled{background:#D9A9BF;box-shadow:none;cursor:not-allowed;transform:none}
+.collage{position:relative;width:min(100%,560px,calc((100svh - var(--hdr) - var(--proto) - 80px) * 1.16));aspect-ratio:1/0.86;margin-inline:auto}
+.ph{position:absolute;border:7px solid #fff;border-radius:22px;overflow:hidden;box-shadow:0 22px 40px -18px rgba(74,23,51,.6);background:var(--blush)}
+.ph img{width:100%;height:100%;object-fit:cover}
+.ph-a{inset-inline-start:0;top:4%;width:62%;aspect-ratio:4/3.1;transform:rotate(-5deg)}
+.ph-b{inset-inline-end:0;top:0;width:46%;aspect-ratio:1;transform:rotate(6deg)}
+.ph-c{inset-inline-end:10%;bottom:0;width:54%;aspect-ratio:4/3;transform:rotate(-2deg)}
+.sticker{position:absolute;inset-inline-start:6%;bottom:6%;background:var(--butter);color:var(--berry);font-family:var(--f-display);font-weight:700;border-radius:999px;padding:10px 18px;transform:rotate(-8deg);box-shadow:0 6px 0 -1px var(--berry);display:flex;align-items:center;gap:8px;font-size:15px}
+.sticker img{height:20px;width:auto}
+/* phone: collage becomes a short strip of three tilted photos under the text */
+@media (max-width:959px){
+  .collage{width:min(100%,420px);aspect-ratio:3/1.08}
+  .ph{border-width:4px;border-radius:16px}
+  .ph-a,.ph-b,.ph-c{width:37%;aspect-ratio:1;inset-inline-end:auto;bottom:auto}
+  .ph-a{inset-inline-start:0;top:10%;transform:rotate(-6deg)}
+  .ph-b{inset-inline-start:31.5%;top:0;transform:rotate(4deg);z-index:1}
+  .ph-c{inset-inline-start:63%;top:12%;transform:rotate(-3deg)}
+  .sticker{display:none}
+}
+
+/* section shell */
+.sec{padding-block:64px}
+@media (min-width:900px){ .sec{padding-block:88px} }
+.sec-head{text-align:center;margin-bottom:36px;display:grid;justify-items:center;gap:10px}
+.sec-head h2{font-size:clamp(1.9rem,4vw,2.7rem)}
+.sec-head p{color:var(--muted);max-width:52ch}
+.crown-mark{width:34px;height:auto}
+
+/* steps */
+.steps{display:grid;gap:18px;counter-reset:s}
+@media (min-width:800px){ .steps{grid-template-columns:repeat(3,1fr);gap:26px} }
+.step{background:var(--card);border-radius:var(--r-lg);padding:26px 24px;border:2px solid var(--line);display:grid;grid-template-columns:auto 1fr;gap:6px 16px;align-items:start}
+.step-n{grid-row:span 2;width:56px;height:56px;border-radius:50%;background:var(--pink);color:#fff;font-family:var(--f-display);font-weight:700;font-size:28px;display:grid;place-items:center;box-shadow:0 5px 0 -1px var(--berry)}
+.step h3{font-size:1.35rem;padding-top:4px}
+.step p{color:var(--muted)}
+
+/* categories */
+.cats{display:flex;flex-wrap:wrap;justify-content:center;gap:22px 18px}
+.cat-tile{display:grid;justify-items:center;gap:10px;text-decoration:none;width:136px;border:0;background:none;padding:0}
+.cat-tile .ring{width:120px;height:120px;border-radius:50%;padding:5px;background:conic-gradient(var(--pink),var(--butter),var(--pink));transition:transform .2s ease}
+.cat-tile img{width:100%;height:100%;object-fit:cover;border-radius:50%;border:4px solid #fff}
+.cat-tile:hover .ring{transform:rotate(-6deg) scale(1.04)}
+.cat-tile b{font-family:var(--f-display);font-weight:600;font-size:1.12rem;color:var(--berry)}
+.cat-tile span{font-size:14px;color:var(--muted);margin-top:-8px}
+
+/* pink band */
+.band{background:var(--pink);color:#fff;position:relative;overflow:hidden}
+.band .sec-head h2,.band .sec-head p{color:#fff}
+
+/* product cards */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (min-width:760px){ .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px} }
+@media (min-width:1120px){ .grid{grid-template-columns:repeat(4,minmax(0,1fr))} }
+.card{background:var(--card);border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);min-width:0;color:var(--ink)}
+.card-media{position:relative;border:0;padding:0;background:var(--blush);aspect-ratio:4/3;overflow:hidden;display:block;width:100%}
+.card-media img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.card:hover .card-media img{transform:scale(1.05)}
+.badge{position:absolute;top:10px;inset-inline-start:10px;background:var(--butter);color:var(--berry);font-weight:800;font-size:12.5px;border-radius:999px;padding:3px 10px;display:inline-flex;gap:5px;align-items:center}
+.badge img{height:13px;width:auto}
+.card-body{padding:14px 14px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+@media (min-width:760px){ .card-body{padding:16px 18px 18px} }
+.card-title{font-size:1.06rem;font-weight:600;line-height:1.25}
+@media (min-width:760px){ .card-title{font-size:1.18rem} }
+.card-desc{font-size:14.5px;color:var(--muted);line-height:1.4}
+.unit{align-self:flex-start;font-size:13px;font-weight:700;color:var(--pink-ink);background:var(--blush);border-radius:999px;padding:2px 10px}
+.card-foot{margin-top:auto;padding-top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.price{font-family:var(--f-display);font-weight:700;font-size:1.3rem;color:var(--pink-ink);white-space:nowrap}
+.price small{font-size:.7em;font-weight:600}
+.add{border:0;background:var(--pink-btn);color:#fff;font-weight:800;border-radius:999px;padding:8px 14px;font-size:15px;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 0 -1px var(--berry)}
+.add:hover{filter:brightness(1.07)}
+.add.alt{background:#fff;color:var(--pink-ink);border:2px solid var(--pink-btn);box-shadow:none;padding:6px 12px}
+.in-cart{font-size:12.5px;font-weight:800;color:var(--berry);background:var(--butter);border-radius:999px;padding:2px 9px}
+.stepper{display:inline-flex;align-items:center;background:var(--blush);border-radius:999px;padding:3px}
+.stepper button{width:32px;height:32px;border-radius:50%;border:0;background:#fff;color:var(--pink-ink);font-size:20px;font-weight:700;line-height:1;display:grid;place-items:center}
+.stepper output{min-width:30px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* kashrut */
+.kosher{display:grid;gap:30px;align-items:center}
+@media (min-width:900px){ .kosher{grid-template-columns:1fr 1.25fr} }
+.kosher h2{font-size:clamp(1.9rem,4vw,2.6rem);margin-bottom:12px}
+.kosher p{color:var(--muted);max-width:44ch}
+.seals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.seal{background:#fff;border-radius:var(--r-md);padding:14px;border:2px solid var(--line);display:grid;place-items:center}
+.seal img{max-height:150px;width:auto}
+
+/* delivery / contact */
+.info{display:grid;gap:18px}
+@media (min-width:860px){ .info{grid-template-columns:1.3fr 1fr} }
+.info-card{border-radius:var(--r-lg);padding:30px 26px;position:relative;overflow:hidden}
+.info-card.pink{background:var(--pink);color:#fff}
+.info-card.pink h3{color:#fff}
+.info-card.white{background:#fff;border:2px solid var(--line)}
+.info-card h3{font-size:1.7rem;margin-bottom:10px}
+.info-card .big{font-family:var(--f-display);font-size:clamp(1.8rem,5vw,2.4rem);font-weight:700;color:var(--pink-ink);letter-spacing:.02em;direction:ltr;unicode-bidi:isolate;display:inline-block}
+.info-list{display:grid;gap:10px;margin-top:16px;padding:0;list-style:none}
+.info-list li{display:flex;gap:10px;align-items:center;font-weight:600}
+.info-list img{height:18px;width:auto;filter:brightness(0) invert(1)}
+.copy{border:2px solid var(--line);background:var(--cream);border-radius:999px;padding:6px 14px;font-weight:700;color:var(--pink-ink);margin-inline-start:10px;font-size:14px}
+
+/* footer */
+.ftr{background:var(--berry);color:#F8D7E7;position:relative;overflow:hidden;margin-top:0}
+.ftr .wrap{padding-block:44px 30px;display:grid;gap:24px}
+@media (min-width:860px){ .ftr .wrap{grid-template-columns:1.2fr 1fr 1fr;align-items:start} }
+.ftr-logo{width:150px;aspect-ratio:900/540;background:#fff;-webkit-mask:url(img/logo.png) no-repeat center/contain;mask:url(img/logo.png) no-repeat center/contain}
+.ftr h4{margin:0 0 8px;font-family:var(--f-display);font-weight:600;color:#fff;font-size:1.1rem}
+.ftr ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ftr a{text-decoration:none}
+.ftr a:hover{text-decoration:underline}
+.ftr .fine{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.15);padding-top:16px;font-size:13.5px;opacity:.85}
+
+/* menu page */
+.menu-hero{background:var(--pink);color:#fff;position:relative;overflow:hidden}
+.menu-hero .wrap{position:relative;padding-block:34px 30px;display:grid;gap:8px}
+.menu-hero h1{color:#fff;font-size:clamp(2.1rem,6vw,3.2rem);font-weight:700}
+.menu-hero p{font-weight:600;font-size:1.08rem}
+.chips-bar{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--hdr));z-index:30;background:var(--berry)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;border:0;border-radius:999px;padding:8px 16px;background:rgba(255,255,255,.12);color:#fff;font-weight:700;font-size:15px;white-space:nowrap}
+.chip[aria-current="true"]{background:var(--pink);box-shadow:0 0 0 2px #fff inset}
+.menu-sec{padding-block:38px 8px;scroll-margin-top:calc(var(--hdr) + 70px)}
+.menu-sec-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:20px}
+.menu-sec-head h2{font-size:clamp(1.7rem,4vw,2.3rem);display:flex;align-items:center;gap:10px}
+.menu-sec-head h2 img{height:28px;width:auto}
+.menu-sec-head .note{background:var(--butter);color:var(--berry);font-weight:800;border-radius:999px;padding:4px 14px;font-size:14.5px}
+.menu-end{padding-block:40px 120px;text-align:center;color:var(--muted)}
+
+/* mobile cart bar */
+.cartbar{position:fixed;inset-inline:0;bottom:0;z-index:45;padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--cream) 70%,rgba(255,246,250,0))}
+.cartbar button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;border:0;background:var(--pink-btn);color:#fff;border-radius:999px;padding:14px 22px;font-weight:800;font-size:17px;box-shadow:0 6px 0 -1px var(--berry)}
+.cartbar .qty{background:#fff;color:var(--pink-ink);border-radius:999px;padding:1px 10px;font-size:14px}
+@media (min-width:900px){ .cartbar{inset-inline:auto;inset-inline-end:24px;bottom:24px;background:none;padding:0;width:360px} }
+
+/* floating whatsapp */
+.wa-float{position:fixed;inset-inline-end:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:44;width:54px;height:54px;border-radius:50%;background:var(--wa);display:grid;place-items:center;box-shadow:0 8px 20px -6px rgba(0,0,0,.35)}
+.wa-float svg{width:28px;height:28px;fill:#fff}
+body.has-cart .wa-float{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+@media (min-width:900px){ body.has-cart .wa-float{bottom:96px} }
+
+/* overlays */
+.scrim{position:fixed;inset:0;background:rgba(74,23,51,.5);z-index:60;display:flex;align-items:flex-end;justify-content:center}
+@media (min-width:760px){ .scrim{align-items:center;padding:24px} }
+.sheet{background:#fff;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:28px 28px 0 0;padding-bottom:env(safe-area-inset-bottom,0px);animation:up .25s ease}
+@media (min-width:760px){ .sheet{border-radius:28px} }
+@keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}
+.sheet-media{position:relative;aspect-ratio:16/9;background:var(--blush)}
+.sheet-media img{width:100%;height:100%;object-fit:cover}
+.x{position:absolute;top:12px;inset-inline-end:12px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;color:var(--berry);font-size:22px;display:grid;place-items:center;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.sheet-body{padding:20px 22px 22px;display:grid;gap:14px}
+.sheet-body h3{font-size:1.6rem}
+.sheet-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+fieldset{border:0;margin:0;padding:0;display:grid;gap:10px}
+legend{font-family:var(--f-display);font-weight:600;font-size:1.15rem;color:var(--berry);padding:0;margin-bottom:4px;display:flex;justify-content:space-between;width:100%}
+legend span{font-family:var(--f-body);font-size:14px;color:var(--pink-ink);font-weight:800}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opt label{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);border-radius:999px;padding:8px 14px;font-weight:700;font-size:15px;background:#fff;cursor:pointer}
+.opt input:checked+label{background:var(--pink-btn);border-color:var(--pink-btn);color:#fff}
+.opt input:disabled+label{opacity:.4;cursor:not-allowed}
+.opt input:focus-visible+label{outline:3px solid var(--butter);outline-offset:2px}
+.opt .extra{font-size:12.5px;background:var(--butter);color:var(--berry);border-radius:999px;padding:1px 8px}
+.hint{font-size:14px;color:var(--muted)}
+.sheet-foot{display:flex;align-items:center;gap:12px;position:sticky;bottom:0;background:#fff;padding:14px 22px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line)}
+.sheet-foot .btn{flex:1}
+
+.drawer-scrim{justify-content:flex-start;align-items:stretch;padding:0}
+@media (min-width:760px){ .drawer-scrim{padding:0} }
+.drawer{background:var(--cream);width:min(440px,100%);height:100%;display:flex;flex-direction:column;animation:slide .25s ease}
+@keyframes slide{from{transform:translateX(30px);opacity:.5}to{transform:none;opacity:1}}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:calc(16px + env(safe-area-inset-top,0px)) 20px 14px;background:var(--pink);color:#fff}
+.drawer-head h3{color:#fff;font-size:1.5rem}
+.drawer-head .x{position:static;box-shadow:none}
+.lines{flex:1;overflow:auto;padding:14px 16px;display:grid;gap:12px;align-content:start}
+.line{background:#fff;border-radius:var(--r-md);padding:10px;display:grid;grid-template-columns:72px 1fr;gap:12px;box-shadow:var(--shadow)}
+.line img{width:72px;height:72px;object-fit:cover;border-radius:12px}
+.line-main{min-width:0;display:grid;gap:4px}
+.line-title{font-weight:800;line-height:1.25}
+.line-picks{font-size:14px;color:var(--muted)}
+.line-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.line .price{font-size:1.1rem}
+.rm{border:0;background:none;color:var(--muted);font-size:13.5px;text-decoration:underline;padding:0}
+.empty{text-align:center;padding:40px 16px;display:grid;gap:12px;justify-items:center;color:var(--muted)}
+.empty img{width:60px;opacity:.6}
+.drawer-foot{padding:16px 20px calc(18px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid var(--line);display:grid;gap:12px}
+.total-row{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;font-size:1.1rem}
+.total-row .price{font-size:1.6rem}
+.fine-print{font-size:13.5px;color:var(--muted)}
+
+/* checkout */
+.co{display:grid;gap:24px;padding-block:34px 120px}
+@media (min-width:960px){ .co{grid-template-columns:1.2fr 1fr;align-items:start} }
+.panel{background:#fff;border-radius:var(--r-lg);padding:24px 22px;box-shadow:var(--shadow)}
+.panel h2{font-size:1.7rem;margin-bottom:6px}
+.panel .lead{color:var(--muted);margin-bottom:18px}
+.form{display:grid;gap:16px}
+.row2{display:grid;gap:16px}
+@media (min-width:560px){ .row2{grid-template-columns:1fr 1fr} }
+.field{display:grid;gap:6px}
+.field label{font-weight:800;color:var(--berry)}
+.field input{font:inherit;font-size:17px;border:2px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--cream);color:var(--ink);width:100%;min-width:0}
+.field input:focus{outline:none;border-color:var(--pink-btn);background:#fff}
+.field input[aria-invalid="true"]{border-color:#C0392B;background:#FFF1F0}
+.err{color:#B03224;font-size:14px;font-weight:700;min-height:0}
+.ltr{direction:ltr;text-align:right}
+.summary{display:grid;gap:10px}
+.sum-line{display:flex;justify-content:space-between;gap:12px;font-size:15.5px;border-bottom:1px dashed var(--line);padding-bottom:8px}
+.sum-line span:first-child{min-width:0}
+.sum-line small{display:block;color:var(--muted)}
+.sticky-panel{position:sticky;top:calc(var(--hdr) + 20px)}
+.notice{display:flex;gap:10px;align-items:flex-start;background:var(--blush);border-radius:14px;padding:12px 14px;font-size:15px;color:var(--berry)}
+.notice img{height:22px;width:auto;flex-shrink:0;margin-top:2px}
+
+/* done */
+.done-hero{text-align:center;padding-block:46px 36px;display:grid;justify-items:center;gap:12px}
+.done-hero .badge-big{width:96px;height:96px;border-radius:50%;background:var(--pink);display:grid;place-items:center;box-shadow:0 7px 0 -1px var(--berry)}
+.done-hero .badge-big img{width:52px;filter:brightness(0) invert(1)}
+.done-hero h1{font-size:clamp(2rem,6vw,3rem)}
+.done-hero p{color:var(--muted);max-width:46ch}
+.phones{display:grid;gap:22px;padding-bottom:120px}
+@media (min-width:900px){ .phones{grid-template-columns:1fr 1fr} }
+.phone{background:var(--wa-ground);border-radius:26px;overflow:hidden;border:8px solid var(--berry);min-width:0}
+.phone-top{background:#075E54;color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px}
+.phone-top .av{width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;flex-shrink:0}
+.phone-top .av img{width:28px}
+.phone-top b{display:block;line-height:1.2}
+.phone-top small{opacity:.8;font-size:12.5px;direction:ltr;unicode-bidi:isolate;display:inline-block}
+.chat{padding:18px 14px 22px;display:grid;gap:8px}
+.bubble{background:var(--wa-bubble);border-radius:14px 14px 4px 14px;padding:10px 12px 18px;max-width:92%;justify-self:start;white-space:pre-wrap;font-size:15px;line-height:1.5;position:relative;box-shadow:0 1px 1px rgba(0,0,0,.12);overflow-wrap:anywhere}
+.bubble.in{background:#fff;border-radius:14px 14px 14px 4px}
+.bubble time{position:absolute;bottom:4px;inset-inline-end:10px;font-size:11px;color:#667}
+.phone-cap{font-weight:800;color:var(--berry);margin-bottom:8px;display:flex;gap:8px;align-items:center}
+.phone-cap .tag{font-size:12.5px;background:var(--butter);border-radius:999px;padding:2px 10px}
+
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--berry);color:#fff;font-weight:700;border-radius:999px;padding:10px 18px;z-index:80;display:flex;gap:8px;align-items:center;box-shadow:0 10px 24px -8px rgba(0,0,0,.4);animation:up .2s ease;max-width:calc(100% - 32px)}
+.toast img{height:18px;filter:brightness(0) invert(1)}
+</style>
+
+<div id="app" dir="rtl" lang="he">
+  <div class="proto"><span class="long"><b>אב-טיפוס עיצובי</b> · התמונות זמניות (Pexels) עד שיצולמו המנות של טוטו · ההזמנה לא נשלחת באמת</span><span class="short"><b>אב-טיפוס</b> · תמונות זמניות · ההזמנה לא נשלחת באמת</span></div>
+
+  <header class="hdr">
+    <div class="hdr-in">
+      <div class="hdr-start">
+        <a class="brand" href="#home" aria-label="טוטו קייטרינג, לדף הבית">
+          <img src="img/logo.png" alt="TOTO">
+          <small>קייטרינג<br>חלבי</small>
+        </a>
+        <button class="icon-btn" id="searchBtn" type="button" aria-label="חיפוש מנה">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        </button>
+      </div>
+      <nav class="nav" aria-label="ניווט ראשי">
+        <a href="#home" data-nav="home">בית</a>
+        <a href="#menu" data-nav="menu">התפריט</a>
+        <a href="#home" data-jump="how">איך מזמינים</a>
+        <a href="#home" data-jump="kosher">כשרות</a>
+        <a href="#home" data-jump="contact">צור קשר</a>
+      </nav>
+      <div class="hdr-actions">
+        <button class="cart-btn" id="cartBtn" type="button" aria-label="פתיחת הסל">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+          <span class="lbl">הסל שלי</span>
+          <span class="cart-count num" id="cartCount">0</span>
+        </button>
+        <div class="social social-hdr" aria-label="טוטו ברשתות">
+          <a href="#" data-social="אינסטגרם" aria-label="טוטו באינסטגרם"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" data-social="פייסבוק" aria-label="טוטו בפייסבוק"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4a21 21 0 0 0-2.4-.1c-2.4 0-4 1.4-4 4.1v2.1H7.6v3h2.6V21h3.3Z"/></svg></a>
+          <a href="#" data-social="טיקטוק" aria-label="טוטו בטיקטוק"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.3 2.2 1.7 3.7 3.9 3.9v3.1a7.4 7.4 0 0 1-3.9-1.2v6.3A6 6 0 1 1 10.6 9v3.2a2.8 2.8 0 1 0 2.8 2.9V3h3.2Z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="view"></main>
+
+  <footer class="ftr pattern-white">
+    <div class="wrap">
+      <div>
+        <div class="ftr-logo" role="img" aria-label="TOTO"></div>
+        <p style="margin-top:10px">קייטרינג חלבי לאירועים · כשר למהדרין</p>
+        <div class="social" id="ftrSocial" style="margin-top:14px" aria-label="טוטו ברשתות"></div>
+      </div>
+      <div>
+        <h4>התפריט</h4>
+        <ul id="ftrCats"></ul>
+      </div>
+      <div>
+        <h4>יצירת קשר</h4>
+        <ul>
+          <li>דרך הארבעה 27, עכו</li>
+          <li><span class="num" dir="ltr">058-7160723</span></li>
+          <li>מגיעים לכל אזור הצפון</li>
+        </ul>
+      </div>
+      <p class="fine">© טוטו קייטרינג 2026 · תמונות זמניות באב-הטיפוס: Pexels</p>
+    </div>
+  </footer>
+
+  <a class="wa-float" href="https://wa.me/972587160723" target="_blank" rel="noopener" aria-label="שליחת הודעה לטוטו בווצאפ">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.6-.3Z"/></svg>
+  </a>
+
+  <div class="cartbar" id="cartbar" hidden>
+    <button type="button" id="cartbarBtn">
+      <span>לסיום ההזמנה <span class="qty num" id="cbQty">0</span></span>
+      <span class="num" id="cbTotal">0 ₪</span>
+    </button>
+  </div>
+
+  <div class="scrim" id="sheetScrim" hidden></div>
+  <div class="scrim drawer-scrim" id="drawerScrim" hidden></div>
+  <div class="scrim search-scrim" id="searchScrim" hidden></div>
+  <div id="toastHost"></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const PHONE_DISPLAY = "058-7160723";
+
+/* ---------- menu data (from TOTO 2026 dairy menu) ---------- */
+const OPT = {
+  sandwich:{legend:"בחרו מילויים", max:2, min:1, choices:[{n:"חביתה"},{n:"סלט ביצים"},{n:"סלט טונה"},{n:"פטה וסלק"},{n:"בולגרית מלוחה וירקות טריים"},{n:"סלמון מעושן",extra:45}]},
+  tortilla:{legend:"בחרו מילויים", max:2, min:1, choices:[{n:"חביתה"},{n:"סלט ביצים"},{n:"סלט טונה"},{n:"בולגרית מלוחה וירקות טריים"}]},
+  focaccia:{legend:"בחרו טעמים", max:2, min:1, choices:[{n:"פסטו וגבינות"},{n:"פסטו וחציל"},{n:"זעתר"},{n:"פלפלים קלויים"},{n:"פלפלים קלויים, גבינות ושום"}]},
+  quiche:{legend:"בחרו טעמים", max:2, min:1, choices:[{n:"פטריות"},{n:"פלפלים"},{n:"בצל"},{n:"בטטה"},{n:"גבינות בלבד"},{n:"חצילים"}]},
+  borekas:{legend:"בחרו טעמים", max:2, min:1, choices:[{n:"גבינות ופסטו"},{n:"גבינות ורוטב פיצה"}]},
+  shakshuka:{legend:"בחרו סגנון", max:1, min:1, choices:[{n:"קלאסית"},{n:"פיקנטית"}]}
+};
+const CATS = [
+  {id:"starters", name:"מנות פתיחה", note:"לפי 10 סועדים", img:"beet"},
+  {id:"finger", name:"Finger food", note:"מגשים של 20 יחידות", img:"cups"},
+  {id:"hot", name:"מנות חמות", note:"לפי 10 סועדים", img:"salmon"},
+  {id:"pasta", name:"פסטות", note:"מגש פסטה", img:"penne"},
+  {id:"salads", name:"סלטים עשירים", note:"קערה 2.5 ליטר · 8–10 סועדים · 145 ₪", img:"greek"},
+  {id:"pastry", name:"מאפים מלוחים", note:"מגשים מוכנים להגשה", img:"croissant"},
+  {id:"desserts", name:"קינוחים", note:"מתוקים לסיום", img:"lemontart"}
+];
+const ITEMS = [];
+function add(cat, id, name, price, img, x){ ITEMS.push(Object.assign({cat, id, name, price, img, unit:"", desc:"", opt:null, badge:null}, x||{})); }
+add("starters","s1","קרפצ'ו חציל, טחינה וירקות",145,"eggtahini");
+add("starters","s2","קרפצ'ו סלק",145,"beet",{badge:"מומלץ"});
+add("starters","s3","פלטת מוחמצים מגוונת",150,"pickles");
+add("starters","s4","אנטי פסטי",140,"antipasti");
+add("starters","s5","מגש ירקות",135,"vegplatter");
+add("finger","f1","כוסות חציל, טחינה וירקות",220,"cups",{unit:"20 יח'"});
+add("finger","f2","כוסות סלט טאבולה",220,"cups",{unit:"20 יח'"});
+add("finger","f3","כוסות סלט יווני",220,"greek",{unit:"20 יח'"});
+add("finger","f4","חצילים מגולגלים במילוי גבינה וירקות צלויים",180,"eggrolls",{unit:"20 יח'"});
+add("finger","f5","פחזניות שמנת מלוחה וסלמון מעושן",250,"canape",{unit:"20 יח'",badge:"מומלץ"});
+add("hot","h1","לזניה גבינות ברוטב רוזה",250,"lasagna");
+add("hot","h2","נתח סלמון לצד ירקות שורש בתנור",350,"salmon",{badge:"מומלץ"});
+add("hot","h3","מוקפץ פטריות",220,"mushstir");
+add("hot","h4","מוקפץ סלמון",320,"salmon");
+add("hot","h5","מוקפץ ירקות",220,"antipasti");
+add("hot","h6","שקשוקה",200,"shak",{opt:"shakshuka",desc:"קלאסית או פיקנטית"});
+add("hot","h7","טנז'יה קוסקוס עם פירות יבשים",260,"couscous",{desc:"קוסקוס מתוק בתוספת פירות יבשים"});
+add("hot","h8","קוסקוס עם מרק ירקות עשיר",260,"couscous");
+add("hot","h9","חציל במילוי גבינות מוקרם",220,"eggrolls");
+add("pasta","p1","פנה פטריות ברוטב שמנת עשיר",150,"penne");
+add("pasta","p2","פנה פסטו ברוטב שמנת עשיר",150,"pesto");
+add("pasta","p3","פנה רוזה ברוטב שמנת עשיר",150,"spaghetti");
+add("pasta","p4","פנה ערמונים ברוטב שמנת עשיר",150,"penne");
+add("pasta","p5","ספגטי עגבניות שילדים אוהבים",150,"spaghetti",{badge:"לילדים"});
+add("pasta","p6","רביולי בטטה",170,"ravioli");
+add("pasta","p7","רביולי גבינה",170,"ravioli");
+[
+ ["סלט ירוק, קשיו וחמוציות","cups"],["סלט שרי, בייבי מוצרלה וחומץ בלסמי","greek"],["סלט טאבולה, עשבי תיבול וחמוציות","cups"],
+ ["סלט כרוב לבן אסייאתי, גרעינים וחמוציות","caesar"],["סלט יווני, זיתים וזעתר","greek"],["סלט פטה ובטטה צלויה","greek"],
+ ["סלט פטה וציפס בטטה","caesar"],["סלט ניסואז: טונה, ביצה קשה, תפו״א ומלפפון חמוץ","antipasti"],["סלט פסטה קרה, פסטו וירקות צלויים","pesto"],
+ ["סלט גזר חמוץ ופקאן סיני","antipasti"],["סלט חמוצים טריפוליטאי","pickles"],["סלט מיקס ירקות שורש חתוך גס","vegplatter"],
+ ["סלט עדשים ברוטב טחינה","eggtahini"],["סלט קינואה, בטטה ומבחר ירקות","antipasti"],["סלט קיסר, פרמזן וקרוטונים","caesar"],
+ ["סלט ירוק עשיר, קשיו וחמוציות (כל סוגי הירוקים)","cups"]
+].forEach(([n,img],i)=>add("salads","sl"+(i+1),n,145,img,{unit:"2.5 ליטר"}));
+add("pastry","b1","קרואסונים ממולאים",180,"croissant",{unit:"12 יח'",opt:"sandwich",badge:"מומלץ"});
+add("pastry","b2","כריכי בייגל פיצוחים",220,"bagel",{unit:"20 יח'",opt:"sandwich"});
+add("pastry","b3","כריכים ורודים (סלק)",250,"bagel",{unit:"15 יח'",opt:"sandwich"});
+add("pastry","b4","כריכים שחורים (חציל)",250,"bagel",{unit:"15 יח'",opt:"sandwich"});
+add("pastry","b5","פריקסה",300,"pita",{unit:"20 יח'",desc:"תפו״א, טונה, ביצה קשה, מלפפון חמוץ, אריסה וזיתים"});
+add("pastry","b6","פוקצ'ות",140,"focaccia",{unit:"20 יח'",opt:"focaccia"});
+add("pastry","b7","טורטיות",165,"tortilla",{unit:"20 חצאים",opt:"tortilla"});
+add("pastry","b8","בורקס שבלולים",220,"pinwheel",{unit:"25 יח'",opt:"borekas"});
+add("pastry","b9","פיציות",145,"minipizza",{unit:"20 יח'"});
+add("pastry","b10","קיש בייס",180,"quiche",{unit:"24 יח'",opt:"quiche"});
+add("pastry","b11","פיתות מיני סביח",180,"pita",{unit:"16 יח'",desc:"חומוס, ביצה קשה, חציל וירקות"});
+add("pastry","b12","פרנות עבודת יד",120,"focaccia",{unit:"2 יח' גדולות"});
+add("desserts","d1","מגש בחושות",140,"brownie",{desc:"מגיע פרוס"});
+add("desserts","d2","מגש קראנץ' שחיתות",140,"cakeslice",{desc:"מגיע פרוס"});
+add("desserts","d3","מיקס עוגיות פרווה",230,"cookies");
+add("desserts","d4","מיקס עוגיות חלבי",230,"cookies");
+add("desserts","d5","טארט לימון ומרנג איטלקי",220,"lemontart",{unit:"24 יח'",badge:"מומלץ"});
+add("desserts","d6","טארט פיצוחים מקורמל",220,"chocotart",{unit:"24 יח'"});
+add("desserts","d7","טארט סופלה שוקולד",220,"chocotart",{unit:"24 יח'"});
+add("desserts","d8","פבלובות קרם וניל ופירות יער",220,"berrycake",{unit:"20 יח'"});
+add("desserts","d9","בלינצ'ס מתוק במילוי גבינות",140,"crepe",{unit:"16 חצאים"});
+add("desserts","d10","כדורי שוקולד שילדים אוהבים",200,"choball",{unit:"35 יח'",desc:"מקופלת"});
+add("desserts","d11","קינוחי כוסות",220,"dessertcup",{unit:"20 יח'"});
+add("desserts","d12","פחזניות",220,"creampuff",{unit:"20 יח'"});
+add("desserts","d13","מגש בקלאווה",220,"baklava");
+const BY = Object.fromEntries(ITEMS.map(i=>[i.id,i]));
+const FEATURED = ["b1","h2","s2","d5"];
+
+/* ---------- helpers ---------- */
+const $ = (s,r=document)=>r.querySelector(s);
+const esc = s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ils = n=>n.toLocaleString("he-IL")+" ₪";
+const img = k=>"img/"+k+".webp";
+const crown = '<img src="img/crown.png" alt="" aria-hidden="true">';
+
+/* ---------- cart ---------- */
+let cart = [];
+try{ cart = JSON.parse(localStorage.getItem("toto-cart")||"[]").filter(l=>BY[l.id]); }catch(e){ cart=[]; }
+function save(){ try{ localStorage.setItem("toto-cart",JSON.stringify(cart)); }catch(e){} }
+const keyOf=(id,picks)=>id+"|"+[...picks].sort().join(",");
+function trayPrice(id,picks){
+  const it=BY[id]; let p=it.price;
+  if(it.opt){ OPT[it.opt].choices.forEach(c=>{ if(c.extra && picks.includes(c.n)) p+=c.extra; }); }
+  return p;
+}
+const lineTotal = l=>trayPrice(l.id,l.picks)*l.qty;
+const cartQty = ()=>cart.reduce((a,l)=>a+l.qty,0);
+const cartTotal = ()=>cart.reduce((a,l)=>a+lineTotal(l),0);
+const qtyOfItem = id=>cart.filter(l=>l.id===id).reduce((a,l)=>a+l.qty,0);
+function addLine(id,picks,qty){
+  const k=keyOf(id,picks); const ex=cart.find(l=>l.key===k);
+  if(ex) ex.qty+=qty; else cart.push({key:k,id,picks:[...picks],qty});
+  changed(id);
+}
+function setQty(key,qty){
+  const l=cart.find(x=>x.key===key); if(!l) return;
+  const id=l.id;
+  if(qty<=0) cart=cart.filter(x=>x.key!==key); else l.qty=qty;
+  changed(id);
+}
+function changed(id){
+  save(); paintCartChrome();
+  document.querySelectorAll('[data-ctl="'+id+'"]').forEach(el=>el.innerHTML=controls(BY[id]));
+  if(!$("#drawerScrim").hidden) paintDrawer();
+  if(route()==="checkout") renderCheckout();
+}
+function paintCartChrome(){
+  const q=cartQty();
+  $("#cartCount").textContent=q;
+  $("#cbQty").textContent=q===1?"מגש אחד":q+" מגשים";
+  $("#cbTotal").textContent=ils(cartTotal());
+  const r=route();
+  const show=q>0 && r!=="checkout" && r!=="done";
+  $("#cartbar").hidden=!show;
+  document.body.classList.toggle("has-cart",show);
+}
+
+/* ---------- cards ---------- */
+function controls(it){
+  const q=qtyOfItem(it.id);
+  if(it.opt){
+    const lbl = it.opt==="shakshuka" ? "בחירת סגנון" : (OPT[it.opt].legend.includes("טעמים")?"בחירת טעמים":"בחירת מילויים");
+    return (q?'<span class="in-cart num">בסל: '+q+'</span>':'')+'<button class="add" type="button" data-open="'+it.id+'">'+lbl+'</button>';
+  }
+  const l=cart.find(x=>x.id===it.id);
+  if(l) return '<div class="stepper" role="group" aria-label="כמות '+esc(it.name)+'"><button type="button" data-dec="'+l.key+'" aria-label="הפחתה">−</button><output class="num">'+l.qty+'</output><button type="button" data-inc="'+l.key+'" aria-label="הוספה">+</button></div>';
+  return '<button class="add" type="button" data-add="'+it.id+'" aria-label="הוספת '+esc(it.name)+' לסל">+ הוספה</button>';
+}
+function card(it){
+  return '<article class="card">'+
+    '<button class="card-media" type="button" data-open="'+it.id+'" aria-label="פרטים על '+esc(it.name)+'"><img loading="lazy" src="'+img(it.img)+'" alt="">'+
+    (it.badge?'<span class="badge">'+crown+esc(it.badge)+'</span>':'')+'</button>'+
+    '<div class="card-body">'+
+      '<h3 class="card-title">'+esc(it.name)+'</h3>'+
+      (it.desc?'<p class="card-desc">'+esc(it.desc)+'</p>':'')+
+      (it.unit?'<span class="unit">'+esc(it.unit)+'</span>':'')+
+      (it.opt==="sandwich"?'<p class="card-desc">עד 2 מילויים · סלמון מעושן +45 ₪</p>':'')+
+      '<div class="card-foot"><span class="price num">'+ils(it.price)+'</span><div class="ctl" data-ctl="'+it.id+'">'+controls(it)+'</div></div>'+
+    '</div></article>';
+}
+
+/* ---------- views ---------- */
+function viewHome(){
+  const cnt=id=>ITEMS.filter(i=>i.cat===id).length;
+  return `
+  <section class="hero pattern-white">
+    <div class="wrap">
+      <div>
+        <div class="hero-logo" role="img" aria-label="TOTO Catering"></div>
+        <div class="eyebrow"><span>קייטרינג חלבי</span><span>·</span><span>כשר למהדרין</span><span>·</span><span>עכו והצפון</span></div>
+        <h1>האוכל עלינו, <em>המחמאות</em> עליכם</h1>
+        <p class="hero-sub">מגשי אירוח, סלטים, מאפים וקינוחים לכל אירוע. בוחרים באתר, ואנחנו חוזרים אליכם בווצאפ לסגירת ההזמנה.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-white" href="#menu">לתפריט ולהזמנה</a>
+          <a class="btn btn-ghost" href="#home" data-jump="how">איך זה עובד?</a>
+        </div>
+      </div>
+      <div class="collage" aria-hidden="true">
+        <div class="ph ph-a"><img src="img/hero.webp" alt=""></div>
+        <div class="ph ph-b"><img src="img/croissant.webp" alt=""></div>
+        <div class="ph ph-c"><img src="img/lemontart.webp" alt=""></div>
+        <div class="sticker"><img src="img/crown.png" alt="">טרי, מעוצב, מוכן להגשה</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="how">
+    <div class="wrap">
+      <div class="sec-head"><img class="crown-mark" src="img/crown.png" alt=""><h2>מזמינים ב-3 צעדים</h2><p>בלי טלפונים הלוך ושוב. בוחרים, שולחים, ואנחנו חוזרים אליכם לסגור את הפרטים.</p></div>
+      <ol class="steps" style="list-style:none;margin:0;padding:0">
+        <li class="step"><span class="step-n">1</span><h3>בוחרים מגשים</h3><p>עוברים על התפריט, בוחרים מילויים וכמויות. הסכום מתעדכן בסל תוך כדי.</p></li>
+        <li class="step"><span class="step-n">2</span><h3>ממלאים פרטים</h3><p>שם, טלפון, תאריך, שעה ומקום ההספקה. זה הכל.</p></li>
+        <li class="step"><span class="step-n">3</span><h3>סוגרים בווצאפ</h3><p>ההזמנה מגיעה ישר לטוטו, ואנחנו חוזרים אליכם לאישור ולתיאום התשלום.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head"><h2>מה בא לכם להגיש?</h2><p>${ITEMS.length} מנות ב-7 קטגוריות, מהפתיחה ועד הקינוח.</p></div>
+      <div class="cats">
+        ${CATS.map(c=>`<a class="cat-tile" href="#menu" data-cat="${c.id}"><span class="ring"><img src="${img(c.img)}" alt=""></span><b>${esc(c.name)}</b><span>${cnt(c.id)} מנות</span></a>`).join("")}
+      </div>
+    </div>
+  </section>
+
+  <section class="band sec pattern-white">
+    <div class="wrap" style="position:relative">
+      <div class="sec-head"><img class="crown-mark" src="img/crown.png" alt="" style="filter:brightness(0) invert(1)"><h2>הכי מוזמנים אצלנו</h2><p>המגשים שחוזרים כמעט לכל אירוע.</p></div>
+      <div class="grid">${FEATURED.map(id=>card(BY[id])).join("")}</div>
+      <div style="text-align:center;margin-top:34px"><a class="btn btn-white" href="#menu">לכל התפריט</a></div>
+    </div>
+  </section>
+
+  <section class="sec" id="kosher">
+    <div class="wrap kosher">
+      <div>
+        <h2>כשר למהדרין</h2>
+        <p>כל המנות חלביות או פרווה, בהשגחת הרבנות הראשית עכו ובהשגחת בד״ץ. תעודות הכשרות זמינות לפי בקשה.</p>
+      </div>
+      <div class="seals">
+        <div class="seal"><img src="img/seal-dairy.png" alt="תעודת כשרות חלבי, הרבנות הראשית עכו"></div>
+        <div class="seal"><img src="img/seal-badatz.png" alt="השגחת בד״ץ"></div>
+        <div class="seal"><img src="img/seal-parve.png" alt="תעודת כשרות פרווה, הרבנות הראשית עכו"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="contact" style="padding-top:0">
+    <div class="wrap info">
+      <div class="info-card pink pattern-white">
+        <div style="position:relative">
+          <h3>לאירועים עם בופה מעוצב</h3>
+          <p style="font-weight:600;font-size:1.1rem">בריתות, בר ובת מצווה, ימי הולדת, אירועי חברה ושבתות. מגיעים לכל אזור הצפון.</p>
+          <ul class="info-list">
+            <li><img src="img/crown.png" alt="">הזמנה באתר בכמה דקות</li>
+            <li><img src="img/crown.png" alt="">אישור ותיאום אישי בווצאפ</li>
+            <li><img src="img/crown.png" alt="">משלוח עד מקום האירוע</li>
+          </ul>
+        </div>
+      </div>
+      <div class="info-card white">
+        <h3>דברו איתנו</h3>
+        <p style="color:var(--muted)">דרך הארבעה 27, עכו</p>
+        <p style="margin-top:14px"><span class="big num">${PHONE_DISPLAY}</span><button class="copy" type="button" data-copy="${PHONE_DISPLAY}">העתקה</button></p>
+        <p style="color:var(--muted);margin-top:10px">שיחה, הודעה או ווצאפ. נשמח לעזור בבחירת הכמויות.</p>
+      </div>
+    </div>
+  </section>`;
+}
+
+function viewMenu(){
+  return `
+  <section class="menu-hero pattern-white">
+    <div class="wrap">
+      <h1>התפריט של טוטו</h1>
+      <p>כל המחירים למגש · חלבי, כשר למהדרין · תפריט 2026</p>
+    </div>
+  </section>
+  <div class="chips-bar"><div class="wrap"><nav class="chips" id="chips" aria-label="קטגוריות">
+    ${CATS.map((c,i)=>`<button class="chip" type="button" data-chip="${c.id}" aria-current="${i===0}">${esc(c.name)}</button>`).join("")}
+  </nav></div></div>
+  <div class="wrap">
+    ${CATS.map(c=>`
+      <section class="menu-sec" id="cat-${c.id}" data-sec="${c.id}">
+        <div class="menu-sec-head"><h2>${crown}${esc(c.name)}</h2><span class="note">${esc(c.note)}</span></div>
+        <div class="grid">${ITEMS.filter(i=>i.cat===c.id).map(card).join("")}</div>
+      </section>`).join("")}
+    <p class="menu-end">זה כל התפריט. משהו חסר? כתבו לנו בווצאפ ונשמח להתאים.</p>
+  </div>`;
+}
+
+function tomorrowISO(){ const d=new Date(); d.setDate(d.getDate()+1); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+let draft={name:"",phone:"",date:"",time:"",place:""};
+try{ Object.assign(draft, JSON.parse(sessionStorage.getItem("toto-draft")||"{}")); }catch(e){}
+function viewCheckout(){
+  if(!cart.length){
+    return `<div class="wrap"><div class="empty" style="padding-block:80px 140px"><img src="img/crown.png" alt=""><h2>הסל עדיין ריק</h2><p>בחרו כמה מגשים מהתפריט ונחזור לכאן.</p><a class="btn btn-pink" href="#menu">לתפריט</a></div></div>`;
+  }
+  return `
+  <div class="wrap co">
+    <section class="panel">
+      <h2>לאן ומתי?</h2>
+      <p class="lead">ממלאים פרטים, ואנחנו חוזרים אליכם בווצאפ לאישור ולתיאום התשלום.</p>
+      <form class="form" id="coForm" novalidate>
+        <div class="field"><label for="f-name">שם מלא</label><input id="f-name" name="name" autocomplete="name" placeholder="לדוגמה: מיכל לוי" value="${esc(draft.name)}"><span class="err" id="e-name"></span></div>
+        <div class="field"><label for="f-phone">טלפון נייד</label><input id="f-phone" name="phone" class="ltr" inputmode="tel" autocomplete="tel" placeholder="050-0000000" value="${esc(draft.phone)}"><span class="err" id="e-phone"></span></div>
+        <div class="row2">
+          <div class="field"><label for="f-date">תאריך הספקה</label><input id="f-date" name="date" type="date" min="${tomorrowISO()}" value="${esc(draft.date)}"><span class="err" id="e-date"></span></div>
+          <div class="field"><label for="f-time">שעת הספקה</label><input id="f-time" name="time" type="time" step="900" value="${esc(draft.time)}"><span class="err" id="e-time"></span></div>
+        </div>
+        <div class="field"><label for="f-place">מקום ההספקה</label><input id="f-place" name="place" autocomplete="street-address" placeholder="עיר, רחוב ומספר, או שם האולם" value="${esc(draft.place)}"><span class="err" id="e-place"></span></div>
+        <div class="notice">${crown}<span>ההזמנה תישלח לטוטו בווצאפ. המחיר הסופי, המשלוח והתשלום ייסגרו איתכם אישית.</span></div>
+        <button class="btn btn-pink" type="submit" id="coSubmit">שליחת ההזמנה · <span class="num">${ils(cartTotal())}</span></button>
+      </form>
+    </section>
+    <aside class="panel sticky-panel" aria-label="סיכום ההזמנה">
+      <h2>ההזמנה שלך</h2>
+      <p class="lead"><span class="num">${cartQty()}</span> מגשים · <a href="#menu">הוספת מנות</a></p>
+      <div class="summary">
+        ${cart.map(l=>{const it=BY[l.id];return `<div class="sum-line"><span>${l.qty} × ${esc(it.name)}${l.picks.length?`<small>${esc(l.picks.join(" + "))}</small>`:""}</span><span class="num">${ils(lineTotal(l))}</span></div>`}).join("")}
+        <div class="total-row"><span>סה״כ משוער</span><span class="price num">${ils(cartTotal())}</span></div>
+        <button class="rm" type="button" id="editCart" style="justify-self:start">עריכת הסל</button>
+      </div>
+    </aside>
+  </div>`;
+}
+
+let lastOrder=null;
+function viewDone(){
+  if(!lastOrder) return viewHome();
+  const o=lastOrder;
+  const now=new Date().toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});
+  return `
+  <div class="wrap">
+    <div class="done-hero">
+      <div class="badge-big"><img src="img/crown.png" alt=""></div>
+      <h1>ההזמנה נשלחה לטוטו!</h1>
+      <p>תודה ${esc(o.name.split(" ")[0])}. נחזור אליך בווצאפ בהקדם לאישור הפרטים ולתיאום התשלום.</p>
+      <a class="btn btn-pink" href="#home">חזרה לדף הבית</a>
+    </div>
+    <div class="phones">
+      <div>
+        <div class="phone-cap">ההודעה שמגיעה לטוטו <span class="tag">תצוגה לדוגמה</span></div>
+        <div class="phone">
+          <div class="phone-top"><span class="av"><img src="img/crown.png" alt=""></span><span><b>בוט ההזמנות של טוטו</b><small>${PHONE_DISPLAY} ←</small></span></div>
+          <div class="chat"><div class="bubble in">${esc(o.ownerMsg)}<time>${now}</time></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="phone-cap">האישור שמקבל הלקוח <span class="tag">תצוגה לדוגמה</span></div>
+        <div class="phone">
+          <div class="phone-top"><span class="av"><img src="img/crown.png" alt=""></span><span><b>טוטו קייטרינג</b><small>הודעה אוטומטית</small></span></div>
+          <div class="chat"><div class="bubble in">${esc(o.customerMsg)}<time>${now}</time></div></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- routing ---------- */
+const route=()=>{ const h=(location.hash||"#home").slice(1); return ["home","menu","checkout","done"].includes(h)?h:"home"; };
+let pendingCat=null, pendingJump=null, spy=null;
+function render(){
+  const r=route(); const v=$("#view");
+  if(spy){ spy.disconnect(); spy=null; }
+  v.innerHTML = r==="menu"?viewMenu(): r==="checkout"?viewCheckout(): r==="done"?viewDone(): viewHome();
+  document.querySelectorAll("[data-nav]").forEach(a=>a.setAttribute("aria-current", a.dataset.nav===r?"page":"false"));
+  paintCartChrome();
+  if(r==="menu") setupSpy();
+  if(r==="checkout") bindCheckout();
+  const target = pendingCat ? $("#cat-"+pendingCat) : pendingJump ? $("#"+pendingJump) : null;
+  pendingCat=null; pendingJump=null;
+  if(target) requestAnimationFrame(()=>target.scrollIntoView({behavior:"auto",block:"start"}));
+  else window.scrollTo(0,0);
+}
+function renderCheckout(){ if(route()==="checkout"){ $("#view").innerHTML=viewCheckout(); bindCheckout(); } }
+window.addEventListener("hashchange",render);
+
+function setupSpy(){
+  const chips=[...document.querySelectorAll("[data-chip]")];
+  spy=new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ const id=e.target.dataset.sec; chips.forEach(c=>{ const on=c.dataset.chip===id; c.setAttribute("aria-current",on); if(on) c.scrollIntoView({block:"nearest",inline:"center"}); }); } });
+  },{rootMargin:"-45% 0px -50% 0px"});
+  document.querySelectorAll("[data-sec]").forEach(s=>spy.observe(s));
+}
+
+/* ---------- item sheet ---------- */
+let sheetState=null;
+function openSheet(id){
+  const it=BY[id]; const o=it.opt?OPT[it.opt]:null;
+  sheetState={id,picks:[],qty:1};
+  const sc=$("#sheetScrim");
+  sc.innerHTML=`<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet-media"><img src="${img(it.img)}" alt=""><button class="x" type="button" data-close aria-label="סגירה">✕</button></div>
+    <div class="sheet-body">
+      <h3 id="sheetTitle">${esc(it.name)}</h3>
+      <div class="sheet-meta">${it.unit?`<span class="unit">${esc(it.unit)}</span>`:""}<span class="price num">${ils(it.price)}</span><span class="hint">למגש</span></div>
+      ${it.desc?`<p class="card-desc">${esc(it.desc)}</p>`:""}
+      ${o?`<fieldset id="optSet"><legend>${esc(o.legend)} <span id="optCount">0 מתוך ${o.max}</span></legend>
+        <div class="opts">${o.choices.map((c,i)=>`<div class="opt"><input type="${o.max===1?"radio":"checkbox"}" name="opt" id="opt${i}" value="${esc(c.n)}"><label for="opt${i}">${esc(c.n)}${c.extra?`<span class="extra num">+${c.extra} ₪</span>`:""}</label></div>`).join("")}</div>
+        <p class="hint">${o.max===1?"בחירה אחת":"אפשר לבחור עד "+o.max+" למגש"}${o.choices.some(c=>c.extra)?". תוספת הסלמון היא למגש כולו.":"."}</p>
+      </fieldset>`:""}
+    </div>
+    <div class="sheet-foot">
+      <div class="stepper" role="group" aria-label="כמות מגשים"><button type="button" data-sq="-1" aria-label="הפחתה">−</button><output class="num" id="sQty">1</output><button type="button" data-sq="1" aria-label="הוספה">+</button></div>
+      <button class="btn btn-pink" type="button" id="sAdd">הוספה לסל · <span class="num" id="sTotal"></span></button>
+    </div>
+  </div>`;
+  sc.hidden=false; document.body.style.overflow="hidden";
+  paintSheet();
+  sc.querySelector(o?"#opt0":"#sAdd").focus();
+}
+function paintSheet(){
+  const s=sheetState; const it=BY[s.id]; const o=it.opt?OPT[it.opt]:null;
+  $("#sQty").textContent=s.qty;
+  $("#sTotal").textContent=ils(trayPrice(s.id,s.picks)*s.qty);
+  if(o){
+    $("#optCount").textContent=s.picks.length+" מתוך "+o.max;
+    if(o.max>1) document.querySelectorAll("#optSet input").forEach(inp=>{ inp.disabled=!inp.checked && s.picks.length>=o.max; });
+    $("#sAdd").disabled = s.picks.length<o.min;
+  }
+}
+function closeSheet(){ const sc=$("#sheetScrim"); sc.hidden=true; sc.innerHTML=""; sheetState=null; document.body.style.overflow=""; }
+
+/* ---------- drawer ---------- */
+function openDrawer(){ const d=$("#drawerScrim"); d.hidden=false; document.body.style.overflow="hidden"; paintDrawer(); const x=d.querySelector(".x"); if(x) x.focus(); }
+function closeDrawer(){ const d=$("#drawerScrim"); d.hidden=true; d.innerHTML=""; document.body.style.overflow=""; }
+function paintDrawer(){
+  const d=$("#drawerScrim");
+  d.innerHTML=`<aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drTitle">
+    <div class="drawer-head"><h3 id="drTitle">ההזמנה שלי</h3><button class="x" type="button" data-close-drawer aria-label="סגירה">✕</button></div>
+    ${cart.length?`<div class="lines">${cart.map(l=>{const it=BY[l.id];return `<div class="line"><img src="${img(it.img)}" alt=""><div class="line-main"><div class="line-title">${esc(it.name)}</div>${l.picks.length?`<div class="line-picks">${esc(l.picks.join(" + "))}</div>`:""}<div class="line-row"><div class="stepper" role="group" aria-label="כמות"><button type="button" data-dec="${l.key}" aria-label="הפחתה">−</button><output class="num">${l.qty}</output><button type="button" data-inc="${l.key}" aria-label="הוספה">+</button></div><span class="price num">${ils(lineTotal(l))}</span></div><button class="rm" type="button" data-rm="${l.key}">הסרה</button></div></div>`}).join("")}</div>
+    <div class="drawer-foot"><div class="total-row"><span>סה״כ משוער</span><span class="price num">${ils(cartTotal())}</span></div><p class="fine-print">המחיר הסופי, המשלוח והתשלום נסגרים מול טוטו בווצאפ.</p><a class="btn btn-pink" href="#checkout" data-close-drawer>להמשך ההזמנה</a></div>`
+    :`<div class="lines"><div class="empty"><img src="img/crown.png" alt=""><b style="color:var(--berry)">הסל ריק</b><p>הוסיפו מגשים מהתפריט.</p><a class="btn btn-pink" href="#menu" data-close-drawer>לתפריט</a></div></div>`}
+  </aside>`;
+}
+
+/* ---------- checkout ---------- */
+function bindCheckout(){
+  const f=$("#coForm"); if(!f) return;
+  f.addEventListener("input",e=>{ draft[e.target.name]=e.target.value; try{ sessionStorage.setItem("toto-draft",JSON.stringify(draft)); }catch(_){} if(e.target.getAttribute("aria-invalid")==="true") validate(e.target.name); });
+  f.addEventListener("submit",e=>{ e.preventDefault(); submitOrder(); });
+  const ec=$("#editCart"); if(ec) ec.addEventListener("click",openDrawer);
+}
+const RULES={
+  name:v=>v.trim().length>=2?"":"נא למלא שם מלא",
+  phone:v=>/^05\d{8}$/.test(v.replace(/[\s-]/g,""))?"":"נא למלא מספר נייד ישראלי, לדוגמה 050-1234567",
+  date:v=>!v?"נא לבחור תאריך": v<tomorrowISO()?"אפשר להזמין החל ממחר":"",
+  time:v=>v?"":"נא לבחור שעה",
+  place:v=>v.trim().length>=3?"":"נא למלא כתובת או שם המקום"
+};
+function validate(name){
+  const inp=$("#f-"+name); const msg=RULES[name](inp.value);
+  $("#e-"+name).textContent=msg; inp.setAttribute("aria-invalid",msg?"true":"false"); return !msg;
+}
+function submitOrder(){
+  const ok=Object.keys(RULES).map(validate);
+  if(ok.includes(false)){ const first=Object.keys(RULES).find((k,i)=>!ok[i]); $("#f-"+first).focus(); return; }
+  const d=Object.fromEntries(Object.keys(RULES).map(k=>[k,$("#f-"+k).value.trim()]));
+  const dateTxt=new Date(d.date+"T12:00").toLocaleDateString("he-IL",{weekday:"long",day:"numeric",month:"numeric",year:"numeric"});
+  const lines=cart.map(l=>{const it=BY[l.id];return "• "+l.qty+" × "+it.name+(l.picks.length?" ("+l.picks.join(", ")+")":"")+" · "+ils(lineTotal(l));}).join("\n");
+  const ownerMsg="👑 הזמנה חדשה מהאתר\n\nשם: "+d.name+"\nטלפון: "+d.phone+"\nמתי: "+dateTxt+", "+d.time+"\nלאן: "+d.place+"\n\n"+lines+"\n\nסה״כ משוער: "+ils(cartTotal());
+  const customerMsg="היי "+d.name.split(" ")[0]+", ההזמנה שלך התקבלה בטוטו קייטרינג 👑\n\n"+cartQty()+" מגשים ל"+dateTxt+" בשעה "+d.time+".\nנחזור אליך בהקדם לאישור הפרטים ולתיאום התשלום.\n\nלשאלות: "+PHONE_DISPLAY;
+  lastOrder={name:d.name,ownerMsg,customerMsg};
+  cart=[]; save();
+  draft={name:"",phone:"",date:"",time:"",place:""}; try{ sessionStorage.removeItem("toto-draft"); }catch(_){}
+  location.hash="done";
+}
+
+/* ---------- search ---------- */
+const norm = s=>s.toLowerCase().replace(/[׳'"״`]/g,"").replace(/\s+/g," ").trim();
+const searchIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>';
+function openSearch(){
+  const sc=$("#searchScrim");
+  sc.innerHTML=`<div class="search-panel" role="dialog" aria-modal="true" aria-label="חיפוש מנה">
+    <div class="search-field">${searchIcon}<input id="q" type="search" placeholder="מה מחפשים? למשל סלמון, טארט, פוקצ'ה" autocomplete="off" aria-label="חיפוש מנה" aria-controls="results"><button class="x" type="button" data-close-search aria-label="סגירת החיפוש">✕</button></div>
+    <div class="results" id="results" role="list"></div>
+  </div>`;
+  sc.hidden=false; document.body.style.overflow="hidden";
+  paintResults(""); $("#q").focus();
+}
+function closeSearch(){ const sc=$("#searchScrim"); sc.hidden=true; sc.innerHTML=""; document.body.style.overflow=""; }
+function paintResults(q){
+  const box=$("#results"); const n=norm(q);
+  if(!n){
+    box.innerHTML=`<p class="hint" style="padding:10px 8px 4px;text-align:start">חיפושים נפוצים</p><div class="quick">${["סלמון","פוקצ'ות","קיש","טארט","סלט יווני","פסטה"].map(w=>`<button type="button" data-q="${esc(w)}">${esc(w)}</button>`).join("")}</div>`;
+    return;
+  }
+  const words=n.split(" ");
+  const hits=ITEMS.filter(it=>{ const hay=norm(it.name+" "+it.desc+" "+CATS.find(c=>c.id===it.cat).name); return words.every(w=>hay.includes(w)); }).slice(0,14);
+  box.innerHTML = hits.length
+    ? hits.map(it=>`<button class="result" type="button" role="listitem" data-pick="${it.id}"><img src="${img(it.img)}" alt=""><span><b>${esc(it.name)}</b><small>${esc(CATS.find(c=>c.id===it.cat).name)}${it.unit?" · "+esc(it.unit):""}</small></span><span class="price num">${ils(it.price)}</span></button>`).join("")
+    : `<p class="hint">לא מצאנו מנה בשם "${esc(q)}". נסו מילה אחרת, או כתבו לנו בווצאפ.</p>`;
+}
+document.addEventListener("input",e=>{ if(e.target.id==="q") paintResults(e.target.value); });
+
+/* social links: placeholders until TOTO's real profile URLs arrive */
+const SOCIAL_HTML = $(".social-hdr").innerHTML;
+$("#ftrSocial").innerHTML = SOCIAL_HTML;
+
+/* ---------- toast ---------- */
+let tt=null;
+function toast(msg){ const h=$("#toastHost"); h.innerHTML=`<div class="toast" role="status">${crown}${esc(msg)}</div>`; clearTimeout(tt); tt=setTimeout(()=>h.innerHTML="",1800); }
+
+/* ---------- events ---------- */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,a"); if(!t) return;
+  const ds=t.dataset;
+  if(t.id==="searchBtn"){ openSearch(); return; }
+  if(ds.closeSearch!==undefined){ closeSearch(); return; }
+  if(ds.q){ const q=$("#q"); q.value=ds.q; paintResults(ds.q); q.focus(); return; }
+  if(ds.pick){ closeSearch(); openSheet(ds.pick); return; }
+  if(ds.social){ e.preventDefault(); toast("הקישור ל"+ds.social+" יתעדכן כשנקבל את הכתובת"); return; }
+  if(ds.cat){ pendingCat=ds.cat; if(route()==="menu"){ e.preventDefault(); $("#cat-"+ds.cat).scrollIntoView({block:"start"}); } return; }
+  if(ds.jump){ pendingJump=ds.jump; if(route()==="home"){ e.preventDefault(); $("#"+ds.jump).scrollIntoView({block:"start"}); pendingJump=null; } return; }
+  if(ds.chip){ $("#cat-"+ds.chip).scrollIntoView({block:"start"}); return; }
+  if(ds.add){ addLine(ds.add,[],1); toast("נוסף לסל: "+BY[ds.add].name); return; }
+  if(ds.open){ openSheet(ds.open); return; }
+  if(ds.inc){ const l=cart.find(x=>x.key===ds.inc); if(l) setQty(l.key,l.qty+1); return; }
+  if(ds.dec){ const l=cart.find(x=>x.key===ds.dec); if(l) setQty(l.key,l.qty-1); return; }
+  if(ds.rm){ setQty(ds.rm,0); return; }
+  if(ds.sq && sheetState){ sheetState.qty=Math.max(1,sheetState.qty+Number(ds.sq)); paintSheet(); return; }
+  if(t.id==="sAdd" && sheetState){ const s=sheetState; addLine(s.id,s.picks,s.qty); toast("נוסף לסל: "+BY[s.id].name); closeSheet(); return; }
+  if(ds.close!==undefined){ closeSheet(); return; }
+  if(ds.closeDrawer!==undefined){ closeDrawer(); return; }
+  if(t.id==="cartBtn"||t.id==="cartbarBtn"){ openDrawer(); return; }
+  if(ds.copy){ const txt=ds.copy; const done=()=>{t.textContent="הועתק";setTimeout(()=>t.textContent="העתקה",1500)}; try{ navigator.clipboard.writeText(txt).then(done,()=>{}); }catch(_){} return; }
+});
+document.addEventListener("change",e=>{
+  if(!sheetState || !e.target.matches("#optSet input")) return;
+  sheetState.picks=[...document.querySelectorAll("#optSet input:checked")].map(i=>i.value);
+  paintSheet();
+});
+$("#sheetScrim").addEventListener("click",e=>{ if(e.target.id==="sheetScrim") closeSheet(); });
+$("#drawerScrim").addEventListener("click",e=>{ if(e.target.id==="drawerScrim") closeDrawer(); });
+$("#searchScrim").addEventListener("click",e=>{ if(e.target.id==="searchScrim") closeSearch(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ if(!$("#sheetScrim").hidden) closeSheet(); else if(!$("#searchScrim").hidden) closeSearch(); else if(!$("#drawerScrim").hidden) closeDrawer(); } });
+
+$("#ftrCats").innerHTML=CATS.map(c=>`<li><a href="#menu" data-cat="${c.id}">${esc(c.name)}</a></li>`).join("");
+render();
+})();
+</script>
