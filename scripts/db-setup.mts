@@ -1,59 +1,63 @@
 /**
- * Applies supabase/migrations/*.sql and loads the menu seed into empty tables.
- * Existing rows are never overwritten, so it's safe to re-run after the owner has edited the menu.
+ * Prepares the database and loads the menu seed into it.
  *
- *   npm run db:setup          (reads SUPABASE_DB_URL from .env.local)
+ *   npm run db:setup
+ *
+ * Schema: with SUPABASE_DB_URL set, applies supabase/migrations/*.sql directly. Without it, paste
+ * supabase/migrations/0001_menu.sql into the Supabase SQL Editor once and run this script afterwards.
+ *
+ * Seed: inserts only rows that don't exist yet (by id), so owner edits are never overwritten. Uses the
+ * secret key, which bypasses row-level security; it never leaves this machine.
  */
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { createClient } from "@supabase/supabase-js";
 import pg from "pg";
 import { menuSeed } from "../src/data/menu-seed";
 import { seedRows } from "../src/lib/menu-rows";
 
-const url = process.env.SUPABASE_DB_URL;
-if (!url) throw new Error("SUPABASE_DB_URL is missing in .env.local");
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const secret = process.env.SUPABASE_SECRET_KEY;
+if (!url || !secret) throw new Error("NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SECRET_KEY are required in .env.local");
 
-const client = new pg.Client({ connectionString: url, ssl: { rejectUnauthorized: false } });
-await client.connect();
-
-try {
-  const dir = join(import.meta.dirname, "..", "supabase", "migrations");
-  for (const file of readdirSync(dir).filter((f) => f.endsWith(".sql")).sort()) {
-    await client.query(readFileSync(join(dir, file), "utf8"));
-    console.log(`applied ${file}`);
+if (process.env.SUPABASE_DB_URL) {
+  const client = new pg.Client({ connectionString: process.env.SUPABASE_DB_URL, ssl: { rejectUnauthorized: false } });
+  await client.connect();
+  try {
+    const dir = join(import.meta.dirname, "..", "supabase", "migrations");
+    for (const file of readdirSync(dir).filter((f) => f.endsWith(".sql")).sort()) {
+      await client.query(readFileSync(join(dir, file), "utf8"));
+      console.log(`applied ${file}`);
+    }
+  } finally {
+    await client.end();
   }
-
-  const { categories, optionGroups, items } = seedRows(menuSeed);
-  await client.query("begin");
-  for (const c of categories) {
-    await client.query(
-      "insert into public.categories (id, name, note, image, sort, visible) values ($1,$2,$3,$4,$5,$6) on conflict (id) do nothing",
-      [c.id, c.name, c.note, c.image, c.sort, c.visible],
-    );
-  }
-  for (const g of optionGroups) {
-    await client.query(
-      "insert into public.option_groups (id, legend, cta, min, max, choices) values ($1,$2,$3,$4,$5,$6) on conflict (id) do nothing",
-      [g.id, g.legend, g.cta, g.min, g.max, JSON.stringify(g.choices)],
-    );
-  }
-  for (const it of items) {
-    await client.query(
-      `insert into public.items (id, category_id, name, price, image, unit, description, option_group_id, badge, featured, available, sort)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) on conflict (id) do nothing`,
-      [it.id, it.category_id, it.name, it.price, it.image, it.unit, it.description, it.option_group_id, it.badge, it.featured, it.available, it.sort],
-    );
-  }
-  await client.query("commit");
-
-  const counts = await client.query(
-    "select (select count(*) from public.categories) c, (select count(*) from public.option_groups) g, (select count(*) from public.items) i",
-  );
-  const { c, g, i } = counts.rows[0];
-  console.log(`menu in database: ${c} categories, ${g} option groups, ${i} dishes`);
-} catch (err) {
-  await client.query("rollback").catch(() => {});
-  throw err;
-} finally {
-  await client.end();
 }
+
+const db = createClient(url, secret, { auth: { persistSession: false, autoRefreshToken: false } });
+
+const probe = await db.from("categories").select("id").limit(1);
+if (probe.error) {
+  console.error(
+    "\nThe menu tables don't exist yet.\n" +
+      "Open Supabase → SQL Editor → New query, paste the contents of supabase/migrations/0001_menu.sql, click Run,\n" +
+      "then run `npm run db:setup` again.\n",
+  );
+  process.exit(1);
+}
+
+const { categories, optionGroups, items } = seedRows(menuSeed);
+const insertMissing = async (table: string, rows: object[]) => {
+  const { error } = await db.from(table).upsert(rows, { onConflict: "id", ignoreDuplicates: true });
+  if (error) throw new Error(`${table}: ${error.message}`);
+};
+// Order matters: items reference categories and option groups.
+await insertMissing("categories", categories);
+await insertMissing("option_groups", optionGroups);
+await insertMissing("items", items);
+
+const count = async (table: string) => (await db.from(table).select("id", { head: true, count: "exact" })).count;
+console.log(`menu in database: ${await count("categories")} categories, ${await count("option_groups")} option groups, ${await count("items")} dishes`);
+
+const bucket = await db.storage.getBucket("menu-images");
+console.log(bucket.data ? "image bucket: ready" : `image bucket missing: ${bucket.error?.message}`);

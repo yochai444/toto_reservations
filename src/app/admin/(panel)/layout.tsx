@@ -20,7 +20,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Link href="/admin" className="rounded-full px-3 py-1.5 hover:bg-blush">
               מנות
             </Link>
-            <Link href="/admin/options" className="rounded-full px-3 py-1.5 hover:bg-blush">
+            <Link href="/admin/options" className="rounded-full px-3 py-1.5 whitespace-nowrap hover:bg-blush">
               מילויים וטעמים
             </Link>
           </nav>

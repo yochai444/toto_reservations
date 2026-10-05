@@ -14,7 +14,8 @@ Settings go in `.env.local` (template: `.env.example`). Without Supabase values 
 ### One-time database setup
 
 ```bash
-npm run db:setup                         # creates tables, security rules, image bucket; loads the menu
+# 1. Supabase → SQL Editor: run supabase/migrations/0001_menu.sql (tables, security rules, image bucket)
+npm run db:setup                         # 2. loads the menu (also applies migrations if SUPABASE_DB_URL is set)
 npm run admin:create -- owner@example.com # owner login for /admin (prints a temporary password)
 ```
 
