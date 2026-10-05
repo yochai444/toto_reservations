@@ -16,7 +16,7 @@ export const viewport: Viewport = { themeColor: "#e4519a", viewportFit: "cover" 
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="he" dir="rtl" className={`${fredoka.variable} ${assistant.variable} antialiased`}>
+    <html lang="he" dir="rtl" data-scroll-behavior="smooth" className={`${fredoka.variable} ${assistant.variable} antialiased`}>
       <body>{children}</body>
     </html>
   );

@@ -38,7 +38,8 @@
 }
 
 @layer base {
-  html { scroll-behavior: smooth; }
+  /* Every scroll target (page change, #anchor) stops below the sticky header. */
+  html { scroll-behavior: smooth; scroll-padding-top: calc(var(--hdr) + env(safe-area-inset-top, 0px)); }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after { transition: none !important; animation: none !important; }
@@ -141,4 +142,5 @@
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
-.menu-section { scroll-margin-top: calc(var(--hdr) + 70px); }
+/* plus the sticky category bar (≈58px) and a little air */
+.menu-section { scroll-margin-top: 70px; }

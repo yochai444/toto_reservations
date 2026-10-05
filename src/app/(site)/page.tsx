@@ -62,7 +62,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="how" className="scroll-mt-(--hdr) py-16 min-[900px]:py-22">
+      <section id="how" className="py-16 min-[900px]:py-22">
         <div className="wrap">
           <div className="mb-9 grid justify-items-center gap-2.5 text-center">
             <Crown />
@@ -123,7 +123,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="kosher" className="scroll-mt-(--hdr) py-16 min-[900px]:py-22">
+      <section id="kosher" className="py-16 min-[900px]:py-22">
         <div className="wrap grid items-center gap-7.5 min-[900px]:grid-cols-[1fr_1.25fr]">
           <div>
             <h2 className="mb-3 text-[clamp(1.9rem,4vw,2.6rem)]">כשר למהדרין</h2>
@@ -143,7 +143,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="contact" className="scroll-mt-(--hdr) pb-16 min-[900px]:pb-22">
+      <section id="contact" className="pb-16 min-[900px]:pb-22">
         <div className="wrap grid gap-4.5 min-[860px]:grid-cols-[1.3fr_1fr]">
           <div className="pattern-white rounded-[26px] bg-pink px-6.5 py-7.5 text-white">
             <div>
