@@ -41,7 +41,7 @@ export function CartDrawer() {
                 const it = item(l.itemId)!;
                 return (
                   <div key={l.key} className="grid grid-cols-[72px_1fr] gap-3 rounded-[18px] bg-white p-2.5 shadow-card">
-                    <Image src={`/img/${it.image}.webp`} alt="" width={72} height={72} className="size-[72px] rounded-xl object-cover" />
+                    <Image src={it.image} alt="" width={72} height={72} className="size-[72px] rounded-xl object-cover" />
                     <div className="grid min-w-0 gap-1">
                       <div className="leading-tight font-extrabold">{it.name}</div>
                       {l.picks.length > 0 && <div className="text-sm text-muted">{l.picks.join(" + ")}</div>}

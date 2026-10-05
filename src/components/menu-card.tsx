@@ -35,7 +35,7 @@ export function MenuCard({ item }: { item: MenuItem }) {
         className="relative block aspect-[4/3] w-full overflow-hidden bg-blush"
       >
         <Image
-          src={`/img/${item.image}.webp`}
+          src={item.image}
           alt=""
           fill
           sizes="(min-width:1120px) 280px, (min-width:760px) 33vw, 50vw"

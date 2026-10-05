@@ -78,7 +78,7 @@ function SearchBody({ close }: { close: () => void }) {
                 }}
                 className="grid w-full grid-cols-[56px_1fr_auto] items-center gap-3 rounded-2xl p-2 text-start hover:bg-blush focus-visible:bg-blush"
               >
-                <Image src={`/img/${it.image}.webp`} alt="" width={56} height={56} className="size-14 rounded-xl object-cover" />
+                <Image src={it.image} alt="" width={56} height={56} className="size-14 rounded-xl object-cover" />
                 <span>
                   <b className="block leading-tight text-berry">{it.name}</b>
                   <small className="text-muted">

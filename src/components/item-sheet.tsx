@@ -34,7 +34,7 @@ function SheetBody({ itemId }: { itemId: string }) {
     <div className="fixed inset-0 z-60 flex items-end justify-center bg-berry/50 min-[760px]:items-center min-[760px]:p-6" onClick={(e) => e.target === e.currentTarget && close()}>
       <div role="dialog" aria-modal="true" aria-labelledby="sheet-title" className="max-h-[92vh] w-full max-w-[560px] animate-up overflow-auto rounded-t-[28px] bg-white min-[760px]:rounded-[28px]">
         <div className="relative aspect-video bg-blush">
-          <Image src={`/img/${item.image}.webp`} alt="" fill sizes="560px" className="object-cover" />
+          <Image src={item.image} alt="" fill sizes="560px" className="object-cover" />
           <button type="button" onClick={close} aria-label="סגירה" className="absolute end-3 top-3 grid size-10 place-items-center rounded-full bg-white text-xl text-berry shadow-lg">
             ✕
           </button>

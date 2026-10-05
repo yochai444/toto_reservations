@@ -9,16 +9,28 @@ npm install
 npm run dev          # http://localhost:3000
 ```
 
-Without WhatsApp credentials in `.env.local`, submitted orders are printed to the terminal instead of sent (see `.env.example`).
+Settings go in `.env.local` (template: `.env.example`). Without Supabase values the site runs on the seed menu; without WhatsApp values orders are printed to the terminal instead of sent.
 
-Order pricing/validation sanity checks: `npx tsx scripts/check-order.ts`
+### One-time database setup
+
+```bash
+npm run db:setup                         # creates tables, security rules, image bucket; loads the menu
+npm run admin:create -- owner@example.com # owner login for /admin (prints a temporary password)
+```
+
+`db:setup` is safe to re-run: it never overwrites dishes the owner has edited.
+
+Order pricing/validation sanity checks: `npm run check:order`
 
 ## Where things live
 
 | Path | What |
 |---|---|
-| `src/data/menu-seed.ts` | The menu: categories, dishes, prices, filling/flavor options (from the 2026 PDF) |
-| `src/lib/menu.ts` | `getMenu()`: the only place that reads the menu (Supabase will plug in here) |
+| `src/data/menu-seed.ts` | Initial menu (from the 2026 PDF): loaded into Supabase by `db:setup`, and the fallback when Supabase isn't configured |
+| `supabase/migrations/` | Database schema + row-level security: public reads, only admins write |
+| `src/lib/menu.ts` | `getMenu()`: cached public menu; admin saves refresh it immediately |
+| `src/app/admin/` | Owner's admin area: dishes, categories, fillings/flavors, photo upload |
+| `src/app/admin/actions.ts` | Admin server actions; each one re-checks admin rights |
 | `src/lib/pricing.ts` | Tray price incl. extras (salmon +45 per tray), pick validation. Shared by browser and server |
 | `src/lib/order.ts` | Order schema, server-side re-pricing, WhatsApp message text |
 | `src/lib/whatsapp.ts` | WhatsApp Cloud API client (template messages), dry-run without credentials |
@@ -32,6 +44,6 @@ The browser only sends dish ids, picks and quantities. Prices are always recompu
 ## Roadmap
 
 1. ✅ Customer site: home, menu, dish options, cart, checkout (orders logged in dry run)
-2. Supabase: menu in a database + image storage, admin area for the owner to edit the menu
+2. ✅ Supabase: menu in a database + image storage, admin area for the owner to edit the menu (needs project credentials)
 3. WhatsApp bot: Meta Business account, bot phone number, approved templates, live sending
 4. Deploy (Netlify / Vercel), domain, real dish photos

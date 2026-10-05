@@ -3,7 +3,8 @@ import type { Category, Menu, MenuItem, OptionGroup } from "@/lib/menu-types";
 /**
  * TOTO dairy catering menu, 2026 edition (transcribed from the PDF flipbook).
  * This is the seed data; the admin area will later read and write the same shape from Supabase.
- * Images are temporary stock photos until TOTO's own dishes are photographed.
+ * Images are temporary stock photos (public/img) until TOTO's own dishes are photographed.
+ * `image` is always a ready-to-use src: a local path here, a Supabase Storage URL once uploaded.
  */
 
 const optionGroups: OptionGroup[] = [
@@ -82,19 +83,21 @@ const optionGroups: OptionGroup[] = [
   },
 ];
 
+const img = (key: string) => `/img/${key}.webp`;
+
 const categories: Category[] = [
-  { id: "starters", name: "מנות פתיחה", note: "לפי 10 סועדים", image: "beet" },
-  { id: "finger", name: "Finger food", note: "מגשים של 20 יחידות", image: "cups" },
-  { id: "hot", name: "מנות חמות", note: "לפי 10 סועדים", image: "salmon" },
-  { id: "pasta", name: "פסטות", note: "מגש פסטה", image: "penne" },
-  { id: "salads", name: "סלטים עשירים", note: "קערה 2.5 ליטר · 8–10 סועדים · 145 ₪", image: "greek" },
-  { id: "pastry", name: "מאפים מלוחים", note: "מגשים מוכנים להגשה", image: "croissant" },
-  { id: "desserts", name: "קינוחים", note: "מתוקים לסיום", image: "lemontart" },
+  { id: "starters", name: "מנות פתיחה", note: "לפי 10 סועדים", image: img("beet") },
+  { id: "finger", name: "Finger food", note: "מגשים של 20 יחידות", image: img("cups") },
+  { id: "hot", name: "מנות חמות", note: "לפי 10 סועדים", image: img("salmon") },
+  { id: "pasta", name: "פסטות", note: "מגש פסטה", image: img("penne") },
+  { id: "salads", name: "סלטים עשירים", note: "קערה 2.5 ליטר · 8–10 סועדים · 145 ₪", image: img("greek") },
+  { id: "pastry", name: "מאפים מלוחים", note: "מגשים מוכנים להגשה", image: img("croissant") },
+  { id: "desserts", name: "קינוחים", note: "מתוקים לסיום", image: img("lemontart") },
 ];
 
 const items: MenuItem[] = [];
 const add = (categoryId: string, id: string, name: string, price: number, image: string, extra: Partial<MenuItem> = {}) =>
-  items.push({ categoryId, id, name, price, image, ...extra });
+  items.push({ categoryId, id, name, price, image: img(image), ...extra });
 
 add("starters", "eggplant-carpaccio", "קרפצ'ו חציל, טחינה וירקות", 145, "eggtahini");
 add("starters", "beet-carpaccio", "קרפצ'ו סלק", 145, "beet", { badge: "מומלץ", featured: true });
