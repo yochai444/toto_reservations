@@ -8,6 +8,8 @@ const assistant = Assistant({ variable: "--font-assistant", subsets: ["hebrew", 
 export const metadata: Metadata = {
   title: { default: "טוטו קייטרינג · מגשי אירוח חלביים", template: "%s · טוטו קייטרינג" },
   description: "מגשי אירוח, סלטים, מאפים וקינוחים חלביים לכל אירוע. כשר למהדרין. מזמינים באתר ונחזור אליכם בווצאפ. עכו וכל אזור הצפון.",
+  // Hidden from search engines until launch (real photos + WhatsApp bot). Set SITE_INDEXING=on to open it.
+  robots: process.env.SITE_INDEXING === "on" ? undefined : { index: false, follow: false },
 };
 
 export const viewport: Viewport = { themeColor: "#e4519a", viewportFit: "cover" };
