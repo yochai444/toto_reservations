@@ -1,0 +1,30 @@
+# Lint + production build (which also type-checks) on every push and pull request.
+# Netlify still deploys: `main` → production, `dev` → branch deploy.
+name: CI
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      # No secrets here: without Supabase settings the build uses the seed menu.
+      - run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
