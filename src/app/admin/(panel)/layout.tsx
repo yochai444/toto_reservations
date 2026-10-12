@@ -1,3 +1,4 @@
+import Box from "@mui/material/Box";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { signOut } from "@/app/admin/actions";
@@ -6,7 +7,7 @@ import { requireAdmin } from "@/lib/admin-auth";
 
 export const metadata: Metadata = { title: "ניהול התפריט", robots: { index: false } };
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
   const { user } = await requireAdmin();
   return (
     <Shell>
@@ -14,7 +15,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <TopBarIn>
           <Brand href="/admin">
             <Image src="/img/logo.png" alt="TOTO" width={900} height={540} />
-            <span>ניהול</span>
+            <Box component="span">ניהול</Box>
           </Brand>
           <TopNav>
             <TopNavLink href="/admin">מנות</TopNavLink>
@@ -27,13 +28,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <QuietLink href="/admin/account" title={user.email}>
               סיסמה
             </QuietLink>
-            <form action={signOut}>
+            <Box component="form" action={signOut}>
               <QuietButton type="submit">יציאה</QuietButton>
-            </form>
+            </Box>
           </TopEnd>
         </TopBarIn>
       </TopBar>
       <Main>{children}</Main>
     </Shell>
   );
-}
+};
+
+export default AdminLayout;

@@ -1,12 +1,5 @@
 import type { Category, Menu, MenuItem, OptionGroup } from "@/lib/menu-types";
 
-/**
- * TOTO dairy catering menu, 2026 edition (transcribed from the PDF flipbook).
- * This is the seed data; the admin area will later read and write the same shape from Supabase.
- * Images are temporary stock photos (public/img) until TOTO's own dishes are photographed.
- * `image` is always a ready-to-use src: a local path here, a Supabase Storage URL once uploaded.
- */
-
 const optionGroups: OptionGroup[] = [
   {
     id: "sandwich",
@@ -102,7 +95,7 @@ const add = (categoryId: string, id: string, name: string, price: number, image:
 add("starters", "eggplant-carpaccio", "קרפצ'ו חציל, טחינה וירקות", 145, "eggtahini");
 add("starters", "beet-carpaccio", "קרפצ'ו סלק", 145, "beet", { badge: "מומלץ", featured: true });
 add("starters", "pickles-platter", "פלטת מוחמצים מגוונת", 150, "pickles");
-add("starters", "antipasti", "אנטי פסטי", 140, "antipasti");
+add("starters", "antipasti", "אנטיפסטי", 140, "antipasti");
 add("starters", "vegetable-platter", "מגש ירקות", 135, "vegplatter");
 
 add("finger", "eggplant-cups", "כוסות חציל, טחינה וירקות", 220, "cups", { unit: "20 יח'" });
@@ -133,10 +126,10 @@ const salads: [string, string, string][] = [
   ["salad-green-cashew", "סלט ירוק, קשיו וחמוציות", "cups"],
   ["salad-cherry-mozzarella", "סלט שרי, בייבי מוצרלה וחומץ בלסמי", "greek"],
   ["salad-tabbouleh", "סלט טאבולה, עשבי תיבול וחמוציות", "cups"],
-  ["salad-asian-cabbage", "סלט כרוב לבן אסייאתי, גרעינים וחמוציות", "caesar"],
+  ["salad-asian-cabbage", "סלט כרוב לבן אסייתי, גרעינים וחמוציות", "caesar"],
   ["salad-greek", "סלט יווני, זיתים וזעתר", "greek"],
   ["salad-feta-sweet-potato", "סלט פטה ובטטה צלויה", "greek"],
-  ["salad-feta-chips", "סלט פטה וציפס בטטה", "caesar"],
+  ["salad-feta-chips", "סלט פטה וצ'יפס בטטה", "caesar"],
   ["salad-nicoise", "סלט ניסואז: טונה, ביצה קשה, תפו״א ומלפפון חמוץ", "antipasti"],
   ["salad-pasta-pesto", "סלט פסטה קרה, פסטו וירקות צלויים", "pesto"],
   ["salad-carrot-pecan", "סלט גזר חמוץ ופקאן סיני", "antipasti"],

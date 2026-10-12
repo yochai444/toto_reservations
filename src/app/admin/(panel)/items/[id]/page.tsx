@@ -4,7 +4,7 @@ import { ItemForm } from "@/components/admin/item-form";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getAdminMenu } from "@/lib/admin-menu";
 
-export default async function EditItemPage({ params, searchParams }: PageProps<"/admin/items/[id]">) {
+const EditItemPage = async ({ params, searchParams }: PageProps<"/admin/items/[id]">) => {
   const [{ id }, { category }] = await Promise.all([params, searchParams]);
   const { db } = await requireAdmin();
   const { categories, optionGroups, items } = await getAdminMenu(db);
@@ -18,4 +18,6 @@ export default async function EditItemPage({ params, searchParams }: PageProps<"
       <ItemForm item={item} categories={categories} optionGroups={optionGroups} />
     </>
   );
-}
+};
+
+export default EditItemPage;

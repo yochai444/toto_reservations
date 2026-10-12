@@ -1,14 +1,22 @@
 "use client";
 
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
 import { useEffect, useRef, useState } from "react";
-import { Wrap } from "@/components/ui/primitives";
+import { boxAs, Wrap } from "@/components/ui/primitives";
 import type { Category } from "@/lib/menu-types";
 import { brand } from "@/theme/theme";
 
-const Sticky = styled("div")({ position: "sticky", top: "calc(env(safe-area-inset-top, 0px) + var(--hdr))", zIndex: 30, background: brand.berry });
+const Sticky = styled(Box)({
+  "--focus-ring": "#fff",
+  position: "sticky",
+  top: "calc(env(safe-area-inset-top, 0px) + var(--hdr))",
+  zIndex: 30,
+  background: brand.berry,
+});
 
-const Bar = styled("nav")({
+const Bar = styled(boxAs("nav"))({
   display: "flex",
   gap: 8,
   overflowX: "auto",
@@ -17,7 +25,7 @@ const Bar = styled("nav")({
   "&::-webkit-scrollbar": { display: "none" },
 });
 
-const Chip = styled("a")({
+const Chip = styled(Link)({
   flexShrink: 0,
   borderRadius: 999,
   background: "rgb(255 255 255 / 0.12)",
@@ -29,8 +37,7 @@ const Chip = styled("a")({
   "&[aria-current]": { background: brand.pink, boxShadow: "inset 0 0 0 2px #fff" },
 });
 
-/** Sticky category bar that follows the section currently in the middle of the screen. */
-export function CategoryChips({ categories }: { categories: Category[] }) {
+export const CategoryChips = ({ categories }: { categories: Category[] }) => {
   const [active, setActive] = useState<string | undefined>(categories[0]?.id);
   const bar = useRef<HTMLElement>(null);
 
@@ -60,4 +67,4 @@ export function CategoryChips({ categories }: { categories: Category[] }) {
       </Wrap>
     </Sticky>
   );
-}
+};

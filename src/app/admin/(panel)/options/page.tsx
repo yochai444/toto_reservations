@@ -1,9 +1,10 @@
+import Box from "@mui/material/Box";
 import { GroupCard, GroupList, OutlineLink, PageHead } from "@/components/admin/admin-styles";
 import { Notice } from "@/components/ui/form";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getAdminMenu } from "@/lib/admin-menu";
 
-export default async function OptionGroupsPage({ searchParams }: PageProps<"/admin/options">) {
+const OptionGroupsPage = async ({ searchParams }: PageProps<"/admin/options">) => {
   const { saved } = await searchParams;
   const { db } = await requireAdmin();
   const { optionGroups, items } = await getAdminMenu(db);
@@ -11,10 +12,10 @@ export default async function OptionGroupsPage({ searchParams }: PageProps<"/adm
   return (
     <>
       <PageHead>
-        <div>
-          <h1>מילויים וטעמים</h1>
-          <p>{"רשימות הבחירה שהלקוח רואה במנות כמו קרואסונים, קיש ופוקצ'ות."}</p>
-        </div>
+        <Box>
+          <Box component="h1">מילויים וטעמים</Box>
+          <Box component="p">{"רשימות הבחירה שהלקוח רואה במנות כמו קרואסונים, קיש ופוקצ'ות."}</Box>
+        </Box>
         <OutlineLink href="/admin/options/new">+ רשימה חדשה</OutlineLink>
       </PageHead>
       {saved && (
@@ -26,18 +27,20 @@ export default async function OptionGroupsPage({ searchParams }: PageProps<"/adm
         {optionGroups.map((g) => {
           const used = items.filter((i) => i.option_group_id === g.id).map((i) => i.name);
           return (
-            <li key={g.id}>
+            <Box component="li" key={g.id}>
               <GroupCard href={`/admin/options/${g.id}`}>
-                <b>
+                <Box component="b">
                   {g.legend} · {g.min === g.max ? `בדיוק ${g.max}` : `עד ${g.max}`}
-                </b>
-                <span>{g.choices.map((c) => (c.extra ? `${c.name} (+${c.extra} ₪)` : c.name)).join(" · ")}</span>
-                <span className="used">{used.length ? `במנות: ${used.join(", ")}` : "לא בשימוש באף מנה"}</span>
+                </Box>
+                <Box component="span">{g.choices.map((c) => (c.extra ? `${c.name} (+${c.extra} ₪)` : c.name)).join(" · ")}</Box>
+                <Box component="span" className="used">{used.length ? `במנות: ${used.join(", ")}` : "לא בשימוש באף מנה"}</Box>
               </GroupCard>
-            </li>
+            </Box>
           );
         })}
       </GroupList>
     </>
   );
-}
+};
+
+export default OptionGroupsPage;

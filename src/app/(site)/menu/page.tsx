@@ -1,3 +1,4 @@
+import Box from "@mui/material/Box";
 import type { Metadata } from "next";
 import { CategoryChips } from "@/components/category-chips";
 import { CategoryNote, MenuHead, MenuSection, MenuSectionHead } from "@/components/home/site-styles";
@@ -7,14 +8,14 @@ import { getMenu } from "@/lib/menu";
 
 export const metadata: Metadata = { title: "התפריט" };
 
-export default async function MenuPage() {
+const MenuPage = async () => {
   const menu = await getMenu();
   return (
     <>
       <PinkBand>
         <MenuHead>
-          <h1>התפריט של טוטו</h1>
-          <p>כל המחירים למגש · חלבי, כשר למהדרין · תפריט 2026</p>
+          <Box component="h1">התפריט של טוטו</Box>
+          <Box component="p">כל המחירים למגש · חלבי, כשר למהדרין · תפריט 2026</Box>
         </MenuHead>
       </PinkBand>
 
@@ -24,10 +25,10 @@ export default async function MenuPage() {
         {menu.categories.map((c) => (
           <MenuSection key={c.id} id={`cat-${c.id}`} data-sec={c.id}>
             <MenuSectionHead>
-              <h2>
+              <Box component="h2">
                 <Crown style={{ height: 28, width: "auto" }} />
                 {c.name}
-              </h2>
+              </Box>
               <CategoryNote>{c.note}</CategoryNote>
             </MenuSectionHead>
             <DishGrid>
@@ -39,8 +40,10 @@ export default async function MenuPage() {
             </DishGrid>
           </MenuSection>
         ))}
-        <Muted sx={{ pt: 5, pb: 15, textAlign: "center" }}>זה כל התפריט. משהו חסר? כתבו לנו בווצאפ ונשמח להתאים.</Muted>
+        <Muted sx={{ pt: 5, pb: 15, textAlign: "center" }}>זה כל התפריט. משהו חסר? כתבו לנו בוואטסאפ ונשמח להתאים.</Muted>
       </Wrap>
     </>
   );
-}
+};
+
+export default MenuPage;

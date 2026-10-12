@@ -9,11 +9,10 @@ import { MENU_TAG } from "@/lib/menu";
 
 export type FormState = { error?: string; fieldErrors?: Record<string, string> } | undefined;
 
-/** Customers see admin edits on their next page load. */
-function refreshSite() {
+const refreshSite = () => {
   revalidateTag(MENU_TAG, { expire: 0 });
   revalidatePath("/", "layout");
-}
+};
 
 const text = (max: number) => z.string().trim().max(max, `עד ${max} תווים`);
 const optionalText = (max: number) =>
@@ -25,22 +24,20 @@ const checkbox = z
   .optional()
   .transform((v) => v === "on");
 
-function fieldErrorsOf(error: z.ZodError) {
+const fieldErrorsOf = (error: z.ZodError) => {
   const out: Record<string, string> = {};
   for (const i of error.issues) out[String(i.path[0])] ??= i.message;
   return out;
-}
+};
 
 const formObject = (fd: FormData) => Object.fromEntries([...fd.entries()].filter(([, v]) => typeof v === "string"));
 
-async function nextSort(db: Awaited<ReturnType<typeof requireAdmin>>["db"], table: "items" | "categories", categoryId?: string) {
+const nextSort = async (db: Awaited<ReturnType<typeof requireAdmin>>["db"], table: "items" | "categories", categoryId?: string) => {
   let q = db.from(table).select("sort").order("sort", { ascending: false }).limit(1);
   if (categoryId) q = q.eq("category_id", categoryId);
   const { data } = await q;
   return (data?.[0]?.sort ?? -1) + 1;
-}
-
-/* ---------------- dishes ---------------- */
+};
 
 const itemSchema = z.object({
   id: z.string().optional(),
@@ -56,7 +53,7 @@ const itemSchema = z.object({
   available: checkbox,
 });
 
-export async function saveItem(_: FormState, fd: FormData): Promise<FormState> {
+export const saveItem = async (_: FormState, fd: FormData): Promise<FormState> => {
   const { db } = await requireAdmin();
   const parsed = itemSchema.safeParse(formObject(fd));
   if (!parsed.success) return { fieldErrors: fieldErrorsOf(parsed.error) };
@@ -72,28 +69,27 @@ export async function saveItem(_: FormState, fd: FormData): Promise<FormState> {
   }
   refreshSite();
   redirect(`/admin?saved=1#cat-${row.category_id}`);
-}
+};
 
-export async function deleteItem(fd: FormData) {
+export const deleteItem = async (fd: FormData) => {
   const { db } = await requireAdmin();
   const id = String(fd.get("id"));
   const { data } = await db.from("items").select("category_id").eq("id", id).maybeSingle();
   await db.from("items").delete().eq("id", id);
   refreshSite();
   redirect(`/admin${data ? `#cat-${data.category_id}` : ""}`);
-}
+};
 
-export async function setItemAvailable(fd: FormData) {
+export const setItemAvailable = async (fd: FormData) => {
   const { db } = await requireAdmin();
   await db
     .from("items")
     .update({ available: fd.get("available") === "true" })
     .eq("id", String(fd.get("id")));
   refreshSite();
-}
+};
 
-/** Swap a dish with its neighbor inside its category (dir = -1 up, 1 down). */
-export async function moveItem(fd: FormData) {
+export const moveItem = async (fd: FormData) => {
   const { db } = await requireAdmin();
   const id = String(fd.get("id"));
   const dir = Number(fd.get("dir"));
@@ -107,9 +103,7 @@ export async function moveItem(fd: FormData) {
   [ids[i], ids[j]] = [ids[j], ids[i]];
   await Promise.all(ids.map((itemId, sort) => db.from("items").update({ sort }).eq("id", itemId)));
   refreshSite();
-}
-
-/* ---------------- categories ---------------- */
+};
 
 const categorySchema = z.object({
   id: z.string().optional(),
@@ -119,7 +113,7 @@ const categorySchema = z.object({
   visible: checkbox,
 });
 
-export async function saveCategory(_: FormState, fd: FormData): Promise<FormState> {
+export const saveCategory = async (_: FormState, fd: FormData): Promise<FormState> => {
   const { db } = await requireAdmin();
   const parsed = categorySchema.safeParse(formObject(fd));
   if (!parsed.success) return { fieldErrors: fieldErrorsOf(parsed.error) };
@@ -132,9 +126,9 @@ export async function saveCategory(_: FormState, fd: FormData): Promise<FormStat
   if (error) return { error: `השמירה נכשלה: ${error.message}` };
   refreshSite();
   redirect(`/admin?saved=1#cat-${newId}`);
-}
+};
 
-export async function deleteCategory(fd: FormData): Promise<void> {
+export const deleteCategory = async (fd: FormData): Promise<void> => {
   const { db } = await requireAdmin();
   const id = String(fd.get("id"));
   const { count } = await db.from("items").select("id", { count: "exact", head: true }).eq("category_id", id);
@@ -142,9 +136,9 @@ export async function deleteCategory(fd: FormData): Promise<void> {
   await db.from("categories").delete().eq("id", id);
   refreshSite();
   redirect("/admin");
-}
+};
 
-export async function moveCategory(fd: FormData) {
+export const moveCategory = async (fd: FormData) => {
   const { db } = await requireAdmin();
   const id = String(fd.get("id"));
   const dir = Number(fd.get("dir"));
@@ -156,9 +150,8 @@ export async function moveCategory(fd: FormData) {
   [ids[i], ids[j]] = [ids[j], ids[i]];
   await Promise.all(ids.map((catId, sort) => db.from("categories").update({ sort }).eq("id", catId)));
   refreshSite();
-}
+};
 
-/* ---------------- option groups (fillings / flavors) ---------------- */
 
 const choiceSchema = z.object({
   name: text(60).min(1, "שם אפשרות ריק"),
@@ -187,7 +180,7 @@ const groupSchema = z
   .refine((g) => g.min <= g.max, { message: "המינימום גדול מהמקסימום", path: ["min"] })
   .refine((g) => g.max <= g.choices.length, { message: "המקסימום גדול ממספר האפשרויות", path: ["max"] });
 
-export async function saveOptionGroup(_: FormState, fd: FormData): Promise<FormState> {
+export const saveOptionGroup = async (_: FormState, fd: FormData): Promise<FormState> => {
   const { db } = await requireAdmin();
   const parsed = groupSchema.safeParse(formObject(fd));
   if (!parsed.success) return { fieldErrors: fieldErrorsOf(parsed.error) };
@@ -198,17 +191,17 @@ export async function saveOptionGroup(_: FormState, fd: FormData): Promise<FormS
   if (error) return { error: `השמירה נכשלה: ${error.message}` };
   refreshSite();
   redirect("/admin/options?saved=1");
-}
+};
 
-export async function deleteOptionGroup(fd: FormData): Promise<void> {
+export const deleteOptionGroup = async (fd: FormData): Promise<void> => {
   const { db } = await requireAdmin();
   await db.from("option_groups").delete().eq("id", String(fd.get("id")));
   refreshSite();
   redirect("/admin/options");
-}
+};
 
-export async function signOut() {
+export const signOut = async () => {
   const { db } = await requireAdmin();
   await db.auth.signOut();
   redirect("/admin/login");
-}
+};

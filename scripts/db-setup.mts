@@ -1,14 +1,3 @@
-/**
- * Prepares the database and loads the menu seed into it.
- *
- *   npm run db:setup
- *
- * Schema: with SUPABASE_DB_URL set, applies supabase/migrations/*.sql directly. Without it, paste
- * supabase/migrations/0001_menu.sql into the Supabase SQL Editor once and run this script afterwards.
- *
- * Seed: inserts only rows that don't exist yet (by id), so owner edits are never overwritten. Uses the
- * secret key, which bypasses row-level security; it never leaves this machine.
- */
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { createClient } from "@supabase/supabase-js";
@@ -51,7 +40,6 @@ const insertMissing = async (table: string, rows: object[]) => {
   const { error } = await db.from(table).upsert(rows, { onConflict: "id", ignoreDuplicates: true });
   if (error) throw new Error(`${table}: ${error.message}`);
 };
-// Order matters: items reference categories and option groups.
 await insertMissing("categories", categories);
 await insertMissing("option_groups", optionGroups);
 await insertMissing("items", items);

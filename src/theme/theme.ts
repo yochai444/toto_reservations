@@ -1,10 +1,10 @@
 "use client";
 
 import { createTheme } from "@mui/material/styles";
+import NextLink from "next/link";
 
-/** TOTO brand tokens (from the logo and the printed menu). Single deliberate light look. */
 export const brand = {
-  pink: "#e4519a",
+  pink: "#db227e", // the logo pink (#e4519a) darkened to 4.6:1 under white text (WCAG AA)
   pinkBtn: "#c8377c",
   pinkInk: "#b42e6e",
   blush: "#ffe2ef",
@@ -77,7 +77,12 @@ export const theme = createTheme({
   },
   toto: { fonts, shadows },
   components: {
-    MuiButtonBase: { defaultProps: { disableRipple: true } },
+    MuiButtonBase: {
+      defaultProps: { disableRipple: true, LinkComponent: NextLink },
+      // ButtonBase resets outline to 0, which beats the global :focus-visible ring.
+      styleOverrides: { root: { "&.Mui-focusVisible": { outline: `3px solid var(--focus-ring, ${brand.berry})`, outlineOffset: 2 } } },
+    },
+    MuiLink: { defaultProps: { component: NextLink, underline: "none", color: "inherit" } },
     MuiButton: {
       defaultProps: { variant: "contained", disableElevation: true },
       styleOverrides: {

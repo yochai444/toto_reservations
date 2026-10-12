@@ -1,28 +1,34 @@
 "use client";
 
+import Box, { type BoxProps } from "@mui/material/Box";
 import Button, { type ButtonProps } from "@mui/material/Button";
+import ButtonBase from "@mui/material/ButtonBase";
 import { styled } from "@mui/material/styles";
 import Image from "next/image";
-import Link from "next/link";
+import type { ElementType } from "react";
 import { brand } from "@/theme/theme";
 import { doodle } from "@/theme/registry";
 
-/** Page-width container with the side gutter. */
-export const Wrap = styled("div")({ maxWidth: 1240, marginInline: "auto", paddingInline: "var(--gutter)" });
+export const boxAs = <C extends ElementType>(component: C) => {
+  const BoxAs = (props: BoxProps<C>) => <Box component={component} {...props} />;
+  return BoxAs;
+};
 
-/** White doodle pattern over a colored band. Children sit above it. */
+export const Wrap = styled(Box)({ maxWidth: 1240, marginInline: "auto", paddingInline: "var(--gutter)" });
+
 export const patternWhite = {
+  "--focus-ring": "#fff",
   position: "relative" as const,
   overflow: "hidden",
   "&::before": { ...doodle("#fff", 0.14), position: "absolute" as const },
   "& > *": { position: "relative" as const },
 };
 
-export const PinkBand = styled("section")({ ...patternWhite, background: brand.pink, color: "#fff" });
+export const PinkBand = styled(boxAs("section"))({ ...patternWhite, background: brand.pink, color: "#fff" });
 
-export const Muted = styled("p")({ color: brand.muted });
+export const Muted = styled(boxAs("p"))({ color: brand.muted });
 
-export const Price = styled("span", { shouldForwardProp: (p) => p !== "size" })<{ size?: string }>(({ theme, size }) => ({
+export const Price = styled(boxAs("span"), { shouldForwardProp: (p) => p !== "size" })<{ size?: string }>(({ theme, size }) => ({
   fontFamily: theme.toto.fonts.display,
   fontWeight: 700,
   color: brand.pinkInk,
@@ -31,7 +37,7 @@ export const Price = styled("span", { shouldForwardProp: (p) => p !== "size" })<
   fontSize: size,
 }));
 
-export const UnitChip = styled("span")({
+export const UnitChip = styled(boxAs("span"))({
   alignSelf: "flex-start",
   fontSize: 13,
   fontWeight: 700,
@@ -41,8 +47,7 @@ export const UnitChip = styled("span")({
   padding: "2px 10px",
 });
 
-/** Butter-yellow pill, e.g. "בסל: 2" or a category note. */
-export const ButterPill = styled("span")({
+export const ButterPill = styled(boxAs("span"))({
   borderRadius: 999,
   background: brand.butter,
   color: brand.berry,
@@ -50,9 +55,8 @@ export const ButterPill = styled("span")({
   fontVariantNumeric: "tabular-nums",
 });
 
-export const Num = styled("span")({ fontVariantNumeric: "tabular-nums" });
+export const Num = styled(boxAs("span"))({ fontVariantNumeric: "tabular-nums" });
 
-/** Hidden on screen, still read by screen readers and focusable. */
 export const srOnly: React.CSSProperties = {
   position: "absolute",
   width: 1,
@@ -65,16 +69,14 @@ export const srOnly: React.CSSProperties = {
   borderWidth: 0,
 };
 
-/** Small underlined text button ("הסרה", "ביטול"). */
-export const TextButton = styled("button", { shouldForwardProp: (p) => p !== "tone" })<{ tone?: "muted" | "danger" }>(({ tone = "muted" }) => ({
+export const TextButton = styled(ButtonBase, { shouldForwardProp: (p) => p !== "tone" })<{ tone?: "muted" | "danger" }>(({ tone = "muted" }) => ({
   justifySelf: "start",
   fontSize: 13.5,
   color: tone === "danger" ? brand.danger : brand.muted,
   textDecoration: "underline",
 }));
 
-/** Round ✕ close button. */
-export const CloseButton = styled("button", { shouldForwardProp: (p) => p !== "tone" })<{ tone?: "white" | "blush" }>(({ tone = "white" }) => ({
+export const CloseButton = styled(ButtonBase, { shouldForwardProp: (p) => p !== "tone" })<{ tone?: "white" | "blush" }>(({ tone = "white" }) => ({
   display: "grid",
   placeItems: "center",
   flexShrink: 0,
@@ -91,21 +93,15 @@ const CrownImg = styled(Image, { shouldForwardProp: (p) => p !== "white" })<{ wh
   filter: white ? "brightness(0) invert(1)" : undefined,
 }));
 
-/** TOTO's crown mark. `width` is the rendered width in px; `white` turns it white for pink bands. */
-export function Crown({ width = 34, white, style }: { width?: number; white?: boolean; style?: React.CSSProperties }) {
-  return <CrownImg src="/img/crown.png" alt="" width={168} height={193} white={white} style={{ width, ...style }} />;
-}
+export const Crown = ({ width = 34, white, style }: { width?: number; white?: boolean; style?: React.CSSProperties }) => (
+  <CrownImg src="/img/crown.png" alt="" width={168} height={193} white={white} style={{ width, ...style }} />
+);
 
-/** MUI Button that navigates with next/link. */
-export function LinkButton({ href, ...props }: Omit<ButtonProps<typeof Link>, "component">) {
-  return <Button component={Link} nativeButton={false} href={href} {...props} />;
-}
+export const LinkButton = (props: ButtonProps & { href: string }) => <Button {...props} />;
 
-/** Image filling its positioned parent, cropped to cover. */
 export const CoverImage = styled(Image)({ objectFit: "cover" });
 
-/** Card grid for dishes: 2 columns on phones, up to 4 on desktop. */
-export const DishGrid = styled("div")(({ theme }) => ({
+export const DishGrid = styled(Box)(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
   gap: 14,

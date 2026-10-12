@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { getAdminMenu } from "@/lib/admin-menu";
 import type { CategoryRow } from "@/lib/menu-rows";
 
-export default async function EditCategoryPage({ params, searchParams }: PageProps<"/admin/categories/[id]">) {
+const EditCategoryPage = async ({ params, searchParams }: PageProps<"/admin/categories/[id]">) => {
   const [{ id }, { error }] = await Promise.all([params, searchParams]);
   const { db } = await requireAdmin();
   const { categories, items } = await getAdminMenu(db);
@@ -21,4 +21,6 @@ export default async function EditCategoryPage({ params, searchParams }: PagePro
       <CategoryForm category={category} itemCount={items.filter((i) => i.category_id === id).length} />
     </>
   );
-}
+};
+
+export default EditCategoryPage;

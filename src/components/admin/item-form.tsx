@@ -1,5 +1,6 @@
 "use client";
 
+import Box from "@mui/material/Box";
 import { useActionState } from "react";
 import { deleteItem, saveItem } from "@/app/admin/actions";
 import { ImageField } from "@/components/admin/image-field";
@@ -9,7 +10,7 @@ import type { CategoryRow, ItemRow, OptionGroupRow } from "@/lib/menu-rows";
 
 type Props = { item: Partial<ItemRow>; categories: CategoryRow[]; optionGroups: OptionGroupRow[] };
 
-export function ItemForm({ item, categories, optionGroups }: Props) {
+export const ItemForm = ({ item, categories, optionGroups }: Props) => {
   const [state, action] = useActionState(saveItem, undefined);
   const fe = state?.fieldErrors ?? {};
   const isNew = !item.id;
@@ -17,7 +18,7 @@ export function ItemForm({ item, categories, optionGroups }: Props) {
   return (
     <Stack>
       <FormCard action={action}>
-        {item.id && <input type="hidden" name="id" value={item.id} />}
+        {item.id && <Box component="input" type="hidden" name="id" value={item.id} />}
 
         <ImageField name="image" defaultValue={item.image ?? ""} folder="items" error={fe.image} />
 
@@ -40,9 +41,9 @@ export function ItemForm({ item, categories, optionGroups }: Props) {
         <Pair>
           <SelectField label="קטגוריה" error={fe.category_id} name="category_id" defaultValue={item.category_id}>
             {categories.map((c) => (
-              <option key={c.id} value={c.id}>
+              <Box component="option" key={c.id} value={c.id}>
                 {c.name}
-              </option>
+              </Box>
             ))}
           </SelectField>
           <SelectField
@@ -52,21 +53,21 @@ export function ItemForm({ item, categories, optionGroups }: Props) {
             name="option_group_id"
             defaultValue={item.option_group_id ?? ""}
           >
-            <option value="">בלי בחירה</option>
+            <Box component="option" value="">בלי בחירה</Box>
             {optionGroups.map((g) => (
-              <option key={g.id} value={g.id}>
+              <Box component="option" key={g.id} value={g.id}>
                 {g.legend}: {g.choices.map((c) => c.name).join(", ")}
-              </option>
+              </Box>
             ))}
           </SelectField>
         </Pair>
 
         <Pair>
           <InputField label="תגית על התמונה" hint="לדוגמה: מומלץ, חדש. אפשר להשאיר ריק" error={fe.badge} name="badge" defaultValue={item.badge ?? ""} />
-          <div style={{ display: "grid", alignContent: "end", gap: 4, paddingBottom: 4 }}>
+          <Box style={{ display: "grid", alignContent: "end", gap: 4, paddingBottom: 4 }}>
             <CheckField name="available" defaultChecked={item.available ?? true} label="מוצג באתר" />
             <CheckField name="featured" defaultChecked={item.featured ?? false} label='ב"הכי מוזמנים" בעמוד הבית' />
-          </div>
+          </Box>
         </Pair>
 
         <FormError error={state?.error ?? (Object.keys(fe).length ? "יש שדות שצריך לתקן" : undefined)} />
@@ -84,4 +85,4 @@ export function ItemForm({ item, categories, optionGroups }: Props) {
       )}
     </Stack>
   );
-}
+};

@@ -1,5 +1,7 @@
 "use client";
 
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
 import { FacebookIcon, InstagramIcon, TiktokIcon } from "@/components/icons";
 import { useStore } from "@/components/store";
@@ -12,9 +14,9 @@ const NETWORKS = [
   { key: "tiktok", label: "טיקטוק", Icon: TiktokIcon },
 ] as const;
 
-const Row = styled("div")({ display: "flex", alignItems: "center", gap: 6 });
+const Row = styled(Box)({ display: "flex", alignItems: "center", gap: 6 });
 
-const Net = styled("a", { shouldForwardProp: (p) => p !== "tone" })<{ tone: "light" | "dark" }>(({ theme, tone }) => ({
+const Net = styled(Link, { shouldForwardProp: (p) => p !== "tone" })<{ tone: "light" | "dark" }>(({ theme, tone }) => ({
   display: "grid",
   width: 30,
   height: 30,
@@ -27,10 +29,10 @@ const Net = styled("a", { shouldForwardProp: (p) => p !== "tone" })<{ tone: "lig
     : { background: "rgb(255 255 255 / 0.12)", color: "#fff", "&:hover": { background: brand.pink } }),
 }));
 
-export function SocialLinks({ tone = "light", className }: { tone?: "light" | "dark"; className?: string }) {
+export const SocialLinks = ({ tone = "light", className }: { tone?: "light" | "dark"; className?: string }) => {
   const { showToast } = useStore();
   return (
-    <Row className={className} aria-label="טוטו ברשתות">
+    <Row className={className} role="group" aria-label="טוטו ברשתות">
       {NETWORKS.map(({ key, label, Icon }) => {
         const href = SITE.social[key];
         return (
@@ -54,4 +56,4 @@ export function SocialLinks({ tone = "light", className }: { tone?: "light" | "d
       })}
     </Row>
   );
-}
+};

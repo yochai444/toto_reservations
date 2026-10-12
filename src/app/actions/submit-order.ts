@@ -9,27 +9,23 @@ export type SubmitResult =
   | { ok: true; trays: number; total: number; date: string; time: string; firstName: string }
   | { ok: false; fieldErrors: Partial<Record<CustomerField, string>>; error?: string };
 
-/**
- * Best-effort throttle per IP: each order sends an email and a WhatsApp message, so block bursts.
- * In-memory, so it resets per server instance; good enough against casual abuse.
- */
 const recent = new Map<string, number[]>();
 const WINDOW_MS = 10 * 60_000;
 const MAX_PER_WINDOW = 5;
 
-function throttled(ip: string) {
+const throttled = (ip: string) => {
   const now = Date.now();
   const hits = (recent.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
   hits.push(now);
   recent.set(ip, hits);
   return hits.length > MAX_PER_WINDOW;
-}
+};
 
-export async function submitOrder(raw: unknown): Promise<SubmitResult> {
+export const submitOrder = async (raw: unknown): Promise<SubmitResult> => {
   const h = await headers();
   const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "local";
   if (throttled(ip)) {
-    return { ok: false, fieldErrors: {}, error: "נשלחו כמה הזמנות ברצף. נסו שוב בעוד כמה דקות, או כתבו לנו בווצאפ." };
+    return { ok: false, fieldErrors: {}, error: "נשלחו כמה הזמנות ברצף. נסו שוב בעוד כמה דקות, או כתבו לנו בוואטסאפ." };
   }
 
   const menu = await getMenu();
@@ -52,4 +48,4 @@ export async function submitOrder(raw: unknown): Promise<SubmitResult> {
     time: order.customer.time,
     firstName: order.customer.name.split(" ")[0],
   };
-}
+};

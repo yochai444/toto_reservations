@@ -1,11 +1,14 @@
 "use client";
 
+import Box from "@mui/material/Box";
+import ButtonBase from "@mui/material/ButtonBase";
 import Dialog from "@mui/material/Dialog";
+import InputBase from "@mui/material/InputBase";
 import { styled } from "@mui/material/styles";
 import { useMemo, useState } from "react";
 import { SearchIcon } from "@/components/icons";
 import { useStore } from "@/components/store";
-import { CloseButton, CoverImage, Muted, Price } from "@/components/ui/primitives";
+import { CloseButton, CoverImage, Muted, Price, srOnly } from "@/components/ui/primitives";
 import { formatILS } from "@/lib/pricing";
 import { brand } from "@/theme/theme";
 
@@ -30,13 +33,21 @@ const Panel = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const Bar = styled("div")({ display: "flex", alignItems: "center", gap: 10, borderBottom: `2px solid ${brand.line}`, padding: "12px 14px" });
+const Bar = styled(Box)({ display: "flex", alignItems: "center", gap: 10, borderBottom: `2px solid ${brand.line}`, padding: "12px 14px" });
 
-const Input = styled("input")({ minWidth: 0, flex: 1, padding: "8px 2px", fontSize: 19, outline: "none" });
+const Input = styled(InputBase)({
+  minWidth: 0,
+  flex: 1,
+  borderRadius: 8,
+  fontSize: 19,
+  "& .MuiInputBase-input": { padding: "8px 2px" },
+  // InputBase drops the outline on focus.
+  "&.Mui-focused": { outline: `3px solid ${brand.berry}`, outlineOffset: 2 },
+});
 
-const Results = styled("div")({ display: "grid", gap: 4, overflow: "auto", padding: 8 });
+const Results = styled(Box)({ display: "grid", gap: 4, overflow: "auto", padding: 8 });
 
-const Quick = styled("button")({
+const Quick = styled(ButtonBase)({
   borderRadius: 999,
   border: `2px solid ${brand.line}`,
   padding: "6px 14px",
@@ -44,7 +55,7 @@ const Quick = styled("button")({
   color: brand.pinkInk,
 });
 
-const Hit = styled("button")({
+const Hit = styled(ButtonBase)({
   display: "grid",
   width: "100%",
   gridTemplateColumns: "56px 1fr auto",
@@ -60,13 +71,13 @@ const Hit = styled("button")({
 
 const Thumb = styled(CoverImage)({ width: 56, height: 56, borderRadius: 12 });
 
-export function SearchDialog() {
+export const SearchDialog = () => {
   const { searchOpen, setSearchOpen } = useStore();
   if (!searchOpen) return null;
   return <SearchBody close={() => setSearchOpen(false)} />;
-}
+};
 
-function SearchBody({ close }: { close: () => void }) {
+const SearchBody = ({ close }: { close: () => void }) => {
   const { menu, openSheet } = useStore();
   const [q, setQ] = useState("");
 
@@ -83,7 +94,11 @@ function SearchBody({ close }: { close: () => void }) {
   }, [q, menu]);
 
   return (
-    <Panel open onClose={close} aria-label="חיפוש מנה">
+    // The name goes on the paper: that's the element with role="dialog" (a root aria-label never reaches it).
+    <Panel open onClose={close} slotProps={{ paper: { "aria-label": "חיפוש מנה" } }}>
+      <Box component="p" role="status" style={srOnly}>
+        {!q.trim() ? "" : hits.length === 1 ? "נמצאה מנה אחת" : hits.length ? `נמצאו ${hits.length} מנות` : "לא נמצאו מנות"}
+      </Box>
       <Bar>
         <SearchIcon style={{ width: 22, height: 22, flexShrink: 0, color: brand.pinkInk }} />
         <Input
@@ -92,7 +107,7 @@ function SearchBody({ close }: { close: () => void }) {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="מה מחפשים? למשל סלמון, טארט, פוקצ'ה"
-          aria-label="חיפוש מנה"
+          slotProps={{ input: { "aria-label": "חיפוש מנה" } }}
         />
         <CloseButton tone="blush" type="button" onClick={close} aria-label="סגירת החיפוש">
           ✕
@@ -103,13 +118,13 @@ function SearchBody({ close }: { close: () => void }) {
         {!q.trim() ? (
           <>
             <Muted sx={{ px: 1, pt: 1.25, pb: 0.5, fontSize: 14 }}>חיפושים נפוצים</Muted>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, padding: "0 6px 10px" }}>
+            <Box style={{ display: "flex", flexWrap: "wrap", gap: 8, padding: "0 6px 10px" }}>
               {QUICK.map((w) => (
                 <Quick key={w} type="button" onClick={() => setQ(w)}>
                   {w}
                 </Quick>
               ))}
-            </div>
+            </Box>
           </>
         ) : hits.length ? (
           hits.map((it) => (
@@ -122,20 +137,20 @@ function SearchBody({ close }: { close: () => void }) {
               }}
             >
               <Thumb src={it.image} alt="" width={56} height={56} />
-              <span>
-                <b>{it.name}</b>
-                <small>
+              <Box component="span">
+                <Box component="b">{it.name}</Box>
+                <Box component="small">
                   {menu.categories.find((c) => c.id === it.categoryId)?.name}
                   {it.unit ? ` · ${it.unit}` : ""}
-                </small>
-              </span>
+                </Box>
+              </Box>
               <Price>{formatILS(it.price)}</Price>
             </Hit>
           ))
         ) : (
-          <Muted sx={{ px: 1.5, py: 2.5, textAlign: "center", fontSize: 14 }}>לא מצאנו מנה בשם &quot;{q}&quot;. נסו מילה אחרת, או כתבו לנו בווצאפ.</Muted>
+          <Muted sx={{ px: 1.5, py: 2.5, textAlign: "center", fontSize: 14 }}>לא מצאנו מנה בשם &quot;{q}&quot;. נסו מילה אחרת, או כתבו לנו בוואטסאפ.</Muted>
         )}
       </Results>
     </Panel>
   );
-}
+};

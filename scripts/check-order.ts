@@ -1,4 +1,3 @@
-// Sanity checks for server-side order pricing/validation. Run: npx tsx scripts/check-order.ts
 import assert from "node:assert/strict";
 import { menuSeed } from "../src/data/menu-seed";
 import { ownerMessage, priceOrder } from "../src/lib/order";

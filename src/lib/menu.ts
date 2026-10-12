@@ -8,7 +8,7 @@ import { createPublicClient } from "@/lib/supabase/server";
 
 export const MENU_TAG = "menu";
 
-async function loadPublicMenu(): Promise<Menu> {
+const loadPublicMenu = async (): Promise<Menu> => {
   const db = createPublicClient();
   const [cats, groups, items] = await Promise.all([
     db.from("categories").select("*").order("sort"),
@@ -23,18 +23,13 @@ async function loadPublicMenu(): Promise<Menu> {
   return {
     categories,
     optionGroups: (groups.data as OptionGroupRow[]).map(toOptionGroup),
-    // RLS already hides unavailable dishes from the public; also drop dishes of hidden categories.
     items: (items.data as ItemRow[]).filter((r) => visible.has(r.category_id)).map(toItem),
   };
-}
+};
 
 const cachedMenu = unstable_cache(loadPublicMenu, ["public-menu"], { tags: [MENU_TAG], revalidate: 3600 });
 
-/**
- * The menu as customers see it. Cached; admin edits call revalidateTag(MENU_TAG).
- * Falls back to the seed file until Supabase is configured.
- */
-export async function getMenu(): Promise<Menu> {
+export const getMenu = async (): Promise<Menu> => {
   if (!supabaseConfigured) return menuSeed;
   return cachedMenu();
-}
+};

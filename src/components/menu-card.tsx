@@ -1,16 +1,18 @@
 "use client";
 
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import ButtonBase from "@mui/material/ButtonBase";
 import { styled } from "@mui/material/styles";
 import Image from "next/image";
 import { useStore } from "@/components/store";
-import { ButterPill, CoverImage, Muted, Price, UnitChip } from "@/components/ui/primitives";
+import { boxAs, ButterPill, CoverImage, Muted, Price, UnitChip } from "@/components/ui/primitives";
 import type { MenuItem } from "@/lib/menu-types";
 import { formatILS } from "@/lib/pricing";
 import { brand } from "@/theme/theme";
 
-const StepperRoot = styled("div")({ display: "inline-flex", alignItems: "center", borderRadius: 999, background: brand.blush, padding: 3 });
-const StepBtn = styled("button")({
+const StepperRoot = styled(Box)({ display: "inline-flex", alignItems: "center", borderRadius: 999, background: brand.blush, padding: 3 });
+const StepBtn = styled(ButtonBase)({
   display: "grid",
   placeItems: "center",
   width: 32,
@@ -22,23 +24,21 @@ const StepBtn = styled("button")({
   fontWeight: 700,
   color: brand.pinkInk,
 });
-const StepQty = styled("output")({ minWidth: 30, textAlign: "center", fontWeight: 800, fontVariantNumeric: "tabular-nums" });
+const StepQty = styled(boxAs("output"))({ minWidth: 30, textAlign: "center", fontWeight: 800, fontVariantNumeric: "tabular-nums" });
 
-export function Stepper({ qty, onChange, label }: { qty: number; onChange: (q: number) => void; label: string }) {
-  return (
-    <StepperRoot role="group" aria-label={label}>
-      <StepBtn type="button" onClick={() => onChange(qty - 1)} aria-label="הפחתה">
-        −
-      </StepBtn>
-      <StepQty>{qty}</StepQty>
-      <StepBtn type="button" onClick={() => onChange(qty + 1)} aria-label="הוספה">
-        +
-      </StepBtn>
-    </StepperRoot>
-  );
-}
+export const Stepper = ({ qty, onChange, label }: { qty: number; onChange: (q: number) => void; label: string }) => (
+  <StepperRoot role="group" aria-label={label}>
+    <StepBtn type="button" onClick={() => onChange(qty - 1)} aria-label="הפחתה">
+      −
+    </StepBtn>
+    <StepQty>{qty}</StepQty>
+    <StepBtn type="button" onClick={() => onChange(qty + 1)} aria-label="הוספה">
+      +
+    </StepBtn>
+  </StepperRoot>
+);
 
-const Card = styled("article")(({ theme }) => ({
+const Card = styled(boxAs("article"))(({ theme }) => ({
   display: "flex",
   minWidth: 0,
   flexDirection: "column",
@@ -49,7 +49,7 @@ const Card = styled("article")(({ theme }) => ({
   "&:hover .dish-photo": { transform: "scale(1.05)" },
 }));
 
-const PhotoButton = styled("button")({
+const PhotoButton = styled(ButtonBase)({
   position: "relative",
   display: "block",
   aspectRatio: "4 / 3",
@@ -70,7 +70,7 @@ const Badge = styled(ButterPill)({
   fontSize: 12.5,
 });
 
-const Body = styled("div")(({ theme }) => ({
+const Body = styled(Box)(({ theme }) => ({
   display: "flex",
   flex: 1,
   flexDirection: "column",
@@ -79,7 +79,7 @@ const Body = styled("div")(({ theme }) => ({
   [theme.breakpoints.up(760)]: { padding: "16px 18px 18px" },
 }));
 
-const Name = styled("h3")(({ theme }) => ({
+const Name = styled(boxAs("h3"))(({ theme }) => ({
   fontSize: "1.06rem",
   lineHeight: 1.25,
   [theme.breakpoints.up(760)]: { fontSize: "1.18rem" },
@@ -87,7 +87,7 @@ const Name = styled("h3")(({ theme }) => ({
 
 const Small = styled(Muted)({ fontSize: 14.5, lineHeight: 1.375 });
 
-const Footer = styled("div")({
+const Footer = styled(Box)({
   marginTop: "auto",
   display: "flex",
   flexWrap: "wrap",
@@ -97,9 +97,9 @@ const Footer = styled("div")({
   paddingTop: 10,
 });
 
-const Row = styled("div")({ display: "flex", alignItems: "center", gap: 6 });
+const Row = styled(Box)({ display: "flex", alignItems: "center", gap: 6 });
 
-export function MenuCard({ item }: { item: MenuItem }) {
+export const MenuCard = ({ item }: { item: MenuItem }) => {
   const { group, lines, addLine, setQty, qtyOfItem, openSheet, showToast } = useStore();
   const g = group(item);
   const inCart = qtyOfItem(item.id);
@@ -154,4 +154,4 @@ export function MenuCard({ item }: { item: MenuItem }) {
       </Body>
     </Card>
   );
-}
+};

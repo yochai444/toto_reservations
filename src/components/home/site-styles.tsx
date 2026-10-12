@@ -1,14 +1,13 @@
 "use client";
 
-// Styled pieces for the home and menu pages. The pages stay Server Components and render these.
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
 import { styled, type Theme } from "@mui/material/styles";
-import Link from "next/link";
-import { ButterPill, patternWhite, PinkBand, Wrap } from "@/components/ui/primitives";
+import { boxAs, ButterPill, patternWhite, PinkBand, Wrap } from "@/components/ui/primitives";
 import { brand } from "@/theme/theme";
 
 const sectionPad = (theme: Theme) => ({ [theme.breakpoints.up("md")]: { paddingBlock: 88 } });
 
-/* ---- hero: fills the first screen below the header, never more ---- */
 export const Hero = PinkBand;
 
 export const HeroIn = styled(Wrap)(({ theme }) => ({
@@ -21,7 +20,7 @@ export const HeroIn = styled(Wrap)(({ theme }) => ({
   [theme.breakpoints.up(960)]: { gridTemplateColumns: "1.05fr 1fr", paddingBlock: "clamp(16px, 3vh, 40px)", gap: 40 },
 }));
 
-export const HeroLogo = styled("div")(({ theme }) => ({
+export const HeroLogo = styled(Box)(({ theme }) => ({
   marginBottom: "clamp(6px, 1.6vh, 18px)",
   height: "clamp(48px, 9vh, 80px)",
   aspectRatio: "900 / 710",
@@ -31,7 +30,7 @@ export const HeroLogo = styled("div")(({ theme }) => ({
   [theme.breakpoints.up(960)]: { height: "clamp(56px, 17vh, 200px)" },
 }));
 
-export const Tags = styled("div")(({ theme }) => ({
+export const Tags = styled(Box)(({ theme }) => ({
   marginBottom: "clamp(8px, 1.8vh, 18px)",
   display: "inline-flex",
   flexWrap: "wrap",
@@ -39,7 +38,7 @@ export const Tags = styled("div")(({ theme }) => ({
   rowGap: 4,
   borderRadius: 999,
   border: "1px solid rgb(255 255 255 / 0.4)",
-  background: "rgb(255 255 255 / 0.18)",
+  background: "rgb(74 23 51 / 0.18)", // a berry tint: a white one would drop the small white text below 4.5:1
   padding: "4px 14px",
   fontSize: 12.5,
   fontWeight: 700,
@@ -47,7 +46,7 @@ export const Tags = styled("div")(({ theme }) => ({
   [theme.breakpoints.up("sm")]: { fontSize: 14 },
 }));
 
-export const HeroTitle = styled("h1")({
+export const HeroTitle = styled(boxAs("h1"))({
   marginBottom: "clamp(6px, 1.4vh, 16px)",
   fontSize: "clamp(1.9rem, min(6.4vw, 6.6vh), 3.9rem)",
   fontWeight: 700,
@@ -55,16 +54,16 @@ export const HeroTitle = styled("h1")({
   "& em": { borderRadius: 14, background: brand.butter, padding: "0 0.18em", color: brand.berry, fontStyle: "normal", boxDecorationBreak: "clone" },
 });
 
-export const HeroSub = styled("p")({
+export const HeroSub = styled(boxAs("p"))({
   marginBottom: "clamp(12px, 2.4vh, 28px)",
   maxWidth: "36ch",
   fontSize: "clamp(1rem, 2.1vh, 1.2rem)",
   fontWeight: 600,
 });
 
-export const Actions = styled("div")({ display: "flex", flexWrap: "wrap", gap: 12 });
+export const Actions = styled(Box)({ display: "flex", flexWrap: "wrap", gap: 12 });
 
-export const Collage = styled("div")(({ theme }) => ({
+export const Collage = styled(Box)(({ theme }) => ({
   position: "relative",
   width: "min(100%, 420px)",
   aspectRatio: "3 / 1.08",
@@ -108,12 +107,11 @@ export const Sticker = styled(ButterPill)(({ theme }) => ({
   boxShadow: theme.toto.shadows.pop,
 }));
 
-/* ---- sections ---- */
-export const Section = styled("section")(({ theme }) => ({ paddingBlock: 64, ...sectionPad(theme) }));
-export const SectionTail = styled("section")(({ theme }) => ({ paddingBottom: 64, [theme.breakpoints.up("md")]: { paddingBottom: 88 } }));
+export const Section = styled(boxAs("section"))(({ theme }) => ({ paddingBlock: 64, ...sectionPad(theme) }));
+export const SectionTail = styled(boxAs("section"))(({ theme }) => ({ paddingBottom: 64, [theme.breakpoints.up("md")]: { paddingBottom: 88 } }));
 export const PinkSection = styled(PinkBand)(({ theme }) => ({ paddingBlock: 64, ...sectionPad(theme) }));
 
-export const SectionHead = styled("div")({
+export const SectionHead = styled(Box)({
   marginBottom: 36,
   display: "grid",
   justifyItems: "center",
@@ -122,13 +120,13 @@ export const SectionHead = styled("div")({
   "& h2": { fontSize: "clamp(1.9rem, 4vw, 2.7rem)" },
 });
 
-export const Steps = styled("ol")(({ theme }) => ({
+export const Steps = styled(boxAs("ol"))(({ theme }) => ({
   display: "grid",
   gap: 18,
   [theme.breakpoints.up(800)]: { gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 26 },
 }));
 
-export const Step = styled("li")({
+export const Step = styled(boxAs("li"))({
   display: "grid",
   gridTemplateColumns: "auto 1fr",
   alignItems: "start",
@@ -142,7 +140,7 @@ export const Step = styled("li")({
   "& p": { color: brand.muted },
 });
 
-export const StepNum = styled("span")(({ theme }) => ({
+export const StepNum = styled(boxAs("span"))(({ theme }) => ({
   gridRow: "span 2",
   display: "grid",
   width: 56,
@@ -157,7 +155,7 @@ export const StepNum = styled("span")(({ theme }) => ({
   boxShadow: theme.toto.shadows.pop,
 }));
 
-export const Categories = styled("div")({ display: "flex", flexWrap: "wrap", justifyContent: "center", columnGap: 18, rowGap: 22 });
+export const Categories = styled(Box)({ display: "flex", flexWrap: "wrap", justifyContent: "center", columnGap: 18, rowGap: 22 });
 
 export const CategoryLink = styled(Link)(({ theme }) => ({
   display: "grid",
@@ -178,7 +176,7 @@ export const CategoryLink = styled(Link)(({ theme }) => ({
   "& .count": { marginTop: -8, fontSize: 14, color: brand.muted },
 }));
 
-export const Center = styled("div")({ marginTop: 34, textAlign: "center" });
+export const Center = styled(Box)({ marginTop: 34, textAlign: "center" });
 
 export const KosherGrid = styled(Wrap)(({ theme }) => ({
   display: "grid",
@@ -188,9 +186,9 @@ export const KosherGrid = styled(Wrap)(({ theme }) => ({
   "& h2": { marginBottom: 12, fontSize: "clamp(1.9rem, 4vw, 2.6rem)" },
 }));
 
-export const Seals = styled("div")({ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 12 });
+export const Seals = styled(Box)({ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 12 });
 
-export const Seal = styled("div")({
+export const Seal = styled(Box)({
   display: "grid",
   placeItems: "center",
   borderRadius: 18,
@@ -208,7 +206,7 @@ export const ContactGrid = styled(Wrap)(({ theme }) => ({
 
 const panel = { borderRadius: 26, padding: "30px 26px", "& h3": { marginBottom: 10, fontSize: "1.7rem" } };
 
-export const EventsPanel = styled("div")({
+export const EventsPanel = styled(Box)({
   ...patternWhite,
   ...panel,
   background: brand.pink,
@@ -218,9 +216,9 @@ export const EventsPanel = styled("div")({
   "& li": { display: "flex", alignItems: "center", gap: 10, fontWeight: 600 },
 });
 
-export const ContactPanel = styled("div")({ ...panel, border: `2px solid ${brand.line}`, background: "#fff" });
+export const ContactPanel = styled(Box)({ ...panel, border: `2px solid ${brand.line}`, background: "#fff" });
 
-export const Phone = styled("a")(({ theme }) => ({
+export const Phone = styled(Link)(({ theme }) => ({
   marginTop: 14,
   display: "inline-block",
   fontFamily: theme.toto.fonts.display,
@@ -231,7 +229,6 @@ export const Phone = styled("a")(({ theme }) => ({
   fontVariantNumeric: "tabular-nums",
 }));
 
-/* ---- menu page ---- */
 export const MenuHead = styled(Wrap)({
   display: "grid",
   gap: 8,
@@ -242,9 +239,9 @@ export const MenuHead = styled(Wrap)({
 });
 
 // Sticky category bar (≈58px) plus a little air above each section.
-export const MenuSection = styled("section")({ scrollMarginTop: 70, paddingTop: 38, paddingBottom: 8 });
+export const MenuSection = styled(boxAs("section"))({ scrollMarginTop: 70, paddingTop: 38, paddingBottom: 8 });
 
-export const MenuSectionHead = styled("div")({
+export const MenuSectionHead = styled(Box)({
   marginBottom: 20,
   display: "flex",
   flexWrap: "wrap",
@@ -255,3 +252,14 @@ export const MenuSectionHead = styled("div")({
 });
 
 export const CategoryNote = styled(ButterPill)({ padding: "4px 14px", fontSize: 14.5 });
+
+export const Prose = styled(Wrap)({
+  maxWidth: "calc(72ch + 2 * var(--gutter))",
+  paddingTop: 34,
+  paddingBottom: 120,
+  "& section + section": { marginTop: 30 },
+  "& h2": { marginBottom: 10, fontSize: "1.6rem" },
+  "& p + p, & p + ul, & ul + p": { marginTop: 10 },
+  "& ul": { display: "grid", gap: 6, listStyle: "disc", paddingInlineStart: 22 },
+  "& a": { color: brand.pinkInk, textDecoration: "underline", textUnderlineOffset: 3 },
+});

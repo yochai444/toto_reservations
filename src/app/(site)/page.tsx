@@ -1,3 +1,4 @@
+import Box from "@mui/material/Box";
 import Image from "next/image";
 import {
   Actions,
@@ -35,28 +36,27 @@ import { SITE } from "@/lib/site";
 
 const STEPS = [
   { title: "בוחרים מגשים", text: "עוברים על התפריט, בוחרים מילויים וכמויות. הסכום מתעדכן בסל תוך כדי." },
-  { title: "ממלאים פרטים", text: "שם, טלפון, תאריך, שעה ומקום ההספקה. זה הכל." },
-  { title: "סוגרים בווצאפ", text: "ההזמנה מגיעה ישר לטוטו, ואנחנו חוזרים אליכם לאישור ולתיאום התשלום." },
+  { title: "ממלאים פרטים", text: "שם, טלפון, תאריך, שעה ומקום האספקה. זה הכול." },
+  { title: "סוגרים בוואטסאפ", text: "ההזמנה מגיעה ישר לטוטו, ואנחנו חוזרים אליכם לאישור ולתיאום התשלום." },
 ];
 
-export default async function HomePage() {
+const HomePage = async () => {
   const menu = await getMenu();
   const featured = menu.items.filter((i) => i.featured);
 
   return (
     <>
-      {/* hero: fills the first screen */}
       <Hero>
         <HeroIn>
-          <div>
+          <Box>
             <HeroLogo role="img" aria-label="TOTO Catering" />
             <Tags>
-              <span>קייטרינג חלבי</span>·<span>כשר למהדרין</span>·<span>עכו והצפון</span>
+              <Box component="span">קייטרינג חלבי</Box>·<Box component="span">כשר למהדרין</Box>·<Box component="span">עכו והצפון</Box>
             </Tags>
             <HeroTitle>
-              האוכל עלינו, <em>המחמאות</em> עליכם
+              האוכל עלינו, <Box component="em">המחמאות</Box> עליכם
             </HeroTitle>
-            <HeroSub>מגשי אירוח, סלטים, מאפים וקינוחים לכל אירוע. בוחרים באתר, ואנחנו חוזרים אליכם בווצאפ לסגירת ההזמנה.</HeroSub>
+            <HeroSub>מגשי אירוח, סלטים, מאפים וקינוחים לכל אירוע. בוחרים באתר, ואנחנו חוזרים אליכם בוואטסאפ לסגירת ההזמנה.</HeroSub>
             <Actions>
               <LinkButton href="/menu" variant="white">
                 לתפריט ולהזמנה
@@ -65,17 +65,17 @@ export default async function HomePage() {
                 איך זה עובד?
               </SectionButton>
             </Actions>
-          </div>
+          </Box>
           <Collage aria-hidden="true">
-            <div className="ph ph-a">
+            <Box className="ph ph-a">
               <CoverImage src="/img/hero.webp" alt="" fill priority sizes="(min-width:960px) 350px, 40vw" />
-            </div>
-            <div className="ph ph-b">
+            </Box>
+            <Box className="ph ph-b">
               <CoverImage src="/img/croissant.webp" alt="" fill priority sizes="(min-width:960px) 260px, 40vw" />
-            </div>
-            <div className="ph ph-c">
+            </Box>
+            <Box className="ph ph-c">
               <CoverImage src="/img/lemontart.webp" alt="" fill sizes="(min-width:960px) 300px, 40vw" />
-            </div>
+            </Box>
             <Sticker className="sticker">
               <Crown width={17} />
               טרי, מעוצב, מוכן להגשה
@@ -88,15 +88,15 @@ export default async function HomePage() {
         <Wrap>
           <SectionHead>
             <Crown />
-            <h2>מזמינים ב-3 צעדים</h2>
+            <Box component="h2">מזמינים ב-3 צעדים</Box>
             <Muted sx={{ maxWidth: "52ch" }}>בלי טלפונים הלוך ושוב. בוחרים, שולחים, ואנחנו חוזרים אליכם לסגור את הפרטים.</Muted>
           </SectionHead>
           <Steps>
             {STEPS.map((s, i) => (
               <Step key={s.title}>
                 <StepNum>{i + 1}</StepNum>
-                <h3>{s.title}</h3>
-                <p>{s.text}</p>
+                <Box component="h3">{s.title}</Box>
+                <Box component="p">{s.text}</Box>
               </Step>
             ))}
           </Steps>
@@ -106,7 +106,7 @@ export default async function HomePage() {
       <SectionTail>
         <Wrap>
           <SectionHead>
-            <h2>מה בא לכם להגיש?</h2>
+            <Box component="h2">מה בא לכם להגיש?</Box>
             <Muted>
               {menu.items.length} מנות ב-{menu.categories.length} קטגוריות, מהפתיחה ועד הקינוח.
             </Muted>
@@ -114,11 +114,11 @@ export default async function HomePage() {
           <Categories>
             {menu.categories.map((c) => (
               <CategoryLink key={c.id} href={`/menu#cat-${c.id}`}>
-                <span className="ring">
+                <Box component="span" className="ring">
                   <Image src={c.image} alt="" width={110} height={110} />
-                </span>
-                <b>{c.name}</b>
-                <span className="count">{menu.items.filter((i) => i.categoryId === c.id).length} מנות</span>
+                </Box>
+                <Box component="b">{c.name}</Box>
+                <Box component="span" className="count">{menu.items.filter((i) => i.categoryId === c.id).length} מנות</Box>
               </CategoryLink>
             ))}
           </Categories>
@@ -129,8 +129,8 @@ export default async function HomePage() {
         <Wrap>
           <SectionHead>
             <Crown white />
-            <h2 style={{ color: "#fff" }}>הכי מוזמנים אצלנו</h2>
-            <p>המגשים שחוזרים כמעט לכל אירוע.</p>
+            <Box component="h2" style={{ color: "#fff" }}>הכי מוזמנים אצלנו</Box>
+            <Box component="p">המגשים שחוזרים כמעט לכל אירוע.</Box>
           </SectionHead>
           <DishGrid>
             {featured.map((it) => (
@@ -147,10 +147,10 @@ export default async function HomePage() {
 
       <Section id="kosher">
         <KosherGrid>
-          <div>
-            <h2>כשר למהדרין</h2>
+          <Box>
+            <Box component="h2">כשר למהדרין</Box>
             <Muted sx={{ maxWidth: "44ch" }}>כל המנות חלביות או פרווה, בהשגחת הרבנות הראשית עכו ובהשגחת בד״ץ. תעודות הכשרות זמינות לפי בקשה.</Muted>
-          </div>
+          </Box>
           <Seals>
             {[
               ["seal-dairy", "תעודת כשרות חלבי, הרבנות הראשית עכו"],
@@ -168,29 +168,31 @@ export default async function HomePage() {
       <SectionTail id="contact">
         <ContactGrid>
           <EventsPanel>
-            <div>
-              <h3>לאירועים עם בופה מעוצב</h3>
-              <p style={{ fontSize: "1.1rem", fontWeight: 600 }}>בריתות, בר ובת מצווה, ימי הולדת, אירועי חברה ושבתות. {SITE.serviceArea}.</p>
-              <ul>
-                {["הזמנה באתר בכמה דקות", "אישור ותיאום אישי בווצאפ", "משלוח עד מקום האירוע"].map((t) => (
-                  <li key={t}>
+            <Box>
+              <Box component="h3">לאירועים עם בופה מעוצב</Box>
+              <Box component="p" style={{ fontSize: "1.1rem", fontWeight: 600 }}>בריתות, בר ובת מצווה, ימי הולדת, אירועי חברה ושבתות. {SITE.serviceArea}.</Box>
+              <Box component="ul">
+                {["הזמנה באתר בכמה דקות", "אישור ותיאום אישי בוואטסאפ", "משלוח עד מקום האירוע"].map((t) => (
+                  <Box component="li" key={t}>
                     <Crown width={16} white />
                     {t}
-                  </li>
+                  </Box>
                 ))}
-              </ul>
-            </div>
+              </Box>
+            </Box>
           </EventsPanel>
           <ContactPanel>
-            <h3>דברו איתנו</h3>
+            <Box component="h3">דברו איתנו</Box>
             <Muted>{SITE.address}</Muted>
             <Phone href={`tel:${SITE.phoneDisplay.replace(/-/g, "")}`} dir="ltr">
               {SITE.phoneDisplay}
             </Phone>
-            <Muted sx={{ mt: 1.25 }}>שיחה, הודעה או ווצאפ. נשמח לעזור בבחירת הכמויות.</Muted>
+            <Muted sx={{ mt: 1.25 }}>שיחה, הודעה או וואטסאפ. נשמח לעזור בבחירת הכמויות.</Muted>
           </ContactPanel>
         </ContactGrid>
       </SectionTail>
     </>
   );
-}
+};
+
+export default HomePage;

@@ -1,15 +1,10 @@
 "use client";
 
 import Button, { type ButtonProps } from "@mui/material/Button";
-import Link from "next/link";
+import Link, { type LinkProps } from "@mui/material/Link";
 import { usePathname } from "next/navigation";
-import type { ComponentProps } from "react";
 
-/**
- * Link to a home-page section. On the home page it just scrolls, leaving the address bar clean
- * (so reopening or refreshing the site starts at the top). From other pages it navigates to /#id.
- */
-export function SectionLink({ id, onClick, ...props }: { id: string } & Omit<ComponentProps<typeof Link>, "href">) {
+export const SectionLink = ({ id, onClick, ...props }: { id: string } & Omit<LinkProps, "href">) => {
   const pathname = usePathname();
   return (
     <Link
@@ -18,14 +13,13 @@ export function SectionLink({ id, onClick, ...props }: { id: string } & Omit<Com
         onClick?.(e);
         if (pathname !== "/" || e.defaultPrevented) return;
         e.preventDefault();
-        document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        document.getElementById(id)?.scrollIntoView({ block: "start" });
       }}
       {...props}
     />
   );
-}
+};
 
-/** MUI Button that scrolls to a home-page section (see SectionLink). */
-export function SectionButton({ section, ...props }: { section: string } & Omit<ButtonProps<typeof SectionLink>, "id" | "component">) {
-  return <Button component={SectionLink} nativeButton={false} id={section} {...props} />;
-}
+export const SectionButton = ({ section, ...props }: { section: string } & Omit<ButtonProps<typeof SectionLink>, "id" | "component">) => (
+  <Button component={SectionLink} nativeButton={false} id={section} {...props} />
+);
