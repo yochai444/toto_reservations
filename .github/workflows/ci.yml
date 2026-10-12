@@ -1,6 +1,6 @@
 # One chain: check (lint + build) → deploy, only when the check passed.
 #   push to main → production   https://dazzling-dasik-62f85d.netlify.app
-#   push to dev  → test version https://dev--dazzling-dasik-62f85d.netlify.app
+#   push to dev  → test version https://staging--dazzling-dasik-62f85d.netlify.app
 #   pull request → check only
 # Netlify's own Git builds are stopped; this workflow is the only way the site gets deployed.
 # Needs repository secrets NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID.
@@ -47,7 +47,7 @@ jobs:
       cancel-in-progress: false
     environment:
       name: ${{ github.ref_name == 'main' && 'production' || 'dev' }}
-      url: ${{ github.ref_name == 'main' && 'https://dazzling-dasik-62f85d.netlify.app' || 'https://dev--dazzling-dasik-62f85d.netlify.app' }}
+      url: ${{ github.ref_name == 'main' && 'https://dazzling-dasik-62f85d.netlify.app' || 'https://staging--dazzling-dasik-62f85d.netlify.app' }}
     env:
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
@@ -94,5 +94,6 @@ jobs:
           if [ "${{ github.ref_name }}" = "main" ]; then
             npx --yes netlify-cli@27 deploy --prod --context production --message "${MESSAGE:0:200}"
           else
-            npx --yes netlify-cli@27 deploy --alias dev --context branch-deploy --message "${MESSAGE:0:200}"
+            # Not "dev": dev--… is taken by an old Netlify Git branch deploy of the dev branch, which wins over the alias.
+            npx --yes netlify-cli@27 deploy --alias staging --context branch-deploy --message "${MESSAGE:0:200}"
           fi
