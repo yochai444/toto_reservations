@@ -8,23 +8,21 @@ import OutlinedInput, { type OutlinedInputProps } from "@mui/material/OutlinedIn
 import { styled } from "@mui/material/styles";
 import { useId, type ReactNode } from "react";
 import { brand } from "@/theme/theme";
+import { boxAs } from "@/components/ui/primitives";
 
 const Control = styled(FormControl)({ gap: 6, minWidth: 0 });
 
 type Labeled = { label: string; error?: string; hint?: string };
 
-function Shell({ id, label, error, hint, children }: Labeled & { id: string; children: ReactNode }) {
-  return (
-    <Control fullWidth error={!!error}>
-      <FormLabel htmlFor={id}>{label}</FormLabel>
-      {children}
-      {(error || hint) && <FormHelperText id={`${id}-help`}>{error || hint}</FormHelperText>}
-    </Control>
-  );
-}
+const Shell = ({ id, label, error, hint, children }: Labeled & { id: string; children: ReactNode }) => (
+  <Control fullWidth error={!!error}>
+    <FormLabel htmlFor={id}>{label}</FormLabel>
+    {children}
+    {(error || hint) && <FormHelperText id={`${id}-help`}>{error || hint}</FormHelperText>}
+  </Control>
+);
 
-/** Label above a text input, with a hint or an error under it. */
-export function InputField({ label, error, hint, id, ...props }: Labeled & Omit<OutlinedInputProps, "error">) {
+export const InputField = ({ label, error, hint, id, ...props }: Labeled & Omit<OutlinedInputProps, "error">) => {
   const auto = useId();
   const fid = id ?? auto;
   return (
@@ -32,16 +30,15 @@ export function InputField({ label, error, hint, id, ...props }: Labeled & Omit<
       <OutlinedInput id={fid} fullWidth aria-describedby={error || hint ? `${fid}-help` : undefined} {...props} />
     </Shell>
   );
-}
+};
 
-/** Label above a native <select> (best on phones). */
-export function SelectField({
+export const SelectField = ({
   label,
   error,
   hint,
   children,
   ...props
-}: Labeled & { name: string; defaultValue?: string; children: ReactNode }) {
+}: Labeled & { name: string; defaultValue?: string; children: ReactNode }) => {
   const id = useId();
   return (
     <Shell id={id} label={label} error={error} hint={hint}>
@@ -50,10 +47,9 @@ export function SelectField({
       </NativeSelect>
     </Shell>
   );
-}
+};
 
-/** Rounded message box: errors, success notes and info. */
-export const Notice = styled("p", { shouldForwardProp: (p) => p !== "tone" })<{ tone?: "error" | "ok" | "info" }>(({ tone = "error" }) => ({
+export const Notice = styled(boxAs("p"), { shouldForwardProp: (p) => p !== "tone" })<{ tone?: "error" | "ok" | "info" }>(({ tone = "error" }) => ({
   borderRadius: 14,
   padding: "12px 14px",
   fontWeight: 700,

@@ -3,7 +3,7 @@ import { PasswordForm } from "@/components/admin/password-form";
 import { Muted } from "@/components/ui/primitives";
 import { requireAdmin } from "@/lib/admin-auth";
 
-export default async function AccountPage() {
+const AccountPage = async () => {
   const { user } = await requireAdmin();
   return (
     <>
@@ -14,4 +14,6 @@ export default async function AccountPage() {
       <PasswordForm />
     </>
   );
-}
+};
+
+export default AccountPage;

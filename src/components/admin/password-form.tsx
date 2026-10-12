@@ -6,7 +6,7 @@ import { FormCard } from "@/components/admin/ui";
 import { InputField, Notice } from "@/components/ui/form";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
 
-export function PasswordForm() {
+export const PasswordForm = () => {
   const [msg, setMsg] = useState<{ ok: boolean; text: string }>();
   const [pending, setPending] = useState(false);
 
@@ -36,4 +36,4 @@ export function PasswordForm() {
       </Button>
     </FormCard>
   );
-}
+};

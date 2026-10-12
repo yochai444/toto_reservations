@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 /** Keeps the admin's Supabase session cookie fresh. Authorization itself happens in requireAdmin(). */
-export async function proxy(request: NextRequest) {
+export const proxy = async (request: NextRequest) => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) return NextResponse.next();
@@ -20,6 +20,6 @@ export async function proxy(request: NextRequest) {
   });
   await supabase.auth.getUser();
   return response;
-}
+};
 
 export const config = { matcher: ["/admin/:path*"] };

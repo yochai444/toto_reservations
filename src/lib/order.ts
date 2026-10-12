@@ -26,7 +26,6 @@ export const orderInputSchema = z.object({
     )
     .min(1, "הסל ריק")
     .max(60),
-  /** Honeypot: real users never see or fill this field. */
   website: z.string().max(0).optional(),
 });
 
@@ -47,7 +46,7 @@ export type PriceResult = { ok: true; order: PricedOrder } | { ok: false; fieldE
  * Validates the raw order against the menu and recomputes every price on the server.
  * The browser only sends item ids, picks and quantities, never prices.
  */
-export function priceOrder(raw: unknown, menu: Menu, now = new Date()): PriceResult {
+export const priceOrder = (raw: unknown, menu: Menu, now = new Date()): PriceResult => {
   const parsed = orderInputSchema.safeParse(raw);
   if (!parsed.success) {
     const fieldErrors: Partial<Record<CustomerField, string>> = {};
@@ -85,12 +84,11 @@ export function priceOrder(raw: unknown, menu: Menu, now = new Date()): PriceRes
       total: priced.reduce((a, l) => a + l.total, 0),
     },
   };
-}
+};
 
 const lineText = (l: PricedLine) => `${l.qty} × ${l.name}${l.picks.length ? ` (${l.picks.join(", ")})` : ""} · ${formatILS(l.total)}`;
 
-/** Plain-text order summary for the owner: the text part of the order email, and the dry-run log. */
-export function ownerMessage(o: PricedOrder): string {
+export const ownerMessage = (o: PricedOrder): string => {
   const c = o.customer;
   return [
     "👑 הזמנה חדשה מהאתר",
@@ -104,9 +102,9 @@ export function ownerMessage(o: PricedOrder): string {
     "",
     `סה״כ משוער: ${formatILS(o.total)}`,
   ].join("\n");
-}
+};
 
-export function customerMessage(o: PricedOrder, businessPhone: string): string {
+export const customerMessage = (o: PricedOrder, businessPhone: string): string => {
   const first = o.customer.name.split(" ")[0];
   return [
     `היי ${first}, ההזמנה שלך התקבלה בטוטו קייטרינג 👑`,
@@ -116,5 +114,5 @@ export function customerMessage(o: PricedOrder, businessPhone: string): string {
     "",
     `לשאלות: ${businessPhone}`,
   ].join("\n");
-}
+};
 

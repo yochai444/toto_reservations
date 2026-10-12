@@ -1,5 +1,6 @@
 "use client";
 
+import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
 import { Stepper } from "@/components/menu-card";
@@ -12,7 +13,8 @@ const Panel = styled(Drawer)({
   "& .MuiDrawer-paper": { display: "flex", flexDirection: "column", width: "min(440px, 100%)", background: brand.cream },
 });
 
-const Head = styled("div")({
+const Head = styled(Box)({
+  "--focus-ring": "#fff",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
@@ -22,7 +24,7 @@ const Head = styled("div")({
   "& h3": { fontSize: 24, color: "#fff" },
 });
 
-const Empty = styled("div")({
+const Empty = styled(Box)({
   display: "grid",
   flex: 1,
   alignContent: "start",
@@ -34,9 +36,9 @@ const Empty = styled("div")({
   "& b": { color: brand.berry },
 });
 
-const Lines = styled("div")({ display: "grid", flex: 1, alignContent: "start", gap: 12, overflow: "auto", padding: "14px 16px" });
+const Lines = styled(Box)({ display: "grid", flex: 1, alignContent: "start", gap: 12, overflow: "auto", padding: "14px 16px" });
 
-const Line = styled("div")(({ theme }) => ({
+const Line = styled(Box)(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "72px 1fr",
   gap: 12,
@@ -48,11 +50,11 @@ const Line = styled("div")(({ theme }) => ({
 
 const Thumb = styled(CoverImage)({ width: 72, height: 72, borderRadius: 12 });
 
-const LineBody = styled("div")({ display: "grid", minWidth: 0, gap: 4 });
+const LineBody = styled(Box)({ display: "grid", minWidth: 0, gap: 4 });
 
-const Between = styled("div")({ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8 });
+const Between = styled(Box)({ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8 });
 
-const Foot = styled("div")({
+const Foot = styled(Box)({
   display: "grid",
   gap: 12,
   borderTop: `1px solid ${brand.line}`,
@@ -60,14 +62,13 @@ const Foot = styled("div")({
   padding: "16px 20px calc(18px + env(safe-area-inset-bottom, 0px))",
 });
 
-const TotalRow = styled("div")({ display: "flex", alignItems: "baseline", justifyContent: "space-between", fontSize: 18, fontWeight: 800 });
+const TotalRow = styled(Box)({ display: "flex", alignItems: "baseline", justifyContent: "space-between", fontSize: 18, fontWeight: 800 });
 
-export function CartDrawer() {
+export const CartDrawer = () => {
   const { drawerOpen, setDrawerOpen, lines, item, setQty, lineTotal, total } = useStore();
   const close = () => setDrawerOpen(false);
 
   return (
-    // MUI mirrors the anchor for RTL and the RTL style plugin mirrors it back, so "left" opens on the visual right (start) edge.
     <Panel
       anchor="left"
       open={drawerOpen}
@@ -75,7 +76,7 @@ export function CartDrawer() {
       slotProps={{ paper: { role: "dialog", "aria-modal": true, "aria-labelledby": "drawer-title" } }}
     >
       <Head>
-        <h3 id="drawer-title">הסל שלי</h3>
+        <Box component="h3" id="drawer-title">הסל שלי</Box>
         <CloseButton type="button" onClick={close} aria-label="סגירה">
           ✕
         </CloseButton>
@@ -84,8 +85,8 @@ export function CartDrawer() {
       {lines.length === 0 ? (
         <Empty>
           <Crown width={60} style={{ opacity: 0.6 }} />
-          <b>הסל ריק</b>
-          <p>הוסיפו מגשים מהתפריט.</p>
+          <Box component="b">הסל ריק</Box>
+          <Box component="p">הוסיפו מגשים מהתפריט.</Box>
           <LinkButton href="/menu" onClick={close}>
             לתפריט
           </LinkButton>
@@ -99,8 +100,8 @@ export function CartDrawer() {
                 <Line key={l.key}>
                   <Thumb src={it.image} alt="" width={72} height={72} />
                   <LineBody>
-                    <div style={{ lineHeight: 1.25, fontWeight: 800 }}>{it.name}</div>
-                    {l.picks.length > 0 && <Muted as="div" sx={{ fontSize: 14 }}>{l.picks.join(" + ")}</Muted>}
+                    <Box style={{ lineHeight: 1.25, fontWeight: 800 }}>{it.name}</Box>
+                    {l.picks.length > 0 && <Muted component="div" sx={{ fontSize: 14 }}>{l.picks.join(" + ")}</Muted>}
                     <Between>
                       <Stepper qty={l.qty} onChange={(q) => setQty(l.key, q)} label={`כמות ${it.name}`} />
                       <Price size="1.1rem">{formatILS(lineTotal(l))}</Price>
@@ -115,10 +116,10 @@ export function CartDrawer() {
           </Lines>
           <Foot>
             <TotalRow>
-              <span>סה״כ משוער</span>
+              <Box component="span">סה״כ משוער</Box>
               <Price size="1.6rem">{formatILS(total)}</Price>
             </TotalRow>
-            <Muted sx={{ fontSize: 13.5 }}>המחיר הסופי, המשלוח והתשלום נסגרים מול טוטו בווצאפ.</Muted>
+            <Muted sx={{ fontSize: 13.5 }}>המחיר הסופי, המשלוח והתשלום נסגרים מול טוטו בוואטסאפ.</Muted>
             <LinkButton href="/checkout" onClick={close}>
               להמשך ההזמנה
             </LinkButton>
@@ -127,4 +128,4 @@ export function CartDrawer() {
       )}
     </Panel>
   );
-}
+};

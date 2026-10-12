@@ -8,7 +8,6 @@ type Store = {
   menu: Menu;
   item: (id: string) => MenuItem | undefined;
   group: (item: MenuItem) => OptionGroup | undefined;
-  /** False until the saved cart has been restored from localStorage. */
   hydrated: boolean;
   lines: CartLine[];
   addLine: (itemId: string, picks: string[], qty: number) => void;
@@ -31,7 +30,7 @@ type Store = {
 const Ctx = createContext<Store | null>(null);
 const STORAGE_KEY = "toto-cart";
 
-export function StoreProvider({ menu, children }: { menu: Menu; children: ReactNode }) {
+export const StoreProvider = ({ menu, children }: { menu: Menu; children: ReactNode }) => {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [sheetItemId, setSheetItemId] = useState<string | null>(null);
@@ -43,15 +42,12 @@ export function StoreProvider({ menu, children }: { menu: Menu; children: ReactN
   const item = useCallback((id: string) => byId.get(id), [byId]);
   const group = useCallback((it: MenuItem) => groupFor(menu, it), [menu]);
 
-  // Restore the cart once on the client, dropping lines whose dish left the menu.
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]") as CartLine[];
       // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time hydration from localStorage
       setLines(saved.filter((l) => byId.has(l.itemId) && l.qty > 0));
-    } catch {
-      /* storage unavailable: start empty */
-    }
+    } catch {}
     setHydrated(true);
   }, [byId]);
 
@@ -59,9 +55,7 @@ export function StoreProvider({ menu, children }: { menu: Menu; children: ReactN
     if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(lines));
-    } catch {
-      /* ignore */
-    }
+    } catch {}
   }, [lines, hydrated]);
 
   const addLine = useCallback((itemId: string, picks: string[], qty: number) => {
@@ -116,11 +110,11 @@ export function StoreProvider({ menu, children }: { menu: Menu; children: ReactN
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
-}
+};
 
-export function useStore() {
+export const useStore = () => {
   const s = useContext(Ctx);
   if (!s) throw new Error("useStore must be used inside StoreProvider");
   return s;
-}
+};
 

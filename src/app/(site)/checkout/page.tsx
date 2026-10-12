@@ -3,6 +3,6 @@ import { CheckoutForm } from "@/components/checkout-form";
 
 export const metadata: Metadata = { title: "סיום ההזמנה", robots: { index: false } };
 
-export default function CheckoutPage() {
-  return <CheckoutForm />;
-}
+const CheckoutPage = () => <CheckoutForm />;
+
+export default CheckoutPage;

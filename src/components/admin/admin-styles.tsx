@@ -1,15 +1,16 @@
 "use client";
 
-// Styled pieces for the admin pages. The pages stay Server Components and render these.
+import Box from "@mui/material/Box";
+import ButtonBase from "@mui/material/ButtonBase";
 import { styled } from "@mui/material/styles";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@mui/material/Link";
 import { brand } from "@/theme/theme";
+import { boxAs } from "@/components/ui/primitives";
 
-/* ---- shell ---- */
-export const Shell = styled("div")({ minHeight: "100svh" });
+export const Shell = styled(Box)({ minHeight: "100svh" });
 
-export const TopBar = styled("header")({
+export const TopBar = styled(boxAs("header"))({
   position: "sticky",
   top: 0,
   zIndex: 40,
@@ -18,7 +19,7 @@ export const TopBar = styled("header")({
   backdropFilter: "blur(8px)",
 });
 
-export const TopBarIn = styled("div")({
+export const TopBarIn = styled(Box)({
   marginInline: "auto",
   display: "flex",
   height: 64,
@@ -36,13 +37,13 @@ export const Brand = styled(Link)(({ theme }) => ({
   "& span": { fontFamily: theme.toto.fonts.display, fontSize: 18, fontWeight: 600, color: brand.berry },
 }));
 
-export const TopNav = styled("nav")({ marginInlineStart: 8, display: "flex", gap: 4, fontSize: 15, fontWeight: 700 });
+export const TopNav = styled(boxAs("nav"))({ marginInlineStart: 8, display: "flex", gap: 4, fontSize: 15, fontWeight: 700 });
 
 export const TopNavLink = styled(Link)({ borderRadius: 999, padding: "6px 12px", whiteSpace: "nowrap", "&:hover": { background: brand.blush } });
 
-export const TopEnd = styled("div")({ marginInlineStart: "auto", display: "flex", alignItems: "center", gap: 8, fontSize: 14 });
+export const TopEnd = styled(Box)({ marginInlineStart: "auto", display: "flex", alignItems: "center", gap: 8, fontSize: 14 });
 
-export const SiteLink = styled("a")(({ theme }) => ({
+export const SiteLink = styled(Link)(({ theme }) => ({
   display: "none",
   borderRadius: 999,
   background: brand.blush,
@@ -54,14 +55,13 @@ export const SiteLink = styled("a")(({ theme }) => ({
 
 const quiet = { borderRadius: 999, padding: "6px 8px", fontWeight: 700, color: brand.muted, textDecoration: "underline" };
 export const QuietLink = styled(Link)(quiet);
-export const QuietButton = styled("button")(quiet);
+export const QuietButton = styled(ButtonBase)(quiet);
 
-export const Main = styled("main")({ marginInline: "auto", maxWidth: 1000, padding: "24px 16px 96px" });
+export const Main = styled(boxAs("main"))({ marginInline: "auto", maxWidth: 1000, padding: "24px 16px 96px" });
 
-/* ---- login ---- */
-export const LoginPage = styled("main")({ display: "grid", minHeight: "100svh", placeItems: "center", background: brand.pink, padding: "40px 16px" });
+export const LoginPage = styled(boxAs("main"))({ display: "grid", minHeight: "100svh", placeItems: "center", background: brand.pink, padding: "40px 16px" });
 
-export const LoginCard = styled("div")(({ theme }) => ({
+export const LoginCard = styled(Box)(({ theme }) => ({
   width: "100%",
   maxWidth: 400,
   borderRadius: 26,
@@ -74,10 +74,9 @@ export const LoginCard = styled("div")(({ theme }) => ({
 
 export const LoginLogo = styled(Image)({ marginInline: "auto", marginBottom: 8, height: 56, width: "auto" });
 
-/* ---- page parts ---- */
-export const PageTitle = styled("h1")({ marginBottom: 20, fontSize: 30 });
+export const PageTitle = styled(boxAs("h1"))({ marginBottom: 20, fontSize: 30 });
 
-export const PageHead = styled("div")({
+export const PageHead = styled(Box)({
   marginBottom: 24,
   display: "flex",
   flexWrap: "wrap",
@@ -96,9 +95,9 @@ export const OutlineLink = styled(Link)({
   color: brand.pinkInk,
 });
 
-export const Categories = styled("div")({ display: "grid", gap: 32 });
+export const Categories = styled(Box)({ display: "grid", gap: 32 });
 
-export const CategoryCard = styled("section")(({ theme }) => ({
+export const CategoryCard = styled(boxAs("section"))(({ theme }) => ({
   scrollMarginTop: 80,
   borderRadius: 22,
   background: "#fff",
@@ -107,7 +106,7 @@ export const CategoryCard = styled("section")(({ theme }) => ({
   [theme.breakpoints.up("sm")]: { padding: 20 },
 }));
 
-export const CategoryHead = styled("div")({
+export const CategoryHead = styled(Box)({
   marginBottom: 12,
   display: "flex",
   flexWrap: "wrap",
@@ -117,17 +116,17 @@ export const CategoryHead = styled("div")({
   "& .note": { fontSize: 14, color: brand.muted },
 });
 
-export const HiddenTag = styled("span")({ borderRadius: 999, background: "#eee", padding: "2px 10px", fontSize: 14, fontWeight: 700, color: brand.muted });
+export const HiddenTag = styled(boxAs("span"))({ borderRadius: 999, background: "#eee", padding: "2px 10px", fontSize: 14, fontWeight: 700, color: brand.muted });
 
-export const CategoryActions = styled("div")({ marginInlineStart: "auto", display: "flex", gap: 8 });
+export const CategoryActions = styled(Box)({ marginInlineStart: "auto", display: "flex", gap: 8 });
 
 export const UnderlineLink = styled(Link)({ borderRadius: 999, padding: "6px 12px", fontSize: 15, fontWeight: 700, color: brand.pinkInk, textDecoration: "underline" });
 
 export const PinkLink = styled(Link)({ borderRadius: 999, background: brand.pinkBtn, padding: "6px 16px", fontSize: 15, fontWeight: 800, color: "#fff" });
 
-export const ItemList = styled("ul")({ "& > li + li": { borderTop: `1px solid ${brand.line}` } });
+export const ItemList = styled(boxAs("ul"))({ "& > li + li": { borderTop: `1px solid ${brand.line}` } });
 
-export const ItemRow = styled("li", { shouldForwardProp: (p) => p !== "dim" })<{ dim: boolean }>(({ dim }) => ({
+export const ItemRow = styled(boxAs("li"), { shouldForwardProp: (p) => p !== "dim" })<{ dim: boolean }>(({ dim }) => ({
   display: "flex",
   flexWrap: "wrap",
   alignItems: "center",
@@ -145,7 +144,7 @@ export const ItemName = styled(Link)({
   "& span": { fontSize: 14, color: brand.muted },
 });
 
-export const AvailableToggle = styled("button", { shouldForwardProp: (p) => p !== "on" })<{ on: boolean }>(({ on }) => ({
+export const AvailableToggle = styled(ButtonBase, { shouldForwardProp: (p) => p !== "on" })<{ on: boolean }>(({ on }) => ({
   borderRadius: 999,
   padding: "6px 12px",
   fontSize: 14,
@@ -156,7 +155,7 @@ export const AvailableToggle = styled("button", { shouldForwardProp: (p) => p !=
 
 export const EditLink = styled(Link)({ borderRadius: 999, background: brand.blush, padding: "6px 14px", fontSize: 14, fontWeight: 800, color: brand.pinkInk });
 
-export const ArrowButton = styled("button")({
+export const ArrowButton = styled(ButtonBase)({
   display: "grid",
   width: 32,
   height: 32,
@@ -168,7 +167,7 @@ export const ArrowButton = styled("button")({
   "&:disabled": { opacity: 0.3, cursor: "default" },
 });
 
-export const GroupList = styled("ul")({ display: "grid", gap: 12 });
+export const GroupList = styled(boxAs("ul"))({ display: "grid", gap: 12 });
 
 export const GroupCard = styled(Link)(({ theme }) => ({
   display: "grid",

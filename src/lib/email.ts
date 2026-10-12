@@ -3,18 +3,9 @@ import { formatHebrewDate } from "@/lib/dates";
 import { ownerMessage, type PricedOrder } from "@/lib/order";
 import { formatILS } from "@/lib/pricing";
 
-/**
- * New-order email to the owner, sent with Resend (https://resend.com).
- *
- * Without RESEND_API_KEY the email is only logged (local development).
- * Until a domain is verified in Resend, the sender must be onboarding@resend.dev and the
- * recipient must be the email address the Resend account was created with.
- */
 const esc = (s: string) => s.replace(/[&<>"']/g, (ch) => `&#${ch.charCodeAt(0)};`);
 
-/** 05X1234567 → 9725X1234567 */
 const toIntl = (local: string) => `972${local.replace(/^0/, "")}`;
-/** 0501234567 → 050-1234567 */
 const dashed = (local: string) => `${local.slice(0, 3)}-${local.slice(3)}`;
 
 const PINK = "#c8377c";
@@ -22,7 +13,7 @@ const INK = "#3a1a2b";
 const MUTED = "#7a5869";
 const LINE = "#f2c6da";
 
-function orderHtml(o: PricedOrder): string {
+const orderHtml = (o: PricedOrder): string => {
   const c = o.customer;
   const when = `${formatHebrewDate(c.date)}, ${c.time}`;
   const row = (label: string, value: string) =>
@@ -67,9 +58,9 @@ function orderHtml(o: PricedOrder): string {
   </div>
 </div>
 </body></html>`;
-}
+};
 
-export async function sendOrderEmail(order: PricedOrder) {
+export const sendOrderEmail = async (order: PricedOrder) => {
   const c = order.customer;
   const to = process.env.OWNER_EMAIL;
   const subject = `הזמנה חדשה · ${c.name} · ${formatHebrewDate(c.date)} ${c.time} · ${formatILS(order.total)}`;
@@ -93,4 +84,4 @@ export async function sendOrderEmail(order: PricedOrder) {
   });
   if (!res.ok) throw new Error(`Order email failed: ${res.status} ${await res.text()}`);
   return { dryRun: false as const };
-}
+};

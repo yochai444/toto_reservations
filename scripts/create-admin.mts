@@ -1,10 +1,3 @@
-/**
- * Creates (or re-uses) a login for the menu admin and grants it admin rights.
- *
- *   npm run admin:create -- owner@example.com
- *
- * Prints a one-time password for a new user; they can change it later from Supabase's reset flow.
- */
 import { randomBytes } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 

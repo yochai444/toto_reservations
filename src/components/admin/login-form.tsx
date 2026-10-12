@@ -7,7 +7,7 @@ import { createBrowserSupabase } from "@/lib/supabase/browser";
 import { StackForm } from "@/components/admin/ui";
 import { InputField, Notice } from "@/components/ui/form";
 
-export function LoginForm() {
+export const LoginForm = () => {
   const router = useRouter();
   const [error, setError] = useState<string>();
   const [pending, setPending] = useState(false);
@@ -40,4 +40,4 @@ export function LoginForm() {
       </Button>
     </StackForm>
   );
-}
+};

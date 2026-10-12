@@ -1,6 +1,3 @@
--- TOTO menu schema. Safe to re-run.
--- Everyone (anon) can read what's on the site; only users listed in public.admins can write.
-
 create table if not exists public.categories (
   id          text primary key,
   name        text not null,
@@ -17,7 +14,6 @@ create table if not exists public.option_groups (
   cta         text not null,
   min         int  not null default 1 check (min >= 0),
   max         int  not null default 1 check (max >= 1),
-  -- [{ "name": "סלמון מעושן", "extra": 45 }, ...]
   choices     jsonb not null default '[]'::jsonb,
   updated_at  timestamptz not null default now(),
   check (min <= max)
@@ -82,7 +78,6 @@ create policy "admins write items" on public.items for all to authenticated
 drop policy if exists "read own admin row" on public.admins;
 create policy "read own admin row" on public.admins for select to authenticated using (user_id = auth.uid());
 
--- Dish photos: public bucket, only admins may upload/replace/delete.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('menu-images', 'menu-images', true, 5242880, array['image/jpeg', 'image/png', 'image/webp'])
 on conflict (id) do update set public = true, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;

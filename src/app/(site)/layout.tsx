@@ -1,3 +1,4 @@
+import Box from "@mui/material/Box";
 import { CartDrawer } from "@/components/cart-drawer";
 import { FloatingUI } from "@/components/floating-ui";
 import { ItemSheet } from "@/components/item-sheet";
@@ -7,12 +8,14 @@ import { SiteHeader } from "@/components/site-header";
 import { StoreProvider } from "@/components/store";
 import { getMenu } from "@/lib/menu";
 
-export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+const SiteLayout = async ({ children }: { children: React.ReactNode }) => {
   const menu = await getMenu();
   return (
     <StoreProvider menu={menu}>
       <SiteHeader />
-      <main>{children}</main>
+      <Box component="main" id="main" tabIndex={-1}>
+        {children}
+      </Box>
       <SiteFooter categories={menu.categories} />
       <FloatingUI />
       <ItemSheet />
@@ -20,4 +23,6 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <SearchDialog />
     </StoreProvider>
   );
-}
+};
+
+export default SiteLayout;

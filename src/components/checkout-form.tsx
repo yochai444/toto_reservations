@@ -1,13 +1,14 @@
 "use client";
 
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
-import Link from "next/link";
 import { useState, useTransition } from "react";
 import { submitOrder, type SubmitResult } from "@/app/actions/submit-order";
 import { useStore } from "@/components/store";
 import { InputField, Notice } from "@/components/ui/form";
-import { Crown, LinkButton, Muted, Num, Price, TextButton, Wrap } from "@/components/ui/primitives";
+import { boxAs, Crown, LinkButton, Muted, Num, Price, TextButton, Wrap } from "@/components/ui/primitives";
 import { earliestDeliveryDate, formatHebrewDate } from "@/lib/dates";
 import type { CustomerField } from "@/lib/order";
 import { formatILS } from "@/lib/pricing";
@@ -17,14 +18,14 @@ import { brand } from "@/theme/theme";
 const FIELDS: { name: CustomerField; label: string; type?: string; placeholder?: string; autoComplete?: string; ltr?: boolean; inputMode?: "tel" }[] = [
   { name: "name", label: "שם מלא", placeholder: "לדוגמה: מיכל לוי", autoComplete: "name" },
   { name: "phone", label: "טלפון נייד", placeholder: "050-0000000", autoComplete: "tel", ltr: true, inputMode: "tel" },
-  { name: "date", label: "תאריך הספקה", type: "date" },
-  { name: "time", label: "שעת הספקה", type: "time" },
-  { name: "place", label: "מקום ההספקה", placeholder: "עיר, רחוב ומספר, או שם האולם", autoComplete: "street-address" },
+  { name: "date", label: "תאריך אספקה", type: "date" },
+  { name: "time", label: "שעת אספקה", type: "time" },
+  { name: "place", label: "מקום האספקה", placeholder: "עיר, רחוב ומספר, או שם האולם", autoComplete: "street-address" },
 ];
 
 const Centered = styled(Wrap)({ display: "grid", justifyItems: "center", gap: 12, textAlign: "center" });
 
-const DoneBadge = styled("div")(({ theme }) => ({
+const DoneBadge = styled(Box)(({ theme }) => ({
   display: "grid",
   width: 96,
   height: 96,
@@ -50,17 +51,17 @@ const card = {
   "& > p": { marginBottom: 18 },
 };
 
-const Card = styled("section")(({ theme }) => ({ ...card, boxShadow: theme.toto.shadows.card }));
+const Card = styled(boxAs("section"))(({ theme }) => ({ ...card, boxShadow: theme.toto.shadows.card }));
 
-const Summary = styled("aside")(({ theme }) => ({
+const Summary = styled(boxAs("aside"))(({ theme }) => ({
   ...card,
   boxShadow: theme.toto.shadows.card,
   [theme.breakpoints.up(960)]: { position: "sticky", top: "calc(var(--hdr) + 20px)" },
 }));
 
-const Form = styled("form")({ display: "grid", gap: 16 });
+const Form = styled(boxAs("form"))({ display: "grid", gap: 16 });
 
-const Note = styled("div")({
+const Note = styled(Box)({
   display: "flex",
   alignItems: "flex-start",
   gap: 10,
@@ -71,7 +72,7 @@ const Note = styled("div")({
   color: brand.berry,
 });
 
-const SummaryLine = styled("div")({
+const SummaryLine = styled(Box)({
   display: "flex",
   justifyContent: "space-between",
   gap: 12,
@@ -81,9 +82,9 @@ const SummaryLine = styled("div")({
   "& small": { display: "block", color: brand.muted, fontSize: "80%" },
 });
 
-const TotalRow = styled("div")({ display: "flex", alignItems: "baseline", justifyContent: "space-between", fontSize: 18, fontWeight: 800 });
+const TotalRow = styled(Box)({ display: "flex", alignItems: "baseline", justifyContent: "space-between", fontSize: 18, fontWeight: 800 });
 
-export function CheckoutForm() {
+export const CheckoutForm = () => {
   const { hydrated, lines, item, lineTotal, total, totalQty, clearCart, setDrawerOpen } = useStore();
   const [values, setValues] = useState<Record<CustomerField, string>>({ name: "", phone: "", date: "", time: "", place: "" });
   const [errors, setErrors] = useState<Partial<Record<CustomerField, string>>>({});
@@ -97,9 +98,9 @@ export function CheckoutForm() {
         <DoneBadge>
           <Crown width={52} white />
         </DoneBadge>
-        <h1 style={{ fontSize: "clamp(2rem, 6vw, 3rem)" }}>ההזמנה נשלחה לטוטו!</h1>
+        <Box component="h1" style={{ fontSize: "clamp(2rem, 6vw, 3rem)" }}>ההזמנה נשלחה לטוטו!</Box>
         <Muted sx={{ maxWidth: "46ch" }}>
-          תודה {done.firstName}. קיבלנו {done.trays === 1 ? "מגש אחד" : `${done.trays} מגשים`} ל{formatHebrewDate(done.date)} בשעה {done.time}. נחזור אליך בווצאפ בהקדם
+          תודה {done.firstName}. קיבלנו {done.trays === 1 ? "מגש אחד" : `${done.trays} מגשים`} ל{formatHebrewDate(done.date)} בשעה {done.time}. נחזור אליך בוואטסאפ בהקדם
           לאישור הפרטים ולתיאום התשלום.
         </Muted>
         <LinkButton href="/" sx={{ mt: 1 }}>
@@ -109,14 +110,14 @@ export function CheckoutForm() {
     );
   }
 
-  if (!hydrated) return <div style={{ minHeight: "70vh" }} aria-busy="true" />;
+  if (!hydrated) return <Box style={{ minHeight: "70vh" }} aria-busy="true" />;
 
   if (lines.length === 0) {
     return (
       <Centered sx={{ pt: 10, pb: 18, color: brand.muted }}>
         <Crown width={60} style={{ opacity: 0.6 }} />
-        <h1 style={{ fontSize: 30 }}>הסל עדיין ריק</h1>
-        <p>בחרו כמה מגשים מהתפריט ונחזור לכאן.</p>
+        <Box component="h1" style={{ fontSize: 30 }}>הסל עדיין ריק</Box>
+        <Box component="p">בחרו כמה מגשים מהתפריט ונחזור לכאן.</Box>
         <LinkButton href="/menu">לתפריט</LinkButton>
       </Centered>
     );
@@ -153,8 +154,8 @@ export function CheckoutForm() {
   return (
     <Layout>
       <Card>
-        <h1>לאן ומתי?</h1>
-        <Muted>ממלאים פרטים, ואנחנו חוזרים אליכם בווצאפ לאישור ולתיאום התשלום.</Muted>
+        <Box component="h1">לאן ומתי?</Box>
+        <Muted>ממלאים פרטים (כל השדות חובה), ואנחנו חוזרים אליכם בוואטסאפ לאישור ולתיאום התשלום.</Muted>
         <Form noValidate onSubmit={onSubmit}>
           {FIELDS.map((f) => (
             <InputField
@@ -163,6 +164,7 @@ export function CheckoutForm() {
               label={f.label}
               error={errors[f.name]}
               name={f.name}
+              required
               type={f.type ?? "text"}
               value={values[f.name]}
               onChange={(e) => set(f.name, e.target.value)}
@@ -178,11 +180,11 @@ export function CheckoutForm() {
             />
           ))}
           {/* honeypot */}
-          <input type="text" name="website" tabIndex={-1} autoComplete="off" hidden aria-hidden="true" />
+          <Box component="input" type="text" name="website" tabIndex={-1} autoComplete="off" hidden aria-hidden="true" />
 
           <Note>
             <Crown width={19} style={{ marginTop: 2, height: 22, width: "auto", flexShrink: 0 }} />
-            <span>ההזמנה מגיעה ישר לטוטו, ואישור יישלח אליכם בווצאפ. המחיר הסופי, המשלוח והתשלום ייסגרו איתכם אישית.</span>
+            <Box component="span">ההזמנה מגיעה ישר לטוטו, ואישור יישלח אליכם בוואטסאפ. המחיר הסופי, המשלוח והתשלום ייסגרו איתכם אישית.</Box>
           </Note>
           {formError && <Notice role="alert">{formError}</Notice>}
           <Button type="submit" disabled={pending}>
@@ -201,32 +203,32 @@ export function CheckoutForm() {
       </Card>
 
       <Summary aria-label="סיכום ההזמנה">
-        <h2>ההזמנה שלך</h2>
+        <Box component="h2">ההזמנה שלך</Box>
         <Muted>
           <Num>{totalQty}</Num> מגשים ·{" "}
           <Link href="/menu" style={{ textDecoration: "underline" }}>
             הוספת מנות
           </Link>
         </Muted>
-        <div style={{ display: "grid", gap: 10 }}>
+        <Box style={{ display: "grid", gap: 10 }}>
           {lines.map((l) => (
             <SummaryLine key={l.key}>
-              <span style={{ minWidth: 0 }}>
+              <Box component="span" style={{ minWidth: 0 }}>
                 {l.qty} × {item(l.itemId)?.name}
-                {l.picks.length > 0 && <small>{l.picks.join(" + ")}</small>}
-              </span>
+                {l.picks.length > 0 && <Box component="small">{l.picks.join(" + ")}</Box>}
+              </Box>
               <Num>{formatILS(lineTotal(l))}</Num>
             </SummaryLine>
           ))}
           <TotalRow>
-            <span>סה״כ משוער</span>
+            <Box component="span">סה״כ משוער</Box>
             <Price size="1.6rem">{formatILS(total)}</Price>
           </TotalRow>
           <TextButton type="button" onClick={() => setDrawerOpen(true)}>
             עריכת הסל
           </TextButton>
-        </div>
+        </Box>
       </Summary>
     </Layout>
   );
-}
+};

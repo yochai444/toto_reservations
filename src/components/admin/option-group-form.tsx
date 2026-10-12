@@ -1,5 +1,7 @@
 "use client";
 
+import Box from "@mui/material/Box";
+import ButtonBase from "@mui/material/ButtonBase";
 import FormHelperText from "@mui/material/FormHelperText";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { styled } from "@mui/material/styles";
@@ -7,16 +9,16 @@ import { useActionState, useState } from "react";
 import { deleteOptionGroup, saveOptionGroup } from "@/app/admin/actions";
 import { Cancel, DangerRow, DeleteButton, FormActions, FormCard, FormError, Pair, Stack, SubmitButton } from "@/components/admin/ui";
 import { InputField } from "@/components/ui/form";
-import { CloseButton } from "@/components/ui/primitives";
+import { boxAs, CloseButton } from "@/components/ui/primitives";
 import type { Choice } from "@/lib/menu-types";
 import type { OptionGroupRow } from "@/lib/menu-rows";
 import { brand } from "@/theme/theme";
 
-const Choices = styled("fieldset")({ display: "grid", gap: 10, "& legend": { marginBottom: 4, fontWeight: 800, color: brand.berry } });
+const Choices = styled(boxAs("fieldset"))({ display: "grid", gap: 10, "& legend": { marginBottom: 4, fontWeight: 800, color: brand.berry } });
 
-const ChoiceRow = styled("div")({ display: "grid", gridTemplateColumns: "1fr 110px auto", alignItems: "center", gap: 8 });
+const ChoiceRow = styled(Box)({ display: "grid", gridTemplateColumns: "1fr 110px auto", alignItems: "center", gap: 8 });
 
-const AddChoice = styled("button")({
+const AddChoice = styled(ButtonBase)({
   justifySelf: "start",
   borderRadius: 999,
   border: `2px solid ${brand.line}`,
@@ -25,7 +27,7 @@ const AddChoice = styled("button")({
   color: brand.pinkInk,
 });
 
-export function OptionGroupForm({ group, usedBy }: { group: Partial<OptionGroupRow>; usedBy: string[] }) {
+export const OptionGroupForm = ({ group, usedBy }: { group: Partial<OptionGroupRow>; usedBy: string[] }) => {
   const [state, action] = useActionState(saveOptionGroup, undefined);
   const fe = state?.fieldErrors ?? {};
   const [choices, setChoices] = useState<Choice[]>(group.choices?.length ? group.choices : [{ name: "" }]);
@@ -38,8 +40,8 @@ export function OptionGroupForm({ group, usedBy }: { group: Partial<OptionGroupR
   return (
     <Stack>
       <FormCard action={action}>
-        {group.id && <input type="hidden" name="id" value={group.id} />}
-        <input type="hidden" name="choices" value={JSON.stringify(cleaned)} />
+        {group.id && <Box component="input" type="hidden" name="id" value={group.id} />}
+        <Box component="input" type="hidden" name="choices" value={JSON.stringify(cleaned)} />
 
         <Pair>
           <InputField label="כותרת בחלון הבחירה" hint="לדוגמה: בחרו מילויים" error={fe.legend} name="legend" defaultValue={group.legend} />
@@ -51,7 +53,7 @@ export function OptionGroupForm({ group, usedBy }: { group: Partial<OptionGroupR
         </Pair>
 
         <Choices>
-          <legend>אפשרויות</legend>
+          <Box component="legend">אפשרויות</Box>
           {choices.map((c, i) => (
             <ChoiceRow key={i}>
               <OutlinedInput value={c.name} onChange={(e) => update(i, { name: e.target.value })} placeholder="שם האפשרות" inputProps={{ "aria-label": `אפשרות ${i + 1}` }} />
@@ -83,10 +85,10 @@ export function OptionGroupForm({ group, usedBy }: { group: Partial<OptionGroupR
 
       {group.id && (
         <DangerRow>
-          {usedBy.length > 0 && <span>בשימוש ב: {usedBy.join(", ")}. מחיקה תבטל את הבחירה במנות האלה.</span>}
+          {usedBy.length > 0 && <Box component="span">בשימוש ב: {usedBy.join(", ")}. מחיקה תבטל את הבחירה במנות האלה.</Box>}
           <DeleteButton action={deleteOptionGroup} id={group.id} label="מחיקה" />
         </DangerRow>
       )}
     </Stack>
   );
-}
+};

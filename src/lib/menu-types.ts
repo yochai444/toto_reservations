@@ -1,13 +1,11 @@
 export type Choice = {
   name: string;
-  /** Added once per tray when this choice is picked (e.g. smoked salmon +45). */
   extra?: number;
 };
 
 export type OptionGroup = {
   id: string;
   legend: string;
-  /** Short label for the card button, e.g. "בחירת מילויים". */
   cta: string;
   min: number;
   max: number;

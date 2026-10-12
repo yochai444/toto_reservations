@@ -2,8 +2,7 @@ import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { CategoryRow, ItemRow, OptionGroupRow } from "@/lib/menu-rows";
 
-/** Everything, including hidden categories and unavailable dishes (RLS lets admins see all). */
-export async function getAdminMenu(db: SupabaseClient) {
+export const getAdminMenu = async (db: SupabaseClient) => {
   const [cats, groups, items] = await Promise.all([
     db.from("categories").select("*").order("sort"),
     db.from("option_groups").select("*").order("id"),
@@ -16,4 +15,4 @@ export async function getAdminMenu(db: SupabaseClient) {
     optionGroups: groups.data as OptionGroupRow[],
     items: items.data as ItemRow[],
   };
-}
+};

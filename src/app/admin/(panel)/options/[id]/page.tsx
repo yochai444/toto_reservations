@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { getAdminMenu } from "@/lib/admin-menu";
 import type { OptionGroupRow } from "@/lib/menu-rows";
 
-export default async function EditOptionGroupPage({ params }: PageProps<"/admin/options/[id]">) {
+const EditOptionGroupPage = async ({ params }: PageProps<"/admin/options/[id]">) => {
   const { id } = await params;
   const { db } = await requireAdmin();
   const { optionGroups, items } = await getAdminMenu(db);
@@ -19,4 +19,6 @@ export default async function EditOptionGroupPage({ params }: PageProps<"/admin/
       <OptionGroupForm group={group} usedBy={items.filter((i) => i.option_group_id === id).map((i) => i.name)} />
     </>
   );
-}
+};
+
+export default EditOptionGroupPage;
