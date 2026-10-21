@@ -1,6 +1,5 @@
 import "server-only";
-import { formatHebrewDate } from "@/lib/dates";
-import { customerMessage, type PricedOrder } from "@/lib/order";
+import { customerMessage, customerTemplateParams, type PricedOrder } from "@/lib/order";
 
 const GRAPH = "https://graph.facebook.com/v23.0";
 
@@ -33,21 +32,15 @@ const clean = (s: string) => s.replace(/[\n\t]+/g, " ").replace(/ {4,}/g, "   ")
 const toIntl = (local: string) => `972${local.replace(/^0/, "")}`;
 
 export const sendCustomerConfirmation = async (order: PricedOrder) => {
-  const businessPhone = process.env.BUSINESS_PHONE_DISPLAY ?? "058-7160723";
-  const c = order.customer;
+  const phone = order.customer.phone;
 
   if (!process.env.WHATSAPP_TOKEN || !process.env.WHATSAPP_PHONE_NUMBER_ID) {
-    console.info(`[whatsapp:dry-run] to customer ${c.phone}
-${customerMessage(order, businessPhone)}
+    console.info(`[whatsapp:dry-run] to customer ${phone}
+${customerMessage(order)}
 `);
     return { dryRun: true as const };
   }
 
-  await sendTemplate(toIntl(c.phone), process.env.WHATSAPP_TEMPLATE_CUSTOMER ?? "order_received", [
-    c.name.split(" ")[0],
-    String(order.trays),
-    `${formatHebrewDate(c.date)}, ${c.time}`,
-    businessPhone,
-  ]);
+  await sendTemplate(toIntl(phone), process.env.WHATSAPP_TEMPLATE_CUSTOMER ?? "order_received", customerTemplateParams(order));
   return { dryRun: false as const };
 };

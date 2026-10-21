@@ -104,15 +104,17 @@ export const ownerMessage = (o: PricedOrder): string => {
   ].join("\n");
 };
 
-export const customerMessage = (o: PricedOrder, businessPhone: string): string => {
-  const first = o.customer.name.split(" ")[0];
+/** Values for the approved `order_received` template, in its {{1}}, {{2}} order. */
+export const customerTemplateParams = (o: PricedOrder): [string, string] => [
+  o.customer.name.split(" ")[0],
+  `${formatHebrewDate(o.customer.date)} בשעה ${o.customer.time}`,
+];
+
+export const customerMessage = (o: PricedOrder): string => {
+  const [first, when] = customerTemplateParams(o);
   return [
-    `היי ${first}, ההזמנה שלך התקבלה בטוטו קייטרינג 👑`,
-    "",
-    `${o.trays} מגשים ל${formatHebrewDate(o.customer.date)} בשעה ${o.customer.time}.`,
+    `היי ${first}, ההזמנה שלך התקבלה בטוטו קייטרינג ל-${when}.`,
     "נחזור אליך בהקדם לאישור הפרטים ולתיאום התשלום.",
-    "",
-    `לשאלות: ${businessPhone}`,
   ].join("\n");
 };
 

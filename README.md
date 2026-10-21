@@ -49,5 +49,5 @@ The browser only sends dish ids, picks and quantities. Prices are always recompu
 1. ✅ Customer site: home, menu, dish options, cart, checkout (orders logged in dry run)
 2. ✅ Supabase: menu in a database + image storage, admin area for the owner to edit the menu (needs project credentials)
 3. Order delivery: email to the owner (Resend) ← in progress; then the customer confirmation from 058-7160723 via coexistence (provider: YCloud) with an approved `order_received` template
-4. ✅ Deployed on Netlify (auto-deploys from `main`): https://totosweets.netlify.app, hidden from search engines until launch
-5. Before launch: order email live, real dish photos, domain, `SITE_INDEXING=on`
+4. ✅ Deployed on Netlify (auto-deploys from `main`): https://toto-sweets.co.il (also totosweets.netlify.app), hidden from search engines until launch
+5. Before launch: order email live, real dish photos, `SITE_INDEXING=on`
