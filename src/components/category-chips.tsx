@@ -2,40 +2,66 @@
 
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
-import { styled } from "@mui/material/styles";
+import { alpha, styled } from "@mui/material/styles";
 import { useEffect, useRef, useState } from "react";
+import { CategoryIcon } from "@/components/icons";
 import { boxAs, Wrap } from "@/components/ui/primitives";
 import type { Category } from "@/lib/menu-types";
 import { brand } from "@/theme/theme";
 
 const Sticky = styled(Box)({
-  "--focus-ring": "#fff",
   position: "sticky",
   top: "calc(env(safe-area-inset-top, 0px) + var(--hdr))",
   zIndex: 30,
-  background: brand.berry,
+  background: alpha(brand.cream, 0.78),
+  backdropFilter: "blur(14px) saturate(1.3)",
+  WebkitBackdropFilter: "blur(14px) saturate(1.3)",
+  borderBottom: `1px solid ${brand.line}`,
 });
 
 const Bar = styled(boxAs("nav"))({
   display: "flex",
-  gap: 8,
+  gap: 4,
   overflowX: "auto",
-  padding: "10px 0",
+  padding: "8px 0",
   scrollbarWidth: "none",
   "&::-webkit-scrollbar": { display: "none" },
 });
 
-const Chip = styled(Link)({
-  flexShrink: 0,
-  borderRadius: 999,
-  background: "rgb(255 255 255 / 0.12)",
-  padding: "8px 16px",
-  fontSize: 15,
+const Chip = styled(Link)(({ theme }) => ({
+  flex: "1 0 auto",
+  position: "relative",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: 4,
+  minWidth: 84,
+  borderRadius: 14,
+  padding: "6px 10px 8px",
+  fontSize: 14,
   fontWeight: 700,
   whiteSpace: "nowrap",
-  color: "#fff",
-  "&[aria-current]": { background: brand.pink, boxShadow: "inset 0 0 0 2px #fff" },
-});
+  color: brand.berry,
+  transition: "color .15s, background-color .15s",
+  "& .MuiSvgIcon-root": { fontSize: 30, strokeWidth: 1.3, transition: "transform .2s" },
+  "&:hover": { color: brand.pinkInk },
+  "&:hover .MuiSvgIcon-root": { transform: "translateY(-2px) rotate(-4deg)" },
+  "&[aria-current]": { color: brand.pinkInk, background: alpha(brand.pink, 0.1) },
+  "&[aria-current]::after": {
+    content: '""',
+    position: "absolute",
+    insetInline: "30%",
+    bottom: 0,
+    height: 3,
+    borderRadius: 3,
+    background: brand.pink,
+  },
+  [theme.breakpoints.up("md")]: {
+    fontSize: 15,
+    padding: "8px 12px 10px",
+    "& .MuiSvgIcon-root": { fontSize: 40, strokeWidth: 1.2 },
+  },
+}));
 
 export const CategoryChips = ({ categories }: { categories: Category[] }) => {
   const [active, setActive] = useState<string | undefined>(categories[0]?.id);
@@ -60,6 +86,7 @@ export const CategoryChips = ({ categories }: { categories: Category[] }) => {
         <Bar ref={bar} aria-label="קטגוריות">
           {categories.map((c) => (
             <Chip key={c.id} href={`#cat-${c.id}`} data-chip={c.id} aria-current={active === c.id ? "true" : undefined}>
+              <CategoryIcon id={c.id} />
               {c.name}
             </Chip>
           ))}

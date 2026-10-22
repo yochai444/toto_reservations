@@ -101,10 +101,10 @@ export const LinkButton = (props: ButtonProps & { href: string }) => <Button {..
 
 export const CoverImage = styled(Image)({ objectFit: "cover" });
 
-export const DishGrid = styled(Box)(({ theme }) => ({
+export const DishGrid = styled(Box, { shouldForwardProp: (p) => p !== "wide" })<{ wide?: boolean }>(({ theme, wide }) => ({
   display: "grid",
   gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
   gap: 14,
   [theme.breakpoints.up(760)]: { gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 22 },
-  [theme.breakpoints.up(1120)]: { gridTemplateColumns: "repeat(4, minmax(0, 1fr))" },
+  [theme.breakpoints.up(1120)]: wide ? { gap: 30 } : { gridTemplateColumns: "repeat(4, minmax(0, 1fr))" },
 }));

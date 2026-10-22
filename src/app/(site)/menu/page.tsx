@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import type { Metadata } from "next";
 import { CategoryChips } from "@/components/category-chips";
 import { CategoryNote, MenuHead, MenuSection, MenuSectionHead } from "@/components/home/site-styles";
-import { MenuCard } from "@/components/menu-card";
+import { MenuCardTall } from "@/components/menu-card";
 import { Crown, DishGrid, Muted, PinkBand, Wrap } from "@/components/ui/primitives";
 import { getMenu } from "@/lib/menu";
 
@@ -31,11 +31,11 @@ const MenuPage = async () => {
               </Box>
               <CategoryNote>{c.note}</CategoryNote>
             </MenuSectionHead>
-            <DishGrid>
+            <DishGrid wide>
               {menu.items
                 .filter((i) => i.categoryId === c.id)
                 .map((it) => (
-                  <MenuCard key={it.id} item={it} />
+                  <MenuCardTall key={it.id} item={it} />
                 ))}
             </DishGrid>
           </MenuSection>

@@ -239,7 +239,12 @@ export const MenuHead = styled(Wrap)({
 });
 
 // Sticky category bar (≈58px) plus a little air above each section.
-export const MenuSection = styled(boxAs("section"))({ scrollMarginTop: 70, paddingTop: 38, paddingBottom: 8 });
+export const MenuSection = styled(boxAs("section"))(({ theme }) => ({
+  scrollMarginTop: 84,
+  paddingTop: 38,
+  paddingBottom: 8,
+  [theme.breakpoints.up("md")]: { scrollMarginTop: 100 },
+}));
 
 export const MenuSectionHead = styled(Box)({
   marginBottom: 20,

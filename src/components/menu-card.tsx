@@ -3,8 +3,9 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import ButtonBase from "@mui/material/ButtonBase";
-import { styled } from "@mui/material/styles";
+import { alpha, styled } from "@mui/material/styles";
 import Image from "next/image";
+import { useState } from "react";
 import { useStore } from "@/components/store";
 import { boxAs, ButterPill, CoverImage, Muted, Price, UnitChip } from "@/components/ui/primitives";
 import type { MenuItem } from "@/lib/menu-types";
@@ -153,5 +154,114 @@ export const MenuCard = ({ item }: { item: MenuItem }) => {
         </Footer>
       </Body>
     </Card>
+  );
+};
+
+const TallCard = styled(boxAs("article"))({
+  display: "flex",
+  minWidth: 0,
+  flexDirection: "column",
+  alignItems: "center",
+  gap: 8,
+  "&:hover .dish-photo": { transform: "scale(1.04)" },
+});
+
+const TallPhoto = styled(PhotoButton)(({ theme }) => ({
+  aspectRatio: "3 / 4",
+  borderRadius: 22,
+  boxShadow: theme.toto.shadows.card,
+  "& .dish-photo": { transition: "transform 0.4s" },
+}));
+
+const GlassBadge = styled(boxAs("span"))({
+  position: "absolute",
+  insetInlineStart: 10,
+  top: 10,
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 5,
+  borderRadius: 999,
+  padding: "3px 10px",
+  fontSize: 12.5,
+  fontWeight: 800,
+  color: brand.pinkInk,
+  background: alpha("#fff", 0.82),
+  backdropFilter: "blur(6px)",
+  WebkitBackdropFilter: "blur(6px)",
+});
+
+const TallName = styled(boxAs("h3"))(({ theme }) => ({
+  marginTop: 6,
+  textAlign: "center",
+  fontSize: "1.06rem",
+  lineHeight: 1.25,
+  [theme.breakpoints.up(760)]: { fontSize: "1.2rem" },
+}));
+
+const TallDesc = styled(Small)({
+  textAlign: "center",
+  display: "-webkit-box",
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+});
+
+const Bar = styled(Box)({
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  justifyContent: "center",
+  columnGap: 12,
+  rowGap: 8,
+  "& > * + *": { borderInlineStart: `1px solid ${brand.line}`, paddingInlineStart: 12 },
+});
+
+const Unit = styled(boxAs("span"))({ fontSize: 14, fontWeight: 700, color: brand.muted, whiteSpace: "nowrap" });
+
+export const MenuCardTall = ({ item }: { item: MenuItem }) => {
+  const { group, addLine, qtyOfItem, openSheet, showToast } = useStore();
+  const [qty, setQty] = useState(1);
+  const g = group(item);
+  const inCart = qtyOfItem(item.id);
+
+  return (
+    <TallCard>
+      <TallPhoto type="button" onClick={() => openSheet(item.id)} aria-label={`פרטים על ${item.name}`}>
+        <CoverImage className="dish-photo" src={item.image} alt="" fill sizes="(min-width:1120px) 380px, (min-width:760px) 33vw, 50vw" />
+        {item.badge && (
+          <GlassBadge>
+            <Image src="/img/crown.png" alt="" width={168} height={193} style={{ height: 13, width: "auto" }} />
+            {item.badge}
+          </GlassBadge>
+        )}
+      </TallPhoto>
+
+      <TallName>{item.name}</TallName>
+      {item.description && <TallDesc>{item.description}</TallDesc>}
+
+      <Bar>
+        {item.unit && <Unit>{item.unit}</Unit>}
+        <Price size="1.2rem">{formatILS(item.price)}</Price>
+        {!g && <Stepper qty={qty} onChange={(q) => setQty(Math.max(1, q))} label={`כמות ${item.name}`} />}
+        {g ? (
+          <Button size="small" onClick={() => openSheet(item.id)}>
+            {g.cta}
+          </Button>
+        ) : (
+          <Button
+            size="small"
+            onClick={() => {
+              addLine(item.id, [], qty);
+              showToast(`נוסף לסל: ${item.name}${qty > 1 ? ` ×${qty}` : ""}`);
+              setQty(1);
+            }}
+            aria-label={`הזמנת ${qty} ${item.name}`}
+          >
+            הזמנה
+          </Button>
+        )}
+      </Bar>
+      {inCart > 0 && <ButterPill sx={{ px: 1, py: 0.25, fontSize: 12.5 }}>בסל: {inCart}</ButterPill>}
+    </TallCard>
   );
 };
