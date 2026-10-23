@@ -1,4 +1,5 @@
 import "server-only";
+import axios from "axios";
 import { formatHebrewDate } from "@/lib/dates";
 import { ownerMessage, type PricedOrder } from "@/lib/order";
 import { formatILS } from "@/lib/pricing";
@@ -70,18 +71,17 @@ export const sendOrderEmail = async (order: PricedOrder) => {
     return { dryRun: true as const };
   }
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
+  const res = await axios.post(
+    "https://api.resend.com/emails",
+    {
       from: process.env.ORDER_EMAIL_FROM || "TOTO Orders <onboarding@resend.dev>",
       to: to.split(",").map((s) => s.trim()),
       subject,
       html: orderHtml(order),
       text: ownerMessage(order),
-    }),
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error(`Order email failed: ${res.status} ${await res.text()}`);
+    },
+    { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` }, timeout: 15_000, validateStatus: () => true },
+  );
+  if (res.status >= 300) throw new Error(`Order email failed: ${res.status} ${JSON.stringify(res.data)}`);
   return { dryRun: false as const };
 };
